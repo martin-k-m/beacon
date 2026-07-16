@@ -15,5 +15,10 @@ export {
   demoAtRiskSnapshot,
   demoSnapshots,
 } from './demo/fixtures';
+export {
+  generateDemoHistory,
+  type DemoHistoryPoint,
+  type DemoHistoryOptions,
+} from './demo/history';
 
 export const BEACON_CORE_VERSION = '0.1.0';

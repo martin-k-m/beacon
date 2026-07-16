@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Dark-mode-first: the app is dark by default. */
+    --background: 240 6% 4%;
+    --surface: 240 6% 7%;
+    --surface-2: 240 5% 10%;
+    --border: 240 5% 16%;
+    --input: 240 5% 14%;
+    --ring: 42 96% 58%;
+
+    --foreground: 0 0% 98%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 5% 62%;
+
+    /* Beacon accent — a warm amber/gold signal light. */
+    --beacon: 42 96% 62%;
+    --beacon-foreground: 30 40% 8%;
+    --beacon-muted: 42 60% 20%;
+
+    /* Cyan secondary. */
+    --cyan: 190 95% 55%;
+    --cyan-foreground: 200 60% 8%;
+
+    --success: 152 62% 47%;
+    --warning: 38 92% 55%;
+    --danger: 0 78% 62%;
+
+    --radius: 0.85rem;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: hsl(var(--beacon) / 0.28);
+    color: hsl(var(--foreground));
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  /* Translucent, frosted card surface. */
+  .glass {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--surface) / 0.9),
+      hsl(var(--surface) / 0.65)
+    );
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid hsl(var(--border) / 0.9);
+  }
+
+  .gradient-text {
+    background-image: linear-gradient(
+      100deg,
+      hsl(var(--foreground)) 0%,
+      hsl(var(--beacon)) 55%,
+      hsl(var(--cyan)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .beacon-text {
+    background-image: linear-gradient(
+      100deg,
+      hsl(var(--beacon)) 0%,
+      hsl(38 90% 66%) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Ambient page glow used behind heroes and headers. */
+  .aurora {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 60% at 50% -10%, hsl(var(--beacon) / 0.16), transparent 60%),
+      radial-gradient(40% 50% at 85% 10%, hsl(var(--cyan) / 0.10), transparent 60%);
+  }
+
+  .card-hover {
+    transition:
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    border-color: hsl(var(--beacon) / 0.4);
+    box-shadow: 0 0 40px -14px hsl(var(--beacon) / 0.55);
+  }
+}
+
+@layer utilities {
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--surface-2)) 37%,
+      hsl(var(--muted)) 63%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 999px;
+  border: 2px solid hsl(var(--background));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}

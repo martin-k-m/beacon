@@ -1,17 +1,23 @@
 /**
- * Seed the database with the analyzed demo repositories so a fresh install has
- * something to show. Safe to run repeatedly (upserts by fullName).
+ * Seed the database with the analyzed demo repositories — including a synthetic
+ * health **history** per repo — so a fresh install has trends to chart. Safe to
+ * run repeatedly (it upserts the repository and replaces its analyses).
  */
-import { computeBeaconScore, demoSnapshots, HeuristicProvider } from '@beacon/core';
+import {
+  demoSnapshots,
+  generateDemoHistory,
+  HeuristicProvider,
+  type BeaconScore,
+} from '@beacon/core';
 import { prisma } from './index';
 
 async function main(): Promise<void> {
   const ai = new HeuristicProvider();
 
   for (const snapshot of Object.values(demoSnapshots)) {
-    const score = computeBeaconScore(snapshot);
-    const summary = await ai.generateSummary({ snapshot, score });
     const m = snapshot.metadata;
+    const history = generateDemoHistory(snapshot, { points: 12, stepDays: 7 });
+    const latest = history[history.length - 1]!;
 
     const repository = await prisma.repository.upsert({
       where: { fullName: m.fullName },
@@ -36,24 +42,43 @@ async function main(): Promise<void> {
       },
     });
 
-    await prisma.analysis.create({
-      data: {
-        repositoryId: repository.id,
-        beaconScore: score.total,
-        grade: score.grade,
-        pillars: score.pillars as unknown as object,
-        strengths: score.strengths,
-        warnings: score.warnings,
-        summaryText: summary.text,
-        summaryProvider: summary.provider,
-        summaryModel: summary.model,
-        snapshot: snapshot as unknown as object,
-        collectedAt: new Date(snapshot.collectedAt),
-      },
-    });
+    // Replace prior analyses so re-seeding stays idempotent.
+    await prisma.analysis.deleteMany({ where: { repositoryId: repository.id } });
 
-    console.log(`Seeded ${m.fullName} — Beacon Score ${score.total}`);
+    // The most recent point gets a full AI summary; older points get a short one.
+    const latestSummary = await ai.generateSummary({ snapshot, score: latest.score });
+
+    for (const point of history) {
+      const isLatest = point === latest;
+      const summaryText = isLatest
+        ? latestSummary.text
+        : shortSummary(m.fullName, point.score);
+
+      await prisma.analysis.create({
+        data: {
+          repositoryId: repository.id,
+          beaconScore: point.score.total,
+          grade: point.score.grade,
+          pillars: point.score.pillars as unknown as object,
+          strengths: point.score.strengths,
+          warnings: point.score.warnings,
+          summaryText,
+          summaryProvider: latestSummary.provider,
+          summaryModel: latestSummary.model,
+          snapshot: snapshot as unknown as object,
+          collectedAt: new Date(point.collectedAt),
+        },
+      });
+    }
+
+    console.log(
+      `Seeded ${m.fullName} — ${history.length} snapshots, latest Beacon Score ${latest.score.total}`,
+    );
   }
+}
+
+function shortSummary(fullName: string, score: BeaconScore): string {
+  return `${fullName} held a Beacon Score of ${score.total}/100 (${score.grade}) at this point in time.`;
 }
 
 main()

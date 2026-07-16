@@ -21,11 +21,13 @@ Turborepo + npm workspaces. Packages are small and single-purpose.
 
 ```
 apps/
-  api/    Fastify REST API — analysis, persistence, caching, widgets, webhooks
-  web/    Next.js 14 dashboard (landing + /dashboard + repo pages + /components)
-  cli/    beacon-cli — analyze / widget / badge / watch
+  api/        Fastify REST API — analysis, persistence, caching, widgets, webhooks
+  web/        Next.js 14 landing + dashboard (+ /components)
+  dashboard/  Dedicated analytics app — health-history trend charts, port 3001
+  cli/        beacon-cli — analyze / widget / badge / watch
 packages/
   core/       The engine: GitHub client, scoring, AI providers, analyzer, demo data
+  ui/         Shared React UI primitives (Button, Card, ScoreRing, …) + presentational utils
   widgets/    Embeddable SVG widgets (health card, badge, language, etc.)
   analytics/  Historical health series + trend computation
   database/   Prisma schema + client (PostgreSQL)
@@ -33,9 +35,16 @@ packages/
 docs/         Architecture, scoring, api, widgets, github-app, self-hosting
 ```
 
-Dependency direction: `core` depends on nothing internal. `widgets`, `analytics`,
-`database` depend on `core`. `api` and `cli` depend on those. `web` depends on
-`core`. Never introduce a cycle.
+Dependency direction: `core` depends on nothing internal. `ui`, `widgets`,
+`analytics`, `database` depend on `core`. `api` and `cli` depend on those. `web`
+and `dashboard` depend on `core`, `ui`, and `analytics`. Never introduce a cycle.
+
+**`@beacon/ui` is shipped as source** (no build step): its `main` points at
+`src/index.ts` and the consuming Next apps must (1) list it in
+`transpilePackages` and (2) include `../../packages/ui/src/**/*.{ts,tsx}` in
+their Tailwind `content`. The design tokens/CSS variables it references
+(`beacon`, `surface`, `.glass`, `--muted`, …) are provided by each app's
+`globals.css` + `tailwind.config`, so both apps share one token set.
 
 ## Commands
 

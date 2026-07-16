@@ -246,12 +246,17 @@ function scoreSecurity(snapshot: RepositorySnapshot): PillarScore {
   };
 }
 
-function gradeFor(total: number): HealthGrade {
+/** Map a 0–100 total to its {@link HealthGrade}. */
+export function healthGradeForScore(total: number): HealthGrade {
   if (total >= 90) return 'Excellent';
   if (total >= 75) return 'Healthy';
   if (total >= 60) return 'Fair';
   if (total >= 40) return 'At risk';
   return 'Critical';
+}
+
+function gradeFor(total: number): HealthGrade {
+  return healthGradeForScore(total);
 }
 
 /**
