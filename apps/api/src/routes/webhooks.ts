@@ -1,0 +1,94 @@
+import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
+
+import { config } from '../config';
+import { getAnalysis } from '../service';
+import { verifySignature } from '../webhooks-verify';
+
+/** Events that should trigger a fresh analysis of the affected repository. */
+const REFRESH_EVENTS = new Set([
+  'push',
+  'pull_request',
+  'issues',
+  'release',
+  'star',
+  'watch',
+  'fork',
+]);
+
+/** Defensively pull `repository.full_name` from an arbitrary webhook payload. */
+function repoFullName(body: unknown): string | undefined {
+  if (!body || typeof body !== 'object') return undefined;
+  const repository = (body as { repository?: unknown }).repository;
+  if (!repository || typeof repository !== 'object') return undefined;
+  const fullName = (repository as { full_name?: unknown }).full_name;
+  return typeof fullName === 'string' && fullName.length > 0 ? fullName : undefined;
+}
+
+/**
+ * GitHub App webhook receiver.
+ *
+ * POST /api/github/webhooks
+ *   - Verifies the X-Hub-Signature-256 HMAC over the raw body when a secret is
+ *     configured (401 on missing/invalid). Skips verification with a warning in
+ *     dev mode (no secret set) but still processes the event.
+ *   - `ping` → 200 { ok: true }.
+ *   - Repository events (push, pull_request, issues, release, star, watch,
+ *     fork) → fire-and-forget refresh, 202 { accepted: true, ... }.
+ *   - Anything else → 202 { accepted: false, event }.
+ *
+ * A malformed payload never yields a 500 — extraction is fully defensive.
+ */
+export const webhookRoutes: FastifyPluginAsync = async (app) => {
+  app.post('/api/github/webhooks', async (request, reply) => {
+    const event = headerValue(request, 'x-github-event');
+
+    // --- Signature verification ---
+    if (config.hasWebhookSecret && config.webhookSecret) {
+      const signature = headerValue(request, 'x-hub-signature-256');
+      const raw = (request as { rawBody?: Buffer }).rawBody;
+      if (!raw || !signature || !verifySignature(raw, signature, config.webhookSecret)) {
+        return reply.status(401).send({ error: 'Invalid or missing webhook signature.' });
+      }
+    } else {
+      request.log.warn(
+        'GITHUB_WEBHOOK_SECRET is not set — skipping webhook signature verification (dev mode).',
+      );
+    }
+
+    if (!event) {
+      return reply.status(400).send({ error: 'Missing X-GitHub-Event header.' });
+    }
+
+    // --- Event routing ---
+    if (event === 'ping') {
+      return reply.status(200).send({ ok: true });
+    }
+
+    if (!REFRESH_EVENTS.has(event)) {
+      return reply.status(202).send({ accepted: false, event });
+    }
+
+    const fullName = repoFullName(request.body);
+    if (!fullName) {
+      // Valid event but no repository to act on — acknowledge without failing.
+      return reply.status(202).send({ accepted: false, event, reason: 'no repository in payload' });
+    }
+
+    // Fire-and-forget: refresh the analysis without blocking the webhook ack.
+    // GitHub expects a fast response; failures are logged, never surfaced.
+    void getAnalysis(fullName, { refresh: true }).catch((err: unknown) => {
+      request.log.warn(
+        `webhook refresh for ${fullName} (${event}) failed: ${(err as Error).message}`,
+      );
+    });
+
+    return reply.status(202).send({ accepted: true, event, repository: fullName });
+  });
+};
+
+/** Read a header as a single string (Fastify may hand back string | string[]). */
+function headerValue(request: FastifyRequest, name: string): string | undefined {
+  const value = request.headers[name];
+  if (Array.isArray(value)) return value[0];
+  return value;
+}

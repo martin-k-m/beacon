@@ -1,39 +1,36 @@
 {
-  "name": "@beacon/cli",
+  "name": "@beacon/widgets",
   "version": "0.1.0",
-  "description": "Analyze the health of any GitHub repository from your terminal.",
+  "description": "Embeddable SVG widgets for Beacon — health cards, badges, and analytics graphics.",
   "license": "MIT",
-  "private": false,
   "type": "commonjs",
-  "bin": {
-    "beacon": "dist/index.js"
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "tsx src/index.ts",
+    "dev": "tsc -p tsconfig.json --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
     "test": "vitest run",
     "clean": "rimraf dist"
   },
-  "engines": {
-    "node": ">=20"
-  },
   "dependencies": {
-    "@beacon/core": "*",
-    "@beacon/widgets": "*",
-    "commander": "^12.1.0",
-    "picocolors": "^1.1.1"
+    "@beacon/core": "*"
   },
   "devDependencies": {
     "@beacon/config": "*",
     "@types/node": "^20.17.10",
     "eslint": "^8.57.1",
     "rimraf": "^6.0.1",
-    "tsx": "^4.19.2",
     "typescript": "^5.6.3",
     "vitest": "^2.1.8"
   }

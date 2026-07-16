@@ -21,6 +21,24 @@ export async function buildApp(): Promise<FastifyInstance> {
     origin: config.corsOrigin,
   });
 
+  // Parse JSON as usual for every route, but also retain the raw request bytes
+  // on `request.rawBody`. Webhook signature verification (GitHub's
+  // X-Hub-Signature-256) must run against the exact bytes received, not a
+  // re-serialized object. All other routes continue to receive parsed JSON.
+  app.addContentTypeParser(
+    'application/json',
+    { parseAs: 'buffer' },
+    (req, body, done) => {
+      (req as { rawBody?: Buffer }).rawBody = body as Buffer;
+      try {
+        const text = (body as Buffer).toString('utf8');
+        done(null, text.length ? JSON.parse(text) : {});
+      } catch (err) {
+        done(err as Error, undefined);
+      }
+    },
+  );
+
   await app.register(routes);
 
   // Consistent JSON 404 for unknown routes.

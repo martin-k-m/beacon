@@ -22,9 +22,9 @@ export interface RenderOptions {
 }
 
 /** A minimal colour surface so we can flip ANSI on and off in one place. */
-type Colorizer = (text: string) => string;
+export type Colorizer = (text: string) => string;
 
-interface Palette {
+export interface Palette {
   bold: Colorizer;
   dim: Colorizer;
   green: Colorizer;
@@ -37,7 +37,8 @@ interface Palette {
 
 const identity: Colorizer = (text) => text;
 
-function createPalette(color: boolean): Palette {
+/** Build a colour palette that emits ANSI only when `color` is true. */
+export function createPalette(color: boolean): Palette {
   if (!color) {
     return {
       bold: identity,

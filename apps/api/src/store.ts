@@ -2,6 +2,7 @@ import type {
   BeaconAnalysis,
   BeaconScore,
   BeaconSummary,
+  HealthGrade,
   PillarScore,
   RepositorySnapshot,
 } from '@beacon/core';
@@ -176,6 +177,58 @@ export async function getLatestAnalysis(
   } catch (err) {
     warn(`getLatestAnalysis(${fullName}) failed`, err);
     return null;
+  }
+}
+
+/**
+ * A minimal per-run score record suitable for health-series / trend analysis.
+ * Includes the pillar breakdown so `@beacon/analytics.toHealthSeries` can build
+ * per-pillar trends (the plain `getHistory` view omits pillars).
+ */
+export interface ScoreHistoryEntry {
+  score: {
+    total: number;
+    grade: HealthGrade;
+    pillars: PillarScore[];
+  };
+  collectedAt: string;
+}
+
+/**
+ * Return the score history (ascending or unordered — the analytics layer sorts)
+ * for a repository, shaped for `toHealthSeries`. Empty when the repository is
+ * unknown or the database is unavailable.
+ */
+export async function getScoreHistory(
+  owner: string,
+  repo: string,
+): Promise<ScoreHistoryEntry[]> {
+  if (!config.hasDatabase) return [];
+
+  const fullName = `${owner}/${repo}`;
+  try {
+    const analyses = await prisma.analysis.findMany({
+      where: { repository: { fullName } },
+      orderBy: { collectedAt: 'asc' },
+      select: {
+        beaconScore: true,
+        grade: true,
+        pillars: true,
+        collectedAt: true,
+      },
+    });
+
+    return analyses.map((a) => ({
+      score: {
+        total: a.beaconScore,
+        grade: a.grade as HealthGrade,
+        pillars: a.pillars as unknown as PillarScore[],
+      },
+      collectedAt: a.collectedAt.toISOString(),
+    }));
+  } catch (err) {
+    warn(`getScoreHistory(${fullName}) failed`, err);
+    return [];
   }
 }
 

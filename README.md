@@ -44,9 +44,11 @@ beacon/
 │   └── cli/        beacon-cli — analyze repositories from your terminal
 ├── packages/
 │   ├── core/       The analysis engine: GitHub client, scoring, AI providers
+│   ├── widgets/    Embeddable SVG widgets (health cards, badges, graphs)
+│   ├── analytics/  Historical health series + trend computation
 │   ├── database/   Prisma schema + client (PostgreSQL)
 │   └── config/     Shared TypeScript + ESLint configuration
-└── docs/           Architecture, scoring, API, CLI, and self-hosting guides
+└── docs/           Architecture, scoring, API, widgets, GitHub App, self-hosting
 ```
 
 The heart of the project is [`@beacon/core`](packages/core) — a dependency-free
@@ -111,6 +113,36 @@ Hosted providers transparently fall back to the heuristic provider on any error,
 so an analysis never fails because of the AI layer. Select one with
 `BEACON_AI_PROVIDER` and the matching API key.
 
+## Embeddable widgets
+
+Beacon renders self-contained **SVG** widgets you can drop into a README,
+profile, or portfolio — no external assets, served with caching. Types: health
+card, activity graph, language card, contributor card, release card, and a
+shields-style maintenance badge. Each supports `dark` / `light` / `transparent`
+themes and `small` / `medium` / `large` sizes.
+
+```markdown
+[![Beacon health](https://<your-beacon-host>/widget/repo/facebook/react)](https://github.com/facebook/react)
+[![Beacon](https://<your-beacon-host>/badge/facebook/react)](https://github.com/facebook/react)
+```
+
+Generate embed code from the CLI: `beacon widget facebook/react` /
+`beacon badge facebook/react`. See [docs/widgets.md](docs/widgets.md).
+
+## GitHub App & monitoring
+
+Run Beacon as a **self-hosted GitHub App** to re-analyze repositories
+automatically on `push`, `pull_request`, `issues`, `release`, `star`, and `fork`
+events. Webhooks are verified with an HMAC signature and processed in the
+background. See [docs/github-app.md](docs/github-app.md).
+
+## Health history & trends
+
+Every analysis is a timestamped snapshot. `@beacon/analytics` turns that history
+into trends over **30 / 90 / 365 days** with a plain-language narrative — e.g.
+_"Repository health improved 12% over the last 30 days."_ — exposed at
+`GET /api/repositories/:owner/:repo/trend`.
+
 ## CLI
 
 ```bash
@@ -120,6 +152,11 @@ node apps/cli/dist/index.js analyze facebook/react
 
 # or try it with no network using bundled demo data
 node apps/cli/dist/index.js analyze beacon-labs/aurora --demo
+
+# generate an embeddable widget / badge, or watch a repo's score over time
+node apps/cli/dist/index.js widget facebook/react --type health
+node apps/cli/dist/index.js badge facebook/react
+node apps/cli/dist/index.js watch facebook/react --interval 300
 ```
 
 See [apps/cli/README.md](apps/cli/README.md) for full usage.

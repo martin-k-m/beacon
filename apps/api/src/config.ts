@@ -26,6 +26,18 @@ const envSchema = z.object({
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   CORS_ORIGIN: z.string().min(1).default('*'),
   CACHE_TTL_SECONDS: z.coerce.number().int().positive().default(3600),
+  // Public base URL used to build embed snippets (widget/badge URLs). Falls back
+  // to http://localhost:${PORT} when neither is set. BEACON_HOST is accepted as
+  // an alias for PUBLIC_URL.
+  PUBLIC_URL: z.string().min(1).optional(),
+  BEACON_HOST: z.string().min(1).optional(),
+  // GitHub App webhook HMAC secret. When set, incoming webhook signatures are
+  // verified; when absent, verification is skipped (dev mode).
+  GITHUB_WEBHOOK_SECRET: z.string().min(1).optional(),
+  // GitHub App credentials — architecture-ready for authenticated installs.
+  // Not required for the service to function today.
+  GITHUB_APP_ID: z.string().min(1).optional(),
+  GITHUB_APP_PRIVATE_KEY: z.string().min(1).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -67,10 +79,30 @@ export interface BeaconApiConfig {
   anthropicApiKey: string | undefined;
   corsOrigin: boolean | string[];
   cacheTtlSeconds: number;
+  /** Public base URL (no trailing slash) used to build embed snippets. */
+  publicUrl: string;
+  /** GitHub App webhook HMAC secret, if configured. */
+  webhookSecret: string | undefined;
+  /** True when a webhook secret is configured (signature verification on). */
+  hasWebhookSecret: boolean;
+  /** GitHub App ID — architecture-ready for authenticated installs. */
+  githubAppId: string | undefined;
+  /** GitHub App private key (PEM) — architecture-ready for App installs. */
+  githubAppPrivateKey: string | undefined;
   /** True when a database is configured and persistence is available. */
   hasDatabase: boolean;
   /** True when Redis is configured (otherwise an in-memory cache is used). */
   hasRedis: boolean;
+}
+
+/** Resolve the public base URL, stripping any trailing slash. */
+function resolvePublicUrl(
+  explicit: string | undefined,
+  alias: string | undefined,
+  port: number,
+): string {
+  const value = explicit ?? alias ?? `http://localhost:${port}`;
+  return value.replace(/\/$/, '');
 }
 
 export const config: BeaconApiConfig = {
@@ -85,6 +117,11 @@ export const config: BeaconApiConfig = {
   anthropicApiKey: env.ANTHROPIC_API_KEY,
   corsOrigin: resolveCorsOrigin(env.CORS_ORIGIN),
   cacheTtlSeconds: env.CACHE_TTL_SECONDS,
+  publicUrl: resolvePublicUrl(env.PUBLIC_URL, env.BEACON_HOST, env.PORT),
+  webhookSecret: env.GITHUB_WEBHOOK_SECRET,
+  hasWebhookSecret: Boolean(env.GITHUB_WEBHOOK_SECRET),
+  githubAppId: env.GITHUB_APP_ID,
+  githubAppPrivateKey: env.GITHUB_APP_PRIVATE_KEY,
   hasDatabase: Boolean(env.DATABASE_URL),
   hasRedis: Boolean(env.REDIS_URL),
 };

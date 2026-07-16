@@ -57,6 +57,32 @@ yet (POST to `/api/analyze` first).
 
 Past analysis runs for a repository (requires a database).
 
+### `GET /api/repositories/:owner/:repo/trend`
+
+Health trend over a range. Query `range=30d|90d|1y|all` (default `30d`). Returns
+`{ range, trend, series }` where `trend` includes the delta, direction, per-pillar
+changes, and a narrative. Without stored history, returns a `points: 0` trend
+(still `200`).
+
+### Widget & badge endpoints (SVG)
+
+```
+GET /widget/repo/:owner/:repo       # canonical health card
+GET /widget/:type/:owner/:repo      # health | activity | language | contributor | release | badge
+GET /badge/:owner/:repo             # maintenance badge
+```
+
+Query: `theme=dark|light|transparent`, `size=small|medium|large`, `accent=<css color>`.
+Responds with `image/svg+xml`, cache headers, and a graceful "unavailable" SVG
+(still `200`) if the repository can't be analyzed. See [widgets.md](widgets.md).
+
+### `POST /api/github/webhooks`
+
+GitHub App webhook receiver. Verifies `X-Hub-Signature-256` against
+`GITHUB_WEBHOOK_SECRET`, routes events (`push`, `pull_request`, `issues`,
+`release`, `star`, `fork`, `ping`), and re-analyzes the repository in the
+background (`202 Accepted`). See [github-app.md](github-app.md).
+
 ## Response shape
 
 All analysis endpoints return a `BeaconAnalysis`:

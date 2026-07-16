@@ -1,14 +1,24 @@
+import { computeTrend, toHealthSeries, type TrendRange } from '@beacon/analytics';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 
 import { cache } from '../cache';
 import { config } from '../config';
-import { getHistory, getLatestAnalysis, listRepositories } from '../store';
+import {
+  getHistory,
+  getLatestAnalysis,
+  getScoreHistory,
+  listRepositories,
+} from '../store';
 import type { BeaconAnalysis } from '@beacon/core';
 
 const repoParamsSchema = z.object({
   owner: z.string().min(1),
   repo: z.string().min(1),
+});
+
+const trendQuerySchema = z.object({
+  range: z.enum(['30d', '90d', '1y', 'all']).default('30d'),
 });
 
 /**
@@ -56,5 +66,31 @@ export const repositoryRoutes: FastifyPluginAsync = async (app) => {
     const { owner, repo } = params.data;
     const history = await getHistory(owner, repo);
     return history;
+  });
+
+  // Health trend over a time range, plus the underlying series for charting.
+  // Degrades gracefully: with no stored history (or no DB) it returns a
+  // zero-point trend and an empty series — still 200, never an error.
+  app.get('/api/repositories/:owner/:repo/trend', async (request, reply) => {
+    const params = repoParamsSchema.safeParse(request.params);
+    if (!params.success) {
+      return reply.status(400).send({ error: 'Invalid repository path' });
+    }
+    const query = trendQuerySchema.safeParse(request.query);
+    if (!query.success) {
+      return reply.status(400).send({
+        error: 'Invalid range',
+        hint: 'range must be one of 30d, 90d, 1y, all.',
+      });
+    }
+
+    const { owner, repo } = params.data;
+    const range: TrendRange = query.data.range;
+
+    const entries = await getScoreHistory(owner, repo);
+    const series = toHealthSeries(entries);
+    const trend = computeTrend(series, range);
+
+    return { range, trend, series };
   });
 };
