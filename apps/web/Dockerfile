@@ -6,7 +6,7 @@ FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# --- Install dependencies (whole workspace, needed for @beacon/core linking) ---
+# --- Install dependencies (whole workspace, needed for @beacon/* linking) ---
 FROM base AS deps
 COPY package.json package-lock.json turbo.json tsconfig.base.json ./
 COPY packages ./packages

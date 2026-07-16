@@ -1,4 +1,4 @@
-import type { BeaconScore, BeaconSummary, RepositorySnapshot } from '../types';
+import type { BeaconScore, BeaconSummary, RepositorySnapshot } from '@beacon/shared';
 
 export interface SummaryInput {
   snapshot: RepositorySnapshot;

@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { motion } from 'framer-motion';
 import { Users } from 'lucide-react';
-import type { ContributorStat } from '@beacon/core';
+import type { ContributorStat } from '@beacon/shared';
 import { ChartCard } from '@/components/ui/chart-card';
 import { formatCompact } from '@/lib/utils';
 

@@ -1,6 +1,6 @@
+import { demoAtRiskSnapshot, demoHealthySnapshot } from '@beacon/shared';
 import { describe, expect, it } from 'vitest';
-import { demoAtRiskSnapshot, demoHealthySnapshot } from '../demo/fixtures';
-import { computeBeaconScore, PILLAR_WEIGHTS } from './score';
+import { computeBeaconScore, PILLAR_WEIGHTS } from './scoring';
 
 describe('computeBeaconScore', () => {
   it('pillar weights sum to 1', () => {

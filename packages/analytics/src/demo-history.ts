@@ -1,5 +1,5 @@
-import { computeBeaconScore, healthGradeForScore, PILLAR_WEIGHTS } from '../scoring/score';
-import type { BeaconScore, PillarScore, RepositorySnapshot } from '../types';
+import type { BeaconScore, PillarScore, RepositorySnapshot } from '@beacon/shared';
+import { computeBeaconScore, healthGradeForScore, PILLAR_WEIGHTS } from './scoring';
 
 export interface DemoHistoryPoint {
   score: BeaconScore;

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Layers } from 'lucide-react';
-import type { PillarScore } from '@beacon/core';
+import type { PillarScore } from '@beacon/shared';
 import { ChartCard } from '@/components/ui/chart-card';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { pillarLabel, scoreColor } from '@/lib/utils';

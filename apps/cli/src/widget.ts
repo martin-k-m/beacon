@@ -7,7 +7,8 @@
  * unit-testable without a TTY, filesystem, or network.
  */
 
-import { parseRepoIdentifier, type BeaconAnalysis, type HealthGrade } from '@beacon/core';
+import { parseRepoIdentifier } from '@beacon/github';
+import { type BeaconAnalysis, type HealthGrade } from '@beacon/shared';
 import {
   embedSnippets,
   isWidgetType,

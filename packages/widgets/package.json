@@ -24,9 +24,11 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@beacon/core": "*"
+    "@beacon/shared": "*"
   },
   "devDependencies": {
+    "@beacon/ai": "*",
+    "@beacon/analytics": "*",
     "@beacon/config": "*",
     "@types/node": "^20.17.10",
     "eslint": "^8.57.1",

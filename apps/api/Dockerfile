@@ -1,7 +1,7 @@
 # Beacon API — multi-stage image.
 #
 # IMPORTANT: build with the *monorepo root* as the context so the workspace
-# packages (@beacon/core, @beacon/database, @beacon/config) resolve:
+# packages (@beacon/analytics, @beacon/database, @beacon/config) resolve:
 #
 #   docker build -f apps/api/Dockerfile -t beacon-api .
 #

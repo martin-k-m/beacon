@@ -5,7 +5,7 @@ import type {
   PillarScore,
   RepositorySnapshot,
   ScorePillar,
-} from '../types';
+} from '@beacon/shared';
 
 /** Weights for each pillar. Must sum to 1. */
 export const PILLAR_WEIGHTS: Record<ScorePillar, number> = {

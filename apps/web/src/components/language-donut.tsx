@@ -10,7 +10,7 @@ import {
   Tooltip,
   type TooltipProps,
 } from 'recharts';
-import type { LanguageBreakdown } from '@beacon/core';
+import type { LanguageBreakdown } from '@beacon/shared';
 import { ChartCard } from '@/components/ui/chart-card';
 import { formatCompact, languageColor } from '@/lib/utils';
 

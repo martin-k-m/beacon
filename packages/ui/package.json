@@ -27,7 +27,7 @@
     "clean": "rimraf .turbo"
   },
   "dependencies": {
-    "@beacon/core": "*",
+    "@beacon/shared": "*",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.5.4"

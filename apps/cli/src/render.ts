@@ -11,7 +11,7 @@ import type {
   HealthGrade,
   PillarScore,
   ScorePillar,
-} from '@beacon/core';
+} from '@beacon/shared';
 import pc from 'picocolors';
 
 export interface RenderOptions {

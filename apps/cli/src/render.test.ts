@@ -1,4 +1,5 @@
-import { analyzeSnapshot, demoSnapshots } from '@beacon/core';
+import { analyzeSnapshot } from '@beacon/analytics';
+import { demoSnapshots } from '@beacon/shared';
 import { describe, expect, it } from 'vitest';
 
 import { renderAnalysis } from './render';

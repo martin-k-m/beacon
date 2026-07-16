@@ -1,6 +1,7 @@
 import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 
 import { config } from '../config';
+import { enqueueAnalysis } from '../queue';
 import { getAnalysis } from '../service';
 import { verifySignature } from '../webhooks-verify';
 
@@ -74,15 +75,22 @@ export const webhookRoutes: FastifyPluginAsync = async (app) => {
       return reply.status(202).send({ accepted: false, event, reason: 'no repository in payload' });
     }
 
-    // Fire-and-forget: refresh the analysis without blocking the webhook ack.
-    // GitHub expects a fast response; failures are logged, never surfaced.
-    void getAnalysis(fullName, { refresh: true }).catch((err: unknown) => {
-      request.log.warn(
-        `webhook refresh for ${fullName} (${event}) failed: ${(err as Error).message}`,
-      );
-    });
+    // Prefer the durable background queue: enqueue a job for @beacon/worker to
+    // process. When Redis is not configured, `enqueueAnalysis` returns false and
+    // we fall back to a fire-and-forget inline refresh so the webhook still has
+    // an effect. Either way GitHub gets a fast 202 and failures are only logged.
+    const queued = await enqueueAnalysis(fullName, event);
+    if (!queued) {
+      void getAnalysis(fullName, { refresh: true }).catch((err: unknown) => {
+        request.log.warn(
+          `webhook refresh for ${fullName} (${event}) failed: ${(err as Error).message}`,
+        );
+      });
+    }
 
-    return reply.status(202).send({ accepted: true, event, repository: fullName });
+    return reply
+      .status(202)
+      .send({ accepted: true, event, repository: fullName, queued });
   });
 };
 

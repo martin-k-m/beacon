@@ -12,7 +12,7 @@ import {
   YAxis,
   type TooltipProps,
 } from 'recharts';
-import type { CommitActivityWeek } from '@beacon/core';
+import type { CommitActivityWeek } from '@beacon/shared';
 import { ChartCard } from '@/components/ui/chart-card';
 
 export interface CommitTimelineProps {

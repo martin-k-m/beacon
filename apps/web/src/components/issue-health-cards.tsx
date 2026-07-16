@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { CircleDot, GitPullRequest } from 'lucide-react';
-import type { IssueMetrics, PullRequestMetrics } from '@beacon/core';
+import type { IssueMetrics, PullRequestMetrics } from '@beacon/shared';
 import { Card } from '@/components/ui/card';
 import { formatHours, formatNumber } from '@/lib/utils';
 

@@ -1,4 +1,4 @@
-import type { BeaconAnalysis, RepositorySnapshot, ScorePillar } from '@beacon/core';
+import type { BeaconAnalysis, RepositorySnapshot, ScorePillar } from '@beacon/shared';
 import {
   bar,
   beaconMark,

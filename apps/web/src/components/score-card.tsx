@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-import type { BeaconScore } from '@beacon/core';
+import type { BeaconScore } from '@beacon/shared';
 import { Card } from '@/components/ui/card';
 import { ScoreRing } from '@/components/ui/score-ring';
 import { gradeColor } from '@/lib/utils';

@@ -1,11 +1,7 @@
-import {
-  analyzeRepository,
-  analyzeSnapshot,
-  demoSnapshots,
-  parseRepoIdentifier,
-  type AIProviderConfig,
-  type BeaconAnalysis,
-} from '@beacon/core';
+import { type AIProviderConfig } from '@beacon/ai';
+import { analyzeRepository, analyzeSnapshot } from '@beacon/analytics';
+import { parseRepoIdentifier } from '@beacon/github';
+import { demoSnapshots, type BeaconAnalysis } from '@beacon/shared';
 
 import { cache } from './cache';
 import { config } from './config';

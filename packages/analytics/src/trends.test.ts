@@ -1,4 +1,4 @@
-import type { BeaconScore, ScorePillar } from '@beacon/core';
+import type { BeaconScore, ScorePillar } from '@beacon/shared';
 import { describe, expect, it } from 'vitest';
 import { computeTrend, filterRange, toHealthSeries, type AnalysisLike } from './trends';
 

@@ -1,4 +1,4 @@
-import type { BeaconScore, HealthGrade, ScorePillar } from '@beacon/core';
+import type { BeaconScore, HealthGrade, ScorePillar } from '@beacon/shared';
 
 /** The minimal shape needed from a stored analysis to build a trend. */
 export interface AnalysisLike {

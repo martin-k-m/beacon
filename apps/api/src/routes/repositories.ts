@@ -10,7 +10,7 @@ import {
   getScoreHistory,
   listRepositories,
 } from '../store';
-import type { BeaconAnalysis } from '@beacon/core';
+import type { BeaconAnalysis } from '@beacon/shared';
 
 const repoParamsSchema = z.object({
   owner: z.string().min(1),

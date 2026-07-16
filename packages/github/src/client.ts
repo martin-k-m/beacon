@@ -11,7 +11,7 @@ import type {
   RepositoryMetadata,
   RepositorySnapshot,
   SecuritySignals,
-} from '../types';
+} from '@beacon/shared';
 
 export interface GitHubClientOptions {
   /** A GitHub personal access token. Optional, but strongly recommended to avoid low unauthenticated rate limits. */

@@ -1,4 +1,4 @@
-import type { BeaconAnalysis, BeaconScore } from '@beacon/core';
+import type { BeaconAnalysis, BeaconScore } from '@beacon/shared';
 import { escapeXml, fonts } from './svg';
 import { gradeColor, type WidgetOptions, type WidgetSize } from './theme';
 

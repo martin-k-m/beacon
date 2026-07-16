@@ -1,4 +1,4 @@
-import type { BeaconSummary } from '../types';
+import type { BeaconSummary } from '@beacon/shared';
 import type { AIProvider, SummaryInput } from './provider';
 
 /**

@@ -3,7 +3,7 @@
  * (READMEs, profiles, dashboards). Every renderer takes a {@link BeaconAnalysis}
  * and returns a standalone SVG string with no external assets or fonts.
  */
-import type { BeaconAnalysis } from '@beacon/core';
+import type { BeaconAnalysis } from '@beacon/shared';
 import { renderMaintenanceBadge } from './badge';
 import {
   renderActivityGraph,

@@ -10,10 +10,9 @@
 import {
   analyzeRepository,
   analyzeSnapshot,
-  demoSnapshots,
   type AnalyzeOptions,
-  type BeaconAnalysis,
-} from '@beacon/core';
+} from '@beacon/analytics';
+import { demoSnapshots, type BeaconAnalysis } from '@beacon/shared';
 
 /** An expected, user-facing failure that should print cleanly (no stack). */
 export class BeaconCliError extends Error {}

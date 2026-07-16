@@ -24,7 +24,9 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@beacon/core": "*"
+    "@beacon/shared": "*",
+    "@beacon/github": "*",
+    "@beacon/ai": "*"
   },
   "devDependencies": {
     "@beacon/config": "*",

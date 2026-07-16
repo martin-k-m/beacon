@@ -5,7 +5,7 @@ import type {
   HealthGrade,
   PillarScore,
   RepositorySnapshot,
-} from '@beacon/core';
+} from '@beacon/shared';
 import { Prisma, prisma } from '@beacon/database';
 
 import { config } from './config';

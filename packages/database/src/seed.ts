@@ -3,12 +3,9 @@
  * health **history** per repo — so a fresh install has trends to chart. Safe to
  * run repeatedly (it upserts the repository and replaces its analyses).
  */
-import {
-  demoSnapshots,
-  generateDemoHistory,
-  HeuristicProvider,
-  type BeaconScore,
-} from '@beacon/core';
+import { HeuristicProvider } from '@beacon/ai';
+import { generateDemoHistory } from '@beacon/analytics';
+import { demoSnapshots, type BeaconScore } from '@beacon/shared';
 import { prisma } from './index';
 
 async function main(): Promise<void> {

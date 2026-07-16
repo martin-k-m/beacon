@@ -1,4 +1,4 @@
-import type { HealthGrade } from '@beacon/core';
+import type { HealthGrade } from '@beacon/shared';
 
 export type WidgetTheme = 'dark' | 'light' | 'transparent';
 export type WidgetSize = 'small' | 'medium' | 'large';

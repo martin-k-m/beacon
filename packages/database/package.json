@@ -35,8 +35,10 @@
     "@prisma/client": "^5.22.0"
   },
   "devDependencies": {
+    "@beacon/ai": "*",
+    "@beacon/analytics": "*",
     "@beacon/config": "*",
-    "@beacon/core": "*",
+    "@beacon/shared": "*",
     "@types/node": "^20.17.10",
     "eslint": "^8.57.1",
     "prisma": "^5.22.0",

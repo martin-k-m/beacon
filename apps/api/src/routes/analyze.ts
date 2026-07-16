@@ -1,4 +1,4 @@
-import { GitHubError } from '@beacon/core';
+import { GitHubError } from '@beacon/github';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 

@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@beacon/analytics": "*",
-    "@beacon/core": "*",
+    "@beacon/shared": "*",
     "@beacon/ui": "*",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

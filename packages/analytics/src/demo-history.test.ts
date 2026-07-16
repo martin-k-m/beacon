@@ -1,7 +1,7 @@
+import { demoAtRiskSnapshot, demoHealthySnapshot } from '@beacon/shared';
 import { describe, expect, it } from 'vitest';
-import { computeBeaconScore } from '../scoring/score';
-import { demoAtRiskSnapshot, demoHealthySnapshot } from './fixtures';
-import { generateDemoHistory } from './history';
+import { computeBeaconScore } from './scoring';
+import { generateDemoHistory } from './demo-history';
 
 describe('generateDemoHistory', () => {
   it('returns the requested number of ascending points', () => {

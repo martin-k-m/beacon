@@ -1,5 +1,7 @@
-import { computeBeaconScore, demoHealthySnapshot, HeuristicProvider } from '@beacon/core';
-import type { BeaconAnalysis } from '@beacon/core';
+import { computeBeaconScore } from '@beacon/analytics';
+import { demoHealthySnapshot } from '@beacon/shared';
+import { HeuristicProvider } from '@beacon/ai';
+import type { BeaconAnalysis } from '@beacon/shared';
 import { beforeAll, describe, expect, it } from 'vitest';
 import {
   embedSnippets,

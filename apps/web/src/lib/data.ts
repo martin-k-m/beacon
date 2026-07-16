@@ -1,17 +1,17 @@
 import {
   computeBeaconScore,
-  demoSnapshots,
-  generateDemoHistory,
-  type BeaconScore,
-  type RepositorySnapshot,
-} from '@beacon/core';
-import {
   computeTrend,
+  generateDemoHistory,
   toHealthSeries,
   type HealthPoint,
   type TrendRange,
   type TrendResult,
 } from '@beacon/analytics';
+import {
+  demoSnapshots,
+  type BeaconScore,
+  type RepositorySnapshot,
+} from '@beacon/shared';
 
 /**
  * A fully-computed analysis for the UI: the raw snapshot, the deterministic
@@ -44,7 +44,7 @@ function daysBetween(fromIso: string, toIso: string | null): number {
 
 /**
  * Build a synchronous, deterministic summary + highlights from a snapshot and
- * its score. This mirrors the offline HeuristicProvider in @beacon/core but
+ * its score. This mirrors the offline HeuristicProvider in @beacon/ai but
  * stays fully synchronous for Server Components.
  */
 export function buildDemoAnalysis(snapshot: RepositorySnapshot): DemoAnalysis {

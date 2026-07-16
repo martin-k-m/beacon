@@ -1,4 +1,4 @@
-import type { BeaconScore, RepositorySnapshot } from '@beacon/core';
+import type { BeaconScore, RepositorySnapshot } from '@beacon/shared';
 import {
   computeTrend,
   toHealthSeries,
@@ -20,7 +20,7 @@ import {
  *
  * When `NEXT_PUBLIC_API_URL` is set, it fetches live analyses from the Beacon
  * API. Otherwise — and whenever a request fails — it falls back to the local
- * `@beacon/core` demo fixtures so the UI is always populated. Safe to call
+ * `@beacon/shared` demo fixtures so the UI is always populated. Safe to call
  * from Server Components.
  */
 

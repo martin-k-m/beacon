@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Tag } from 'lucide-react';
-import type { ReleaseInfo } from '@beacon/core';
+import type { ReleaseInfo } from '@beacon/shared';
 import { ChartCard } from '@/components/ui/chart-card';
 import { Badge } from '@/components/ui/badge';
 import { relativeTime } from '@/lib/utils';

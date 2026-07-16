@@ -1,7 +1,7 @@
-import { createAIProvider, type AIProvider, type AIProviderConfig } from './ai';
-import { GitHubClient, parseRepoIdentifier } from './github/client';
-import { computeBeaconScore } from './scoring/score';
-import type { BeaconAnalysis, RepoIdentifier, RepositorySnapshot } from './types';
+import { createAIProvider, type AIProvider, type AIProviderConfig } from '@beacon/ai';
+import { GitHubClient, parseRepoIdentifier } from '@beacon/github';
+import type { BeaconAnalysis, RepoIdentifier, RepositorySnapshot } from '@beacon/shared';
+import { computeBeaconScore } from './scoring';
 
 export interface AnalyzeOptions {
   githubToken?: string;
@@ -52,4 +52,4 @@ export async function analyzeSnapshot(
   return { snapshot, score, summary };
 }
 
-export { computeBeaconScore } from './scoring/score';
+export { computeBeaconScore } from './scoring';

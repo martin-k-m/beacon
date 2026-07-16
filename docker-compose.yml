@@ -63,6 +63,27 @@ services:
     ports:
       - '4000:4000'
 
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    container_name: beacon-worker
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://beacon:beacon@postgres:5432/beacon?schema=public
+      REDIS_URL: redis://redis:6379
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      BEACON_AI_PROVIDER: ${BEACON_AI_PROVIDER:-heuristic}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-4}
+
   web:
     build:
       context: .

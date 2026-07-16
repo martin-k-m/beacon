@@ -2,18 +2,16 @@
 /**
  * `beacon` — analyze the health of any GitHub repository from your terminal.
  *
- * Thin command layer over {@link @beacon/core}: parse flags, collect (or mock)
+ * Thin command layer over {@link @beacon/analytics}: parse flags, collect (or mock)
  * a snapshot, compute the Beacon Score, and hand the result to the renderer.
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import {
-  GitHubError,
-  type AnalyzeOptions,
-  type BeaconAnalysis,
-} from '@beacon/core';
+import { type AnalyzeOptions } from '@beacon/analytics';
+import { GitHubError } from '@beacon/github';
+import { type BeaconAnalysis } from '@beacon/shared';
 import { Command } from 'commander';
 import pc from 'picocolors';
 
