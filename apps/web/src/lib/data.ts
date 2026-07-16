@@ -1,9 +1,17 @@
 import {
   computeBeaconScore,
   demoSnapshots,
+  generateDemoHistory,
   type BeaconScore,
   type RepositorySnapshot,
 } from '@beacon/core';
+import {
+  computeTrend,
+  toHealthSeries,
+  type HealthPoint,
+  type TrendRange,
+  type TrendResult,
+} from '@beacon/analytics';
 
 /**
  * A fully-computed analysis for the UI: the raw snapshot, the deterministic
@@ -102,11 +110,48 @@ export function getDemoAnalyses(): DemoAnalysis[] {
     .sort((a, b) => b.score.total - a.score.total);
 }
 
+/** Find a demo snapshot by owner/repo (case-insensitive), or null if unknown. */
+function findDemoSnapshot(owner: string, repo: string): RepositorySnapshot | null {
+  const key = `${owner}/${repo}`.toLowerCase();
+  const match = Object.entries(demoSnapshots).find(([slug]) => slug.toLowerCase() === key);
+  return match ? match[1] : null;
+}
+
 /** Look up a single demo analysis by owner/repo, or null if unknown. */
 export function getDemoAnalysis(owner: string, repo: string): DemoAnalysis | null {
-  const key = `${owner}/${repo}`.toLowerCase();
-  const match = Object.entries(demoSnapshots).find(
-    ([slug]) => slug.toLowerCase() === key,
-  );
-  return match ? buildDemoAnalysis(match[1]) : null;
+  const snapshot = findDemoSnapshot(owner, repo);
+  return snapshot ? buildDemoAnalysis(snapshot) : null;
+}
+
+/**
+ * A repository's health history plus the computed trend for a range. The full
+ * `series` is included so the chart can re-filter client-side as the user
+ * changes the range toggle.
+ */
+export interface HealthTrend {
+  series: HealthPoint[];
+  trend: TrendResult;
+  range: TrendRange;
+  /** Reference "now" the trend was computed against (ms since epoch). */
+  now: number;
+}
+
+/**
+ * Build the health series + trend for a demo repository. The series is
+ * synthesized deterministically from the snapshot (`generateDemoHistory`) and
+ * turned into a trend via `computeTrend`. The trend is measured relative to the
+ * newest point (not the wall clock) so the range windows always have data.
+ */
+export function getDemoTrend(
+  owner: string,
+  repo: string,
+  range: TrendRange = '90d',
+): HealthTrend | null {
+  const snapshot = findDemoSnapshot(owner, repo);
+  if (!snapshot) return null;
+
+  const series = toHealthSeries(generateDemoHistory(snapshot));
+  const latest = series[series.length - 1];
+  const now = latest ? latest.timestamp : Date.now();
+  return { series, trend: computeTrend(series, range, now), range, now };
 }

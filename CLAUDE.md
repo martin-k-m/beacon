@@ -19,11 +19,13 @@ AI), so scores are deterministic, testable, and reproducible.
 
 Turborepo + npm workspaces. Packages are small and single-purpose.
 
+Beacon is **one product = a frontend (`apps/web`) + a backend (`apps/api`)**,
+plus a CLI and shared packages.
+
 ```
 apps/
-  api/        Fastify REST API — analysis, persistence, caching, widgets, webhooks
-  web/        Next.js 14 landing + dashboard (+ /components)
-  dashboard/  Dedicated analytics app — health-history trend charts, port 3001
+  web/        Next.js 14 FRONTEND — landing + dashboard + health-trend charts (+ /components)
+  api/        Fastify REST API — the BACKEND (analysis, persistence, caching, widgets, webhooks)
   cli/        beacon-cli — analyze / widget / badge / watch
 packages/
   core/       The engine: GitHub client, scoring, AI providers, analyzer, demo data
@@ -35,9 +37,12 @@ packages/
 docs/         Architecture, scoring, api, widgets, github-app, self-hosting
 ```
 
+(The public marketing site lives in a **separate repo**, `beacon-web` →
+beacon.blinkdev.me. It is not part of this monorepo.)
+
 Dependency direction: `core` depends on nothing internal. `ui`, `widgets`,
 `analytics`, `database` depend on `core`. `api` and `cli` depend on those. `web`
-and `dashboard` depend on `core`, `ui`, and `analytics`. Never introduce a cycle.
+depends on `core`, `ui`, and `analytics`. Never introduce a cycle.
 
 **`@beacon/ui` is shipped as source** (no build step): its `main` points at
 `src/index.ts` and the consuming Next apps must (1) list it in

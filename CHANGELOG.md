@@ -8,12 +8,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- **`apps/dashboard`**: a dedicated analytics app whose headline feature is
-  **health-history trend charts** — Beacon Score over time with a range toggle
-  (30 / 90 / 365 days), a trend narrative, and per-pillar deltas.
+- **Health-history trend charts** in the dashboard (`apps/web`): Beacon Score
+  over time with a range toggle (30 / 90 / 365 days), a trend narrative, and
+  per-pillar deltas, powered by `@beacon/analytics`.
 - **`@beacon/ui`**: a shared React component library (Button, Badge, Card,
   ScoreRing, ProgressBar, StatCard, ChartCard, Skeleton + presentational utils),
-  now consumed by both `apps/web` and `apps/dashboard`.
+  consumed by the `apps/web` frontend.
 - **Demo history** (`generateDemoHistory` in `@beacon/core`): deterministic
   synthetic score history per demo repository, so trends render with zero data;
   the database seed now inserts a 12-point history per repo.

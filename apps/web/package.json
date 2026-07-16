@@ -13,6 +13,7 @@
     "clean": "rimraf .next"
   },
   "dependencies": {
+    "@beacon/analytics": "*",
     "@beacon/core": "*",
     "@beacon/ui": "*",
     "class-variance-authority": "^0.7.0",

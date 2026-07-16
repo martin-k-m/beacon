@@ -1,9 +1,18 @@
 import type { BeaconScore, RepositorySnapshot } from '@beacon/core';
 import {
+  computeTrend,
+  toHealthSeries,
+  type AnalysisLike,
+  type HealthPoint,
+  type TrendRange,
+} from '@beacon/analytics';
+import {
   buildDemoAnalysis,
   getDemoAnalyses,
   getDemoAnalysis,
+  getDemoTrend,
   type DemoAnalysis,
+  type HealthTrend,
 } from './data';
 
 /**
@@ -23,6 +32,12 @@ interface ApiAnalysis {
   score: BeaconScore;
   summary?: { text?: string; highlights?: string[] } | string | null;
   highlights?: string[];
+}
+
+/** Shape the API returns for a repository's health history. */
+interface ApiTrend {
+  series?: HealthPoint[];
+  history?: AnalysisLike[];
 }
 
 function normalizeAnalysis(payload: ApiAnalysis): DemoAnalysis {
@@ -92,6 +107,37 @@ export async function listAnalyses(): Promise<DemoAnalysis[]> {
     }
   }
   return getDemoAnalyses();
+}
+
+/**
+ * Fetch the health history + trend for `owner/repo`. When live, it reads stored
+ * history from `…/trend?range=`; on any failure it falls back to the synthesized
+ * demo history. Either way the full series is returned so the chart can
+ * re-window client-side.
+ */
+export async function getTrend(
+  owner: string,
+  repo: string,
+  range: TrendRange = '90d',
+): Promise<HealthTrend | null> {
+  if (API_BASE) {
+    try {
+      const data = await fetchJson<ApiTrend>(
+        `/api/repositories/${encodeURIComponent(owner)}/${encodeURIComponent(
+          repo,
+        )}/trend?range=${encodeURIComponent(range)}`,
+      );
+      const series = data.series ?? toHealthSeries(data.history ?? []);
+      if (series.length > 0) {
+        const latest = series[series.length - 1];
+        const now = latest ? latest.timestamp : Date.now();
+        return { series, trend: computeTrend(series, range, now), range, now };
+      }
+    } catch {
+      // Fall through to demo history.
+    }
+  }
+  return getDemoTrend(owner, repo, range);
 }
 
 /** Whether the dashboard is running against a live API or demo fixtures. */

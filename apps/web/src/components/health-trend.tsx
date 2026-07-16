@@ -13,12 +13,7 @@ import {
   YAxis,
   type TooltipProps,
 } from 'recharts';
-import {
-  computeTrend,
-  filterRange,
-  type HealthPoint,
-  type TrendRange,
-} from '@beacon/analytics';
+import { computeTrend, filterRange, type HealthPoint, type TrendRange } from '@beacon/analytics';
 import { Card, cn, pillarLabel } from '@beacon/ui';
 
 export interface HealthTrendProps {
@@ -51,10 +46,7 @@ const DIRECTION_COLOR: Record<'up' | 'down' | 'flat', string> = {
   flat: 'hsl(42 96% 62%)',
 };
 
-function TrendTooltip({
-  active,
-  payload,
-}: TooltipProps<number, string>): React.JSX.Element | null {
+function TrendTooltip({ active, payload }: TooltipProps<number, string>): React.JSX.Element | null {
   if (!active || !payload || payload.length === 0) return null;
   const point = payload[0]?.payload as ChartPoint | undefined;
   if (!point) return null;
@@ -68,10 +60,10 @@ function TrendTooltip({
 }
 
 /**
- * ★ The headline feature: a repository's Beacon Score plotted over time, with a
- * range toggle, a natural-language trend narrative, a colored delta chip, and
- * per-pillar movement — all recomputed client-side from `@beacon/analytics` as
- * the range changes.
+ * The headline analytics feature: a repository's Beacon Score plotted over time,
+ * with a range toggle, a natural-language trend narrative, a colored delta chip,
+ * and per-pillar movement — all recomputed client-side from `@beacon/analytics`
+ * as the range changes.
  */
 export function HealthTrend({
   series,
@@ -80,10 +72,7 @@ export function HealthTrend({
 }: HealthTrendProps): React.JSX.Element {
   const [range, setRange] = React.useState<TrendRange>(initialRange);
 
-  const trend = React.useMemo(
-    () => computeTrend(series, range, now),
-    [series, range, now],
-  );
+  const trend = React.useMemo(() => computeTrend(series, range, now), [series, range, now]);
 
   const data = React.useMemo<ChartPoint[]>(
     () =>
@@ -205,10 +194,7 @@ export function HealthTrend({
                 width={40}
               />
               <ReferenceLine y={75} stroke="hsl(190 95% 55%)" strokeDasharray="2 4" strokeOpacity={0.35} />
-              <Tooltip
-                content={<TrendTooltip />}
-                cursor={{ stroke: color, strokeOpacity: 0.35 }}
-              />
+              <Tooltip content={<TrendTooltip />} cursor={{ stroke: color, strokeOpacity: 0.35 }} />
               <Area
                 type="monotone"
                 dataKey="score"
@@ -235,13 +221,8 @@ export function HealthTrend({
               const flat = p.delta === 0;
               const PillarIcon = flat ? Minus : up ? TrendingUp : TrendingDown;
               return (
-                <div
-                  key={p.pillar}
-                  className="rounded-lg border border-border bg-surface-2/50 p-3"
-                >
-                  <p className="truncate text-xs text-muted-foreground">
-                    {pillarLabel(p.pillar)}
-                  </p>
+                <div key={p.pillar} className="rounded-lg border border-border bg-surface-2/50 p-3">
+                  <p className="truncate text-xs text-muted-foreground">{pillarLabel(p.pillar)}</p>
                   <div className="mt-1 flex items-baseline justify-between gap-1">
                     <span className="font-mono text-lg font-semibold tabular-nums text-foreground">
                       {p.current}
@@ -249,11 +230,7 @@ export function HealthTrend({
                     <span
                       className={cn(
                         'inline-flex items-center gap-0.5 text-xs font-medium',
-                        flat
-                          ? 'text-muted-foreground'
-                          : up
-                            ? 'text-success'
-                            : 'text-danger',
+                        flat ? 'text-muted-foreground' : up ? 'text-success' : 'text-danger',
                       )}
                     >
                       <PillarIcon className="size-3" />

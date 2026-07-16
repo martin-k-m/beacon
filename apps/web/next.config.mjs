@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@beacon/core', '@beacon/ui'],
+  transpilePackages: ['@beacon/analytics', '@beacon/core', '@beacon/ui'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },

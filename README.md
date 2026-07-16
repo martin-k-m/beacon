@@ -39,13 +39,12 @@ Beacon is a [Turborepo](https://turbo.build/) monorepo of small, focused package
 ```
 beacon/
 ├── apps/
-│   ├── api/        Fastify REST API (analysis, persistence, caching, widgets)
-│   ├── web/        Next.js landing + dashboard
-│   ├── dashboard/  Dedicated analytics app with health-history trend charts
+│   ├── web/        Next.js frontend — landing + dashboard with health-trend charts
+│   ├── api/        Fastify REST API — the backend (analysis, widgets, webhooks)
 │   └── cli/        beacon-cli — analyze repositories from your terminal
 ├── packages/
 │   ├── core/       The analysis engine: GitHub client, scoring, AI providers
-│   ├── ui/         Shared React UI primitives (consumed by web + dashboard)
+│   ├── ui/         Shared React UI primitives (consumed by the web frontend)
 │   ├── widgets/    Embeddable SVG widgets (health cards, badges, graphs)
 │   ├── analytics/  Historical health series + trend computation
 │   ├── database/   Prisma schema + client (PostgreSQL)

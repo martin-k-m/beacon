@@ -11,7 +11,6 @@ FROM base AS deps
 COPY package.json package-lock.json turbo.json tsconfig.base.json ./
 COPY packages ./packages
 COPY apps/web/package.json ./apps/web/package.json
-COPY apps/dashboard/package.json ./apps/dashboard/package.json
 COPY apps/api/package.json ./apps/api/package.json
 COPY apps/cli/package.json ./apps/cli/package.json
 RUN npm ci

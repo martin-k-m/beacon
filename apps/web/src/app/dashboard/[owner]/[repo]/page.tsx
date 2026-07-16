@@ -20,10 +20,11 @@ import { LanguageDonut } from '@/components/language-donut';
 import { ContributorList } from '@/components/contributor-list';
 import { ReleaseTimeline } from '@/components/release-timeline';
 import { IssueHealthCards } from '@/components/issue-health-cards';
+import { HealthTrend } from '@/components/health-trend';
 import { Reveal } from '@/components/reveal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { getAnalysis } from '@/lib/api';
+import { getAnalysis, getTrend } from '@/lib/api';
 import { formatCompact, relativeTime } from '@/lib/utils';
 
 interface PageProps {
@@ -49,7 +50,10 @@ export async function generateMetadata({
 export default async function AnalysisPage({
   params,
 }: PageProps): Promise<React.JSX.Element> {
-  const analysis = await getAnalysis(params.owner, params.repo);
+  const [analysis, trend] = await Promise.all([
+    getAnalysis(params.owner, params.repo),
+    getTrend(params.owner, params.repo),
+  ]);
 
   if (!analysis) {
     return <NotFoundState owner={params.owner} repo={params.repo} />;
@@ -157,6 +161,12 @@ export default async function AnalysisPage({
           <Reveal>
             <ScoreCard score={score} summary={summary} highlights={highlights} />
           </Reveal>
+
+          {trend && trend.series.length > 0 && (
+            <Reveal>
+              <HealthTrend series={trend.series} now={trend.now} initialRange="90d" />
+            </Reveal>
+          )}
 
           <div className="grid gap-6 lg:grid-cols-2">
             <Reveal index={0}>
