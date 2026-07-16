@@ -1,0 +1,73 @@
+// Beacon database schema.
+// Stores analyzed repositories and their historical analysis runs so scores
+// and trends can be tracked over time.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Repository {
+  id            String   @id @default(cuid())
+  githubId      Int      @unique
+  owner         String
+  name          String
+  fullName      String   @unique
+  description   String?
+  htmlUrl       String
+  primaryLanguage String?
+  stars         Int      @default(0)
+  forks         Int      @default(0)
+  isArchived    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  analyses      Analysis[]
+
+  @@index([owner, name])
+  @@map("repositories")
+}
+
+// A single analysis run — a point-in-time score + summary. The full collected
+// snapshot is stored as JSON so historical scores can be recomputed if the
+// algorithm changes.
+model Analysis {
+  id            String   @id @default(cuid())
+  repositoryId  String
+  repository    Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  beaconScore   Int
+  grade         String
+  pillars       Json
+  strengths     String[]
+  warnings      String[]
+
+  summaryText   String
+  summaryProvider String
+  summaryModel  String?
+
+  snapshot      Json
+  collectedAt   DateTime
+  createdAt     DateTime @default(now())
+
+  @@index([repositoryId, createdAt])
+  @@map("analyses")
+}
+
+// GitHub OAuth users (for the authenticated dashboard experience).
+model User {
+  id          String   @id @default(cuid())
+  githubId    Int      @unique
+  login       String
+  name        String?
+  avatarUrl   String?
+  accessToken String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("users")
+}
