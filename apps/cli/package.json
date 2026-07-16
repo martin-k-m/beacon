@@ -1,18 +1,38 @@
 {
   "name": "@beacon/cli",
-  "version": "0.1.0",
-  "description": "Analyze the health of any GitHub repository from your terminal.",
+  "version": "1.0.0",
+  "description": "A first-class terminal client for Beacon — analyze the health of any GitHub repository, online or offline.",
+  "keywords": [
+    "beacon",
+    "cli",
+    "github",
+    "repository-health",
+    "devtools"
+  ],
   "license": "MIT",
   "private": false,
   "type": "commonjs",
+  "homepage": "https://github.com/martin-k-m/beacon/tree/main/apps/cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/martin-k-m/beacon.git",
+    "directory": "apps/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/martin-k-m/beacon/issues"
+  },
   "bin": {
     "beacon": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/index.js --legal-comments=none",
     "dev": "tsx src/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
@@ -22,18 +42,19 @@
   "engines": {
     "node": ">=20"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@beacon/ai": "*",
     "@beacon/analytics": "*",
+    "@beacon/config": "*",
     "@beacon/github": "*",
+    "@beacon/sdk": "*",
     "@beacon/shared": "*",
     "@beacon/widgets": "*",
-    "commander": "^12.1.0",
-    "picocolors": "^1.1.1"
-  },
-  "devDependencies": {
-    "@beacon/config": "*",
     "@types/node": "^20.17.10",
+    "commander": "^12.1.0",
+    "esbuild": "^0.24.0",
     "eslint": "^8.57.1",
+    "picocolors": "^1.1.1",
     "rimraf": "^6.0.1",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3",

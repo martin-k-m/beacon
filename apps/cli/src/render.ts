@@ -63,6 +63,31 @@ export function createPalette(color: boolean): Palette {
   };
 }
 
+/**
+ * A five-star rating for a 0–100 score: `round(total / 20)` filled stars out of
+ * five. Pure and colour-free so it can be composed by callers.
+ */
+export function starRating(total: number): string {
+  const filled = Math.max(0, Math.min(5, Math.round(total / 20)));
+  return `${'★'.repeat(filled)}${'☆'.repeat(5 - filled)}`;
+}
+
+/**
+ * The compact two-line `score` output: `Beacon Score: 96/100` followed by a
+ * `★★★★★ <grade>` line, coloured by grade when `color` is true.
+ */
+export function renderScoreLine(
+  total: number,
+  grade: HealthGrade,
+  options: RenderOptions,
+): string {
+  const palette = createPalette(options.color);
+  const paint = gradeColor(palette, grade);
+  const headline = `${palette.bold('Beacon Score:')} ${paint(palette.bold(`${total}/100`))}`;
+  const stars = `${paint(starRating(total))} ${paint(grade)}`;
+  return `${headline}\n${stars}`;
+}
+
 const PILLAR_LABELS: Record<ScorePillar, string> = {
   activity: 'Activity',
   community: 'Community',

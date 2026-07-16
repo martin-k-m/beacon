@@ -1,6 +1,7 @@
+import { analyzeSnapshot } from '@beacon/analytics';
 import { describe, expect, it } from 'vitest';
 
-import { resolveAnalysis } from './analysis';
+import { resolveDemo } from './analysis';
 import {
   buildBadge,
   buildWidget,
@@ -17,7 +18,8 @@ const REPO = 'beacon-labs/aurora';
 
 /** Resolve the bundled demo analysis offline (no network involved). */
 function demoAnalysis() {
-  return resolveAnalysis(REPO, { demo: true, ai: { provider: 'heuristic' } });
+  const { snapshot } = resolveDemo(REPO);
+  return analyzeSnapshot(snapshot, { ai: { provider: 'heuristic' } });
 }
 
 describe('buildWidget', () => {

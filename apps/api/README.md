@@ -115,8 +115,8 @@ See [`.env.example`](./.env.example).
 | `PUBLIC_URL` | `http://localhost:${PORT}` | Public base URL for embed snippets. |
 | `BEACON_HOST` | – | Alias for `PUBLIC_URL`. |
 | `GITHUB_WEBHOOK_SECRET` | – | Enables webhook signature verification. |
-| `GITHUB_APP_ID` | – | GitHub App ID (architecture-ready; unused today). |
-| `GITHUB_APP_PRIVATE_KEY` | – | GitHub App private key (architecture-ready). |
+| `GITHUB_APP_ID` | – | GitHub App ID (optional; for authenticated App installs). |
+| `GITHUB_APP_PRIVATE_KEY` | – | GitHub App private key (optional). |
 
 ## Scripts
 

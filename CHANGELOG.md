@@ -4,20 +4,29 @@ All notable changes to Beacon are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2026-07-16
 
 ### Added
 
+- **`@beacon/cli` — a first-class terminal client** (bundled, self-contained,
+  `npm install -g @beacon/cli`): `login` (GitHub device flow + `--with-token`),
+  `analyze` (current repo / `owner/repo` / `--local` offline), `score`, `report`
+  (`--json`/`--markdown`/`--html`), `widget`, `badge`, `watch`, `init`, and an
+  interactive `dashboard` TUI. Offline local analyzer for JS/TS, Python, Go,
+  Rust, and Java; config at `~/.beacon/config.json` and `.beacon/config.json`.
+- **`@beacon/sdk`**: a programmatic client — `Beacon.analyze('owner/repo')` over
+  the API or directly via GitHub.
+- **`apps/worker`**: a BullMQ queue consumer that re-scores repositories from
+  webhook events; the API enqueues jobs (inline fallback without Redis).
 - **Health-history trend charts** in the dashboard (`apps/web`): Beacon Score
   over time with a range toggle (30 / 90 / 365 days), a trend narrative, and
   per-pillar deltas, powered by `@beacon/analytics`.
 - **`@beacon/ui`**: a shared React component library (Button, Badge, Card,
   ScoreRing, ProgressBar, StatCard, ChartCard, Skeleton + presentational utils),
   consumed by the `apps/web` frontend.
-- **Demo history** (`generateDemoHistory` in `@beacon/core`): deterministic
+- **Demo history** (`generateDemoHistory` in `@beacon/analytics`): deterministic
   synthetic score history per demo repository, so trends render with zero data;
   the database seed now inserts a 12-point history per repo.
-
 - **Embeddable widget system** (`@beacon/widgets`): self-contained SVG widgets —
   repository health card, activity graph, language card, contributor card,
   release card, and a shields-style maintenance badge. Themes (dark / light /
@@ -38,6 +47,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `/showcase` (widget gallery) and `/pricing`.
 - `CLAUDE.md` with full repository context for AI agents.
 
+### Changed
+
+- **Split the monorepo into a clean backend platform.** `@beacon/core` was
+  decomposed into `@beacon/shared` (types + demo fixtures + queue contract),
+  `@beacon/github` (client), `@beacon/ai` (providers), and `@beacon/analytics`
+  (scoring, trends, and the analyze orchestrator). The public marketing site
+  lives in the separate `beacon-web` repository.
+
 ## [0.1.0] - 2026-07-16
 
 ### Added
@@ -55,5 +72,5 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **`apps/cli`**: `beacon analyze owner/repo` with a polished terminal report.
 - Docker + docker-compose, GitHub Actions CI, documentation, and the MIT license.
 
-[Unreleased]: https://github.com/martin-k-m/beacon/compare/v0.1.0...HEAD
+[1.0.0]: https://github.com/martin-k-m/beacon/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/martin-k-m/beacon/releases/tag/v0.1.0

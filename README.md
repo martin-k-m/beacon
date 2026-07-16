@@ -39,21 +39,27 @@ Beacon is a [Turborepo](https://turbo.build/) monorepo of small, focused package
 ```
 beacon/
 ├── apps/
-│   ├── web/        Next.js frontend — landing + dashboard with health-trend charts
 │   ├── api/        Fastify REST API — the backend (analysis, widgets, webhooks)
-│   └── cli/        beacon-cli — analyze repositories from your terminal
+│   ├── worker/     Background queue consumer (BullMQ) that re-scores on events
+│   ├── web/        Next.js frontend — landing + dashboard
+│   └── cli/        beacon — the terminal client
 ├── packages/
-│   ├── core/       The analysis engine: GitHub client, scoring, AI providers
-│   ├── ui/         Shared React UI primitives (consumed by the web frontend)
+│   ├── shared/     Domain types + demo fixtures + the job-queue contract
+│   ├── github/     GitHub REST client (dependency-free, fetch-based)
+│   ├── ai/         AI summary providers (heuristic / OpenAI / Anthropic)
+│   ├── analytics/  The engine: scoring, trends, the analyze orchestrator
+│   ├── sdk/        Programmatic client (@beacon/sdk)
 │   ├── widgets/    Embeddable SVG widgets (health cards, badges, graphs)
-│   ├── analytics/  Historical health series + trend computation
+│   ├── ui/         Shared React UI primitives (frontend)
 │   ├── database/   Prisma schema + client (PostgreSQL)
 │   └── config/     Shared TypeScript + ESLint configuration
-└── docs/           Architecture, scoring, API, widgets, GitHub App, self-hosting
+└── docs/           Architecture, scoring, API, CLI, widgets, GitHub App, self-hosting
 ```
 
-The heart of the project is [`@beacon/core`](packages/core) — a dependency-free
-(uses only `fetch`) engine shared by the API and the CLI.
+The engine is split into focused packages: `@beacon/github` (collection),
+`@beacon/analytics` (scoring + trends + orchestration), and `@beacon/ai`
+(summaries), all built on `@beacon/shared` types. The API, worker, CLI, and
+[`@beacon/sdk`](packages/sdk) share them.
 
 ## Quick start
 
@@ -146,21 +152,35 @@ _"Repository health improved 12% over the last 30 days."_ — exposed at
 
 ## CLI
 
+A first-class terminal client — install it globally (it ships as a single
+self-contained bundle with no runtime dependencies):
+
 ```bash
-# from the monorepo (after npm install + build)
-npm run build
-node apps/cli/dist/index.js analyze facebook/react
+npm install -g @beacon/cli
 
-# or try it with no network using bundled demo data
-node apps/cli/dist/index.js analyze beacon-labs/aurora --demo
-
-# generate an embeddable widget / badge, or watch a repo's score over time
-node apps/cli/dist/index.js widget facebook/react --type health
-node apps/cli/dist/index.js badge facebook/react
-node apps/cli/dist/index.js watch facebook/react --interval 300
+beacon login                       # GitHub device flow (or --with-token <PAT>)
+beacon analyze                     # analyze the repo in the current directory
+beacon analyze facebook/react      # …or any GitHub repository
+beacon analyze --local             # offline analysis (git + manifests, no account)
+beacon score vercel/next.js        # quick score:  96/100  ★★★★★ Excellent
+beacon dashboard                   # interactive TUI across your repositories
+beacon widget facebook/react       # copy-paste embed snippets
+beacon report --markdown           # export a report (--json / --html too)
 ```
 
-See [apps/cli/README.md](apps/cli/README.md) for full usage.
+Every command supports `--json` for scripting. See [docs/cli.md](docs/cli.md)
+for the full reference.
+
+## SDK
+
+Use Beacon programmatically with [`@beacon/sdk`](packages/sdk):
+
+```ts
+import { Beacon } from '@beacon/sdk';
+
+const analysis = await Beacon.analyze('facebook/react');
+console.log(analysis.score.total); // 96
+```
 
 ## Architecture
 
@@ -169,7 +189,7 @@ See [apps/cli/README.md](apps/cli/README.md) for full usage.
                │
                ▼
         ┌──────────────┐
-        │ Beacon Engine│   @beacon/core
+        │ Beacon Engine│   @beacon/github + @beacon/analytics + @beacon/ai
         │  · collect   │   snapshot → score → summary
         │  · score     │
         │  · summarize │

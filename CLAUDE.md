@@ -73,8 +73,9 @@ Per-package: `npm run <script> --workspace @beacon/<name>`.
   indexing (`arr[0]` is `T | undefined`).
 - **Modules:** the Node packages (`core`, `widgets`, `analytics`, `database`,
   `api`, `cli`) are **CommonJS** (`"type": "commonjs"`, `module: CommonJS`,
-  `moduleResolution: Node`). The web app is ESM/bundler. Keep `@beacon/core` free
-  of Node-only APIs so it stays universal (it uses only global `fetch`).
+  `moduleResolution: Node`). The web app is ESM/bundler. Keep `@beacon/github`
+  and `@beacon/analytics` free of Node-only APIs so they stay universal (they use
+  only global `fetch`).
 - **tsconfig:** each package extends `@beacon/config/tsconfig/base.json` (Node) or
   `.../react.json` (web).
 - **ESLint:** each package's `.eslintrc.cjs` must extend the shared config via
@@ -91,7 +92,7 @@ Per-package: `npm run <script> --workspace @beacon/<name>`.
   `build`, but `typecheck` on a fresh checkout needs a generate first.
 - **Formatting:** Prettier (`npm run format`). Single quotes, semicolons, width 100.
 
-## The Beacon Score (packages/core/src/scoring/score.ts)
+## The Beacon Score (packages/analytics/src/scoring.ts)
 
 Weighted pillars — Activity 0.30, Community 0.20, Maintenance 0.20,
 Documentation 0.15, Security 0.15. `computeBeaconScore(snapshot)` is pure. Each
@@ -100,7 +101,7 @@ UI, CLI, and widgets. Grades: Excellent ≥90, Healthy ≥75, Fair ≥60, At ris
 Critical <40. If you change scoring, keep `score.test.ts` passing (demo healthy
 ≥75, at-risk <60) and keep returning `reasons`. See `docs/scoring.md`.
 
-## AI providers (packages/core/src/ai)
+## AI providers (packages/ai/src)
 
 `AIProvider` interface with `HeuristicProvider` (offline default), `OpenAIProvider`,
 `AnthropicProvider`. `createAIProvider(config)` resolves from env; hosted providers
@@ -149,4 +150,4 @@ Keep everything synchronized (this is a stated project goal):
   tsconfig; added to the right dependency layer; CommonJS.
 - `commitActivity[i].weekStart` is **unix seconds** — ×1000 for `Date`.
 - Recharts/Framer/browser code in the web app must be in `'use client'` files.
-- Don't put Node-only APIs in `@beacon/core`.
+- Don't put Node-only APIs in `@beacon/github`/`@beacon/analytics` (keep them universal).

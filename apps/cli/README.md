@@ -1,12 +1,14 @@
 # @beacon/cli
 
-Analyze the health of any GitHub repository from your terminal.
+A first-class terminal client for [Beacon](https://github.com/martin-k-m/beacon) —
+analyze the health of any GitHub repository, online or offline, right from your
+shell.
 
-`beacon` is the command-line face of [Beacon](https://github.com/beacon-labs),
-an open-source GitHub repository intelligence platform. It collects a snapshot
-of a repository, computes a deterministic **Beacon Score** across five pillars
-(activity, community, maintenance, documentation, security), and prints a
-polished health report — with an optional AI-written summary.
+`beacon` collects a snapshot of a repository, computes a deterministic **Beacon
+Score** across five pillars (activity, community, maintenance, documentation,
+security), and prints a polished report — with an optional AI-written summary.
+It can analyze remote repositories through the Beacon SDK, or the repository in
+your current directory completely **offline, with no account**.
 
 ## Install
 
@@ -20,164 +22,232 @@ Or run it once, without installing:
 npx @beacon/cli analyze facebook/react
 ```
 
-## Usage
+Requires Node.js >= 20.
 
-```bash
-beacon analyze <owner/repo> [options]
-```
-
-### Options
-
-| Option                  | Description                                                        |
-| ----------------------- | ------------------------------------------------------------------ |
-| `-t, --token <token>`   | GitHub token. Defaults to `$GITHUB_TOKEN`.                          |
-| `--json`                | Print the raw analysis as JSON instead of the report.              |
-| `--demo`                | Use bundled demo data instead of calling GitHub (no network).      |
-| `--ai <provider>`       | AI summary provider: `heuristic` (default), `openai`, `anthropic`. |
-| `--no-color`            | Disable coloured output.                                           |
-| `-v, --version`         | Print the version.                                                 |
-| `-h, --help`            | Show help.                                                         |
-
-A GitHub token is optional but recommended — without one you share the small
-anonymous rate limit. Hosted AI providers read their keys from the environment
-(`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`) and transparently fall back to the
-offline heuristic summary when no key is present.
-
-### Examples
+## Quick start
 
 ```bash
 # Analyze a public repository
 beacon analyze facebook/react
 
-# Use a token for higher rate limits / private repos
-beacon analyze your-org/private-repo --token "$GITHUB_TOKEN"
+# Analyze the repository in the current directory — offline, no account
+beacon analyze --local
 
-# Get an AI-written summary from OpenAI
-OPENAI_API_KEY=sk-... beacon analyze vercel/next.js --ai openai
+# Compact score
+beacon score vercel/next.js
 
-# Machine-readable output for scripting
-beacon analyze rust-lang/rust --json | jq '.score.total'
-
-# Try it offline with bundled demo data
-beacon analyze beacon-labs/aurora --demo
+# Try everything offline with bundled demo data
+beacon analyze --demo
 ```
 
-## Embeddable widgets
+## Commands
 
-Turn any analysis into a self-contained SVG widget for your README, profile, or
-dashboard, and print ready-to-paste embed snippets. Widgets have no external
-fonts, scripts, or tracking pixels.
+| Command | Description |
+| --- | --- |
+| `beacon analyze [repository]` | Full health report. |
+| `beacon score [repository]` | Compact score + star rating. |
+| `beacon report [repository]` | Full report as Markdown / HTML / JSON. |
+| `beacon widget [repository] [type]` | Render an embeddable SVG widget + snippets. |
+| `beacon badge [repository]` | Render the maintenance badge + Markdown embed. |
+| `beacon watch [repository]` | Poll a repository and print score changes. |
+| `beacon dashboard` | Interactive terminal dashboard. |
+| `beacon init` | Scaffold `.beacon/config.json` in the current directory. |
+| `beacon login` | Sign in with GitHub (device flow) or a token. |
+| `beacon logout` | Clear stored credentials. |
+| `beacon whoami` | Print the current user. |
+
+When `[repository]` is omitted, `beacon` resolves it from (in order) the
+project config's `repository`, then the `origin` remote of the current git
+repository.
+
+Global flags: `--no-color` disables ANSI output; `--json` (where supported)
+prints machine-readable output and suppresses decorative text; `-v/--version`
+and `-h/--help` behave as usual. Every command prints a `Docs:` footer in
+`--help`.
+
+## Authentication
+
+Most commands work anonymously (subject to GitHub's low unauthenticated rate
+limit). Sign in to raise your limit and reach private repositories.
 
 ```bash
-beacon widget <owner/repo> [options]
+# Device flow (needs a GitHub OAuth app client ID)
+BEACON_GITHUB_CLIENT_ID=Iv1.xxxx beacon login
+
+# …or store a Personal Access Token directly
+beacon login --with-token ghp_your_token_here
+
+beacon whoami   # → your-login
+beacon logout
 ```
 
-### `widget` options
+The device flow prints a one-time code and a URL
+(`https://github.com/login/device`); authorize there and the CLI finishes
+automatically. Credentials are stored in `~/.beacon/config.json` (created with
+`600` permissions where supported). Create a token at
+<https://github.com/settings/tokens> with the `repo` and `read:user` scopes.
 
-| Option                | Description                                                                     |
-| --------------------- | ------------------------------------------------------------------------------- |
-| `-t, --type <type>`   | Widget type: `health` (default), `activity`, `language`, `contributor`, `release`. |
-| `--theme <theme>`     | `dark` (default), `light`, `transparent`.                                       |
-| `--size <size>`       | `small`, `medium` (default), `large`.                                           |
-| `-o, --out <file>`    | Write the rendered SVG to a file.                                               |
-| `--host <url>`        | Embed host for snippet URLs. Defaults to `https://beacon.example.com`.          |
-| `--token <token>`     | GitHub token. Defaults to `$GITHUB_TOKEN`.                                       |
-| `--demo`              | Use bundled demo data instead of calling GitHub (no network).                   |
+## Local (offline) analysis
+
+`--local` analyzes the repository in the current directory using only local
+git history and the filesystem — no network and no account:
 
 ```bash
-# Print embed snippets for the health widget
-beacon widget facebook/react
-
-# Render an activity graph and save the SVG
-beacon widget vercel/next.js --type activity --theme light --out next-activity.svg
-
-# Try it offline with bundled demo data
-beacon widget beacon-labs/aurora --demo
+beacon analyze --local
+beacon score --local
+beacon report --local --html --out health.html
 ```
 
-Example embed snippets (from `beacon widget beacon-labs/aurora --demo`):
+Local mode builds a snapshot from an **extensible collector registry**:
+
+- **Identity / dates** — parsed from the `origin` remote (falling back to the
+  folder name); created/pushed dates from the first and last commits; default
+  branch from `git rev-parse`.
+- **Commit activity** — 52 weekly buckets from `git log --since=1.year`.
+- **Contributors** — aggregated author counts from `git log`.
+- **Releases** — from git tags.
+- **Languages** — a filesystem walk sizing files by extension (TypeScript,
+  JavaScript, Python, Go, Rust, Java, and many more), skipping `.git`,
+  `node_modules`, `dist`, `.next`, and your configured `ignore` entries.
+- **Dependencies** — detects `package.json`, `requirements.txt` /
+  `pyproject.toml`, `go.mod`, `Cargo.toml`, `pom.xml` / `build.gradle`,
+  `Gemfile`, and `composer.json`.
+- **Docs & security** — README presence/sections, `LICENSE`, `SECURITY.md`,
+  and `.github/dependabot.yml`.
+
+GitHub-only signals (stars, forks, watchers, open issues, and issue/PR latency)
+are unknowable locally, so they are left neutral and the CLI prints a clear
+note that the score is weighted toward local activity, documentation, and
+security signals.
+
+## Configuration
+
+### Global — `~/.beacon/config.json`
+
+```json
+{
+  "token": "ghp_…",
+  "apiUrl": "https://beacon.example.com",
+  "user": { "login": "octocat" }
+}
+```
+
+Written by `beacon login`. `apiUrl` (optional) routes analysis through a hosted
+Beacon API service instead of direct GitHub.
+
+### Project — `.beacon/config.json` or `.beaconrc`
+
+```json
+{
+  "repository": "acme/widget",
+  "tracking": ["acme/widget", "acme/api"],
+  "widgets": ["health"],
+  "ignore": ["fixtures", "generated"],
+  "scoreThreshold": 75,
+  "watchInterval": 120
+}
+```
+
+Create one with `beacon init`. Settings merge as **environment → global →
+project**: `BEACON_API_URL`, `BEACON_TOKEN`, and `GITHUB_TOKEN` override the
+global config for the API URL and tokens; the project config supplies the
+repository, dashboard watch-list, ignore globs, threshold, and watch interval.
+
+## Command reference
+
+### `beacon analyze [repository]`
+
+| Flag | Description |
+| --- | --- |
+| `--local` | Analyze the current directory offline. |
+| `--refresh` | Bypass cached analysis (API mode). |
+| `-t, --token <token>` | GitHub token (defaults to config / `$GITHUB_TOKEN`). |
+| `--json` | Print the raw `BeaconAnalysis` as JSON. |
+| `--demo` | Use bundled demo data. |
+| `--source <auto\|api\|github>` | Force the analysis source. |
+| `--ai <provider>` | `heuristic` (default), `openai`, `anthropic`. |
+
+### `beacon score [repository]`
+
+Prints a compact two-line result and (with `--json`) `{ "score", "grade" }`:
 
 ```
-Embed
-  URL
-  https://beacon.example.com/widget/health/beacon-labs/aurora?theme=dark&size=medium
-
-  Markdown
-  [![Beacon health — beacon-labs/aurora](https://beacon.example.com/widget/health/beacon-labs/aurora?theme=dark&size=medium)](https://github.com/beacon-labs/aurora)
-
-  HTML
-  <a href="https://github.com/beacon-labs/aurora"><img src="https://beacon.example.com/widget/health/beacon-labs/aurora?theme=dark&size=medium" alt="Beacon health — beacon-labs/aurora" /></a>
+Beacon Score: 96/100
+★★★★★ Excellent
 ```
 
-## Maintenance badge
+Supports `--local`, `--demo`, `--token`, `--source`, `--refresh`, `--json`.
+Stars are `round(total / 20)`.
 
-`beacon badge` renders a compact maintenance badge and prints its Markdown embed
-— perfect for the top of a README.
+### `beacon report [repository]`
+
+| Flag | Description |
+| --- | --- |
+| `--markdown` | Markdown output (default). |
+| `--html` | Self-contained, styled HTML page. |
+| `--json` | Raw JSON analysis. |
+| `-o, --out <file>` | Write to a file instead of stdout. |
+| `--local` / `--demo` / `--token` / `--source` | As for `analyze`. |
+
+### `beacon widget [repository] [type]`
+
+`type` ∈ `health` (default), `activity`, `language`, `contributor`, `release`.
+Prints Markdown / HTML / URL embed snippets; `-o/--out` also writes the SVG.
+Snippet URLs use the configured `apiUrl`, or `--host`.
 
 ```bash
-beacon badge <owner/repo> [options]
+beacon widget facebook/react activity --theme light --out activity.svg
 ```
 
-### `badge` options
+### `beacon badge [repository]`
 
-| Option             | Description                                                            |
-| ------------------ | ---------------------------------------------------------------------- |
-| `--theme <theme>`  | `dark` (default), `light`, `transparent`.                              |
-| `--size <size>`    | `small` (default), `medium`, `large`.                                  |
-| `-o, --out <file>` | Write the rendered SVG to a file.                                      |
-| `--host <url>`     | Embed host for snippet URLs. Defaults to `https://beacon.example.com`. |
-| `--token <token>`  | GitHub token. Defaults to `$GITHUB_TOKEN`.                             |
-| `--demo`           | Use bundled demo data instead of calling GitHub (no network).         |
+Renders the maintenance badge and prints its Markdown embed. Supports
+`--theme`, `--size`, `--out`, `--host`, `--token`, `--demo`, `--local`.
 
-Example (from `beacon badge beacon-labs/aurora --demo`):
+### `beacon watch [repository]`
 
-```
-Embed
-  URL
-  https://beacon.example.com/badge/beacon-labs/aurora?theme=dark&size=small
+Polls on an interval and prints the score delta versus the previous poll (green
+up, red down, `—` for no change). Interval comes from `--interval`, then the
+project config's `watchInterval`, then `300s` (minimum `15s`).
 
-  Markdown
-  [![Beacon badge — beacon-labs/aurora](https://beacon.example.com/badge/beacon-labs/aurora?theme=dark&size=small)](https://github.com/beacon-labs/aurora)
-```
+### `beacon dashboard`
 
-## Watch a repository
+An interactive terminal dashboard: a "BEACON" header, repositories with scores
+and ✓/⚠/✗ status against your threshold, and a "Recent Alerts" section. Sources
+repositories from the local repository plus any `tracking` entries in config;
+with none configured it falls back to the bundled demo repositories.
 
-`beacon watch` polls a repository on an interval and prints score changes,
-showing the delta versus the previous poll (green up, red down, `—` for no
-change). It runs until you press Ctrl-C.
+In a TTY: `↑/↓` move, `Enter` expands a repository, `r` refreshes, `q`/`Ctrl-C`
+quits. When piped or in CI it prints a static snapshot (or JSON with `--json`)
+and exits.
+
+### `beacon init`
+
+Scaffolds `.beacon/config.json` and an empty `history.json`, inferring
+`repository` from the git remote. Confirms interactively unless `--yes`.
+
+## Examples
 
 ```bash
-beacon watch <owner/repo> [options]
+# Machine-readable score for scripting
+beacon score rust-lang/rust --json | jq '.score'
+
+# A shareable HTML report of your current project
+beacon report --local --html --out beacon-report.html
+
+# Embed a health widget in your README
+beacon widget --demo
+
+# Watch a repo every 60 seconds
+beacon watch facebook/react --interval 60
 ```
 
-### `watch` options
-
-| Option                     | Description                                                       |
-| -------------------------- | ---------------------------------------------------------------- |
-| `-i, --interval <seconds>` | Seconds between polls. Default `300`, minimum `15`.              |
-| `--token <token>`          | GitHub token. Defaults to `$GITHUB_TOKEN`.                       |
-| `--demo`                   | Use bundled demo data instead of calling GitHub (no network).    |
-| `--ai <provider>`          | AI summary provider: `heuristic` (default), `openai`, `anthropic`. |
-
-Example (from `beacon watch beacon-labs/aurora --demo`, whose demo data is
-static, so the delta stays flat):
-
-```
-Watching beacon-labs/aurora every 15s — press Ctrl-C to stop.
-2026-07-16T21:34:59.812Z  beacon-labs/aurora  97/100 Excellent  —
-2026-07-16T21:35:14.860Z  beacon-labs/aurora  97/100 Excellent  —
-^C
-Stopped watching.
-```
-
-## Example output
-
-The following is rendered from the bundled **demo** dataset
-(`beacon analyze beacon-labs/aurora --demo`), so the numbers are illustrative:
+Example report (from the bundled demo dataset, `beacon analyze --demo`, so the
+numbers are illustrative):
 
 ```
 beacon-labs/aurora
-A batteries-included realtime data framework for modern web apps.
+A fast, composable state management library for modern web apps.
 https://github.com/beacon-labs/aurora
 
   87/100  Healthy
@@ -190,31 +260,21 @@ Pillars
   Documentation  [██████████████░░]   85
   Security       [██████████████░░]   84
 
-Strengths
-  ✓ 340 commits in the last 90 days across 24 contributors
-  ✓ Median pull request merges in under 18 hours
-  ✓ README documents install, usage, and licensing
-
-Warnings
-  ! 12 issues opened in the last 30 days are still awaiting a first response
-
-340 stars  •  58 forks  •  24 contributors  •  TypeScript  •  27 open issues
-
 Beacon Summary
 via heuristic
 Aurora is in healthy shape: development is brisk, a broad contributor base
-keeps the bus factor comfortable, and maintainers merge changes quickly. Watch
-the recent uptick in unanswered issues to keep community momentum high.
-
-  › Strong, sustained commit activity
-  › Fast, consistent review turnaround
+keeps the bus factor comfortable, and maintainers merge changes quickly.
 ```
 
 ## Exit codes
 
-- `0` — analysis completed.
+- `0` — the command completed.
 - `1` — the repository was not found, GitHub rate-limited the request, or
   another error occurred. The reason is printed in red to `stderr`.
+
+## Docs
+
+Full command documentation: <https://github.com/martin-k-m/beacon/blob/main/docs/cli.md>
 
 ## License
 

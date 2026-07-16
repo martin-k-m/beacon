@@ -1,0 +1,65 @@
+name: Release CLI
+
+# Build, test, and publish @beacon/cli to npm. The CLI is bundled (esbuild) into
+# a single self-contained file, so the published package has no runtime deps.
+#
+# Triggered by publishing a GitHub Release (or a `cli-v*` tag). Publishing
+# requires an `NPM_TOKEN` repository secret; without it the job still builds,
+# tests, and packs (a dry run) so the pipeline is always exercised.
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - 'cli-v*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Pack only (no publish)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write # npm provenance
+
+env:
+  DATABASE_URL: postgresql://beacon:beacon@localhost:5432/beacon?schema=public
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  publish:
+    name: Build · Test · Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Build (bundles the CLI into a self-contained binary)
+        run: npx turbo run build --filter=@beacon/cli...
+
+      - name: Test
+        run: npx turbo run test --filter=@beacon/cli
+
+      - name: Pack (verify package contents)
+        run: npm pack --workspace @beacon/cli
+
+      - name: Publish to npm
+        # Only when a token is configured and this isn't an explicit dry run.
+        if: ${{ env.NPM_TOKEN != '' && github.event.inputs.dry_run != 'true' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --workspace @beacon/cli --provenance --access public

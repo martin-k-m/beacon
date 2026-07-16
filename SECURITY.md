@@ -24,4 +24,4 @@ them via environment variables and never commit them.
 
 ## Supported versions
 
-Beacon is pre-1.0; security fixes are applied to the `main` branch.
+Security fixes are applied to the latest release and the `main` branch.
