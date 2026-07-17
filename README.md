@@ -10,6 +10,8 @@ into a single, explainable **Beacon Score** and a natural-language health summar
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [The Beacon Score](#the-beacon-score) · [CLI](#cli) · [Contributing](CONTRIBUTING.md)
 
+[![npm](https://img.shields.io/npm/v/@martin-k-m/beacon-cli?label=%40martin-k-m%2Fbeacon-cli&color=0b7285)](https://www.npmjs.com/package/@martin-k-m/beacon-cli)
+
 `MIT licensed` · `TypeScript` · `Turborepo`
 
 </div>

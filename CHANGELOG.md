@@ -6,6 +6,18 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.1.2] - 2026-07-16
 
+**Beacon's first release published to npm.** The CLI is now installable by
+anyone — no clone, no build:
+
+```bash
+npm install -g @martin-k-m/beacon-cli
+beacon analyze facebook/react
+```
+
+Published from CI with [npm provenance](https://docs.npmjs.com/generating-provenance-statements),
+so the tarball is cryptographically linked to the workflow run and commit that
+built it.
+
 ### Changed
 
 - **Renamed the published CLI package from `@beacon/cli` to

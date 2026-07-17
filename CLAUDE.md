@@ -28,6 +28,7 @@ apps/
   worker/     Background queue consumer (BullMQ) — re-scores on webhook events
   web/        Next.js 14 FRONTEND — landing + dashboard + health-trend charts (+ /components)
   cli/        beacon — terminal client (analyze / insights / contributors / dependencies / …)
+              the ONLY published artifact → npm as @martin-k-m/beacon-cli
 packages/
   shared/             Domain types + demo fixtures + the job-queue contract
   github/             GitHub REST client (fetch-based)
@@ -152,6 +153,38 @@ Keep everything synchronized (this is a stated project goal):
 4. Update the docs — **primarily the website** (`beacon-web` repo, `/docs`), and
    the `docs/` folder here.
 5. Update `README.md` and `CHANGELOG.md`.
+
+## Releasing (the CLI is the only published package)
+
+`apps/cli` publishes to npm as **`@martin-k-m/beacon-cli`** (the command it
+installs is still `beacon`). The `@beacon` scope is unavailable on npm, and the
+unscoped `beacon`/`beacon-cli` names are taken — hence the maintainer's scope.
+Every `@beacon/*` workspace package is `private` and is **never** published.
+
+**The non-obvious part:** `apps/cli` deliberately has **no `dependencies`** —
+only `devDependencies`. It is bundled by esbuild into one self-contained
+`dist/index.js`, so the published tarball has zero runtime deps. This is
+required, not stylistic: the CLI imports `@beacon/*` workspace packages at
+version `"*"`, which npm cannot resolve for an end user. If you add a runtime
+dependency to `apps/cli`, put it in `devDependencies` and let esbuild bundle it.
+Putting it in `dependencies` ships a package that breaks on install.
+
+To cut a release:
+
+1. Bump `apps/cli/package.json`, then `npm install --package-lock-only` (CI runs
+   `npm ci`; an unsynced lockfile fails the build).
+2. Update `CHANGELOG.md`, commit, and tag — the workflow checks out the release
+   ref, so the tag must already contain the change you're shipping.
+3. Publish via the **Release CLI** workflow (`.github/workflows/release-cli.yml`)
+   — a GitHub Release, or a manual `workflow_dispatch` (`dry_run: true` packs
+   without publishing). It builds → tests → packs → `npm publish --provenance`.
+
+The workflow needs the repo secret **`NPM_TOKEN`** (an npm granular token with
+read+write on `@martin-k-m/beacon-cli`). It is already configured. The publish
+step is guarded by `if: env.NPM_TOKEN != ''`, so a fork without the secret packs
+and skips publishing instead of failing. Note that GitHub secrets are
+write-only and npm shows a token value only at creation — if the token is lost
+or expires, it must be regenerated, not recovered.
 
 ## Gotchas checklist
 

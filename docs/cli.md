@@ -5,9 +5,11 @@ analyzes the health of any GitHub repository — remotely through the Beacon SDK
 or the repository in your current directory completely offline — and renders
 reports, widgets, badges, and an interactive dashboard.
 
-- Package: [`@martin-k-m/beacon-cli`](../apps/cli)
+- Package: [`@martin-k-m/beacon-cli`](https://www.npmjs.com/package/@martin-k-m/beacon-cli)
+  (source: [`apps/cli`](../apps/cli))
 - Binary: `beacon`
 - Node.js: `>= 20`
+- Zero runtime dependencies — ships as a single self-contained bundle.
 
 ```bash
 npm install -g @martin-k-m/beacon-cli

@@ -1,5 +1,9 @@
 # @martin-k-m/beacon-cli
 
+[![npm](https://img.shields.io/npm/v/@martin-k-m/beacon-cli?color=0b7285)](https://www.npmjs.com/package/@martin-k-m/beacon-cli)
+[![node](https://img.shields.io/node/v/@martin-k-m/beacon-cli)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/@martin-k-m/beacon-cli?color=0b7285)](https://github.com/martin-k-m/beacon/blob/main/LICENSE)
+
 A first-class terminal client for [Beacon](https://github.com/martin-k-m/beacon) —
 analyze the health of any GitHub repository, online or offline, right from your
 shell.
