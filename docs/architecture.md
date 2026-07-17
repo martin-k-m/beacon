@@ -8,10 +8,11 @@ engine that every surface (API, CLI, dashboard) is built on.
                                 │
                                 ▼
    ┌──────────────────────────────────────────────────────────┐
-   │                     @beacon/core                           │
+   │              the engine (focused packages)                 │
    │                                                            │
-   │   GitHubClient ──► RepositorySnapshot ──► computeBeaconScore│
-   │   (fetch-based)                       └──► AIProvider ──► Summary
+   │  @beacon/github ─► RepositorySnapshot ─► @beacon/analytics │
+   │  (GitHubClient)                          (computeBeaconScore)
+   │                                       └─► @beacon/ai ─► Summary
    └──────────────────────────────────────────────────────────┘
         │                        │                     │
         ▼                        ▼                     ▼
@@ -39,7 +40,7 @@ engine that every surface (API, CLI, dashboard) is built on.
 
 ## Why a pure engine?
 
-Keeping `@beacon/core` free of Node-only APIs and heavy SDKs (it uses only the
+Keeping `@beacon/github` and `@beacon/analytics` free of Node-only APIs and heavy SDKs (they use only the
 global `fetch`) means:
 
 - The **CLI** and **API** share exactly one implementation of the logic.
@@ -51,12 +52,27 @@ global `fetch`) means:
 
 | Package | Responsibility |
 | --- | --- |
-| `@beacon/core` | GitHub client, scoring, AI providers, analyzer, demo fixtures |
+| `@beacon/shared` | Domain types, demo fixtures, and the job-queue contract |
+| `@beacon/github` | Dependency-free GitHub REST client (`fetch`-based) |
+| `@beacon/ai` | Pluggable AI summary providers (heuristic / OpenAI / Anthropic) |
+| `@beacon/analytics` | The engine: scoring, trends, the analyze orchestrator, team health |
+| `@beacon/ai-advisor` | Recommendations engine — why health changed and what to do |
+| `@beacon/dependency-engine` | Dependency classification (npm / PyPI / crates.io) |
+| `@beacon/plugins` | Extensibility foundation (analyzers / metrics / widgets / recommendations) |
+| `@beacon/widgets` | Embeddable SVG widgets and badges |
+| `@beacon/sdk` | Programmatic client (`Beacon.analyze(...)`) |
+| `@beacon/ui` | Shared React UI primitives (frontend) |
 | `@beacon/database` | Prisma schema + client singleton (PostgreSQL) |
 | `@beacon/config` | Shared `tsconfig` bases and ESLint presets |
-| `@beacon/api` | REST API, caching, persistence |
-| `@beacon/web` | Dashboard UI |
+| `@beacon/api` | REST API — analysis, caching, persistence, widgets, webhooks |
+| `@beacon/worker` | Background BullMQ consumer that re-scores on webhook events |
+| `@beacon/web` | Dashboard UI (landing + analytics) |
 | `@beacon/cli` | Terminal client |
+
+Dependency direction: `shared` is the leaf; `github`, `ai`, `widgets`, `ui`,
+`database`, `dependency-engine`, `plugins` build on it; `analytics` depends on
+`shared` + `github` + `ai`; `ai-advisor` on `shared` + `analytics` + `ai`; `sdk`
+on `shared` + `analytics` + `github`. The apps depend on those. No cycles.
 
 ## Degraded modes
 

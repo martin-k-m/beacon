@@ -22,7 +22,9 @@ up and the conventions we follow.
 
 | Path | What lives here |
 | --- | --- |
-| `packages/core` | The analysis engine — start here for scoring, GitHub, and AI logic |
+| `packages/analytics` | The analysis engine — scoring, trends, the analyze orchestrator |
+| `packages/github` · `packages/ai` | GitHub collection and AI summary providers |
+| `packages/ai-advisor` · `packages/dependency-engine` | Recommendations and dependency intelligence |
 | `packages/database` | Prisma schema + client |
 | `packages/config` | Shared TS/ESLint config |
 | `apps/api` | Fastify REST API |
@@ -31,7 +33,7 @@ up and the conventions we follow.
 
 The engine is deliberately pure and dependency-free (it uses only `fetch`), so
 it can run in Node, an edge runtime, or the browser. Keep it that way — no
-Node-only APIs in `@beacon/core`.
+Node-only APIs in `@beacon/github` or `@beacon/analytics`.
 
 ## Before opening a pull request
 
