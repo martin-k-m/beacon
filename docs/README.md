@@ -13,6 +13,9 @@
 > The primary, always-current documentation lives on the website (`beacon-web`,
 > `/docs`). This folder mirrors the essentials for readers browsing the repo.
 
-New to the codebase? Start with the [analysis engine](../packages/core) — it's
-where scoring, the GitHub client, and the AI providers live, and everything else
-is a thin surface over it.
+New to the codebase? Start with the [analysis engine](../packages/analytics) —
+scoring, trends, and the analyze orchestrator. It builds on
+[`@beacon/github`](../packages/github) (collection),
+[`@beacon/ai`](../packages/ai) (summaries), and
+[`@beacon/shared`](../packages/shared) (types). Everything else — the API, the
+worker, the CLI, the SDK — is a thin surface over those.

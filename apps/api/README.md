@@ -1,9 +1,12 @@
 # @beacon/api
 
 Fastify HTTP API for **Beacon**, an open-source GitHub repository intelligence
-platform. It wraps [`@beacon/core`](../../packages/core) (collection, scoring,
-AI summaries) and [`@beacon/database`](../../packages/database) (persistence)
-behind a small REST surface.
+platform. It wraps the engine — [`@beacon/github`](../../packages/github)
+(collection), [`@beacon/analytics`](../../packages/analytics) (scoring, trends,
+orchestration), [`@beacon/ai`](../../packages/ai) (summaries) and
+[`@beacon/ai-advisor`](../../packages/ai-advisor) (recommendations) — plus
+[`@beacon/database`](../../packages/database) (persistence) behind a small REST
+surface.
 
 ## Design: zero-config runnability
 

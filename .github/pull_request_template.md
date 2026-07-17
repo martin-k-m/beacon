@@ -10,7 +10,7 @@
 
 ## Scoring impact
 
-<!-- If this touches @beacon/core scoring, describe how it affects the demo
+<!-- If this touches @beacon/analytics scoring, describe how it affects the demo
      fixtures (healthy ≥75, at-risk <60) and any repositories you tested. -->
 
 N/A

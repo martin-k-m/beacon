@@ -116,8 +116,8 @@ All analysis endpoints return a `BeaconAnalysis`:
 }
 ```
 
-See [`packages/core/src/types.ts`](../packages/core/src/types.ts) for the full
-type definitions.
+See [`packages/shared/src/types.ts`](../packages/shared/src/types.ts) for the
+full type definitions.
 
 ## Configuration
 

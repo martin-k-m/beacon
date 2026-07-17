@@ -2,10 +2,10 @@
 
 The Beacon Score is a single **0–100** number summarizing repository health. It
 is a weighted average of five pillars, each computed as a **pure function** of a
-collected [`RepositorySnapshot`](../packages/core/src/types.ts). The same
+collected [`RepositorySnapshot`](../packages/shared/src/types.ts). The same
 snapshot always produces the same score.
 
-Implementation: [`packages/core/src/scoring/score.ts`](../packages/core/src/scoring/score.ts).
+Implementation: [`packages/analytics/src/scoring.ts`](../packages/analytics/src/scoring.ts).
 
 ## Pillars and weights
 
@@ -74,5 +74,5 @@ Because scoring is pure and snapshots are stored, you can re-score history after
 changing the algorithm. When you change a pillar:
 
 1. Keep returning `reasons` — the UI and CLI depend on them.
-2. Update `packages/core/src/scoring/score.test.ts` so the demo fixtures still
+2. Update `packages/analytics/src/scoring.test.ts` so the demo fixtures still
    grade sensibly (healthy ≥75, at-risk <60).

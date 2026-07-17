@@ -46,8 +46,9 @@ npm run test
 npm run build
 ```
 
-- **Add tests** for new behavior in `@beacon/core`. Scoring changes should keep
-  the demo fixtures' scores sensible (`packages/core/src/scoring/score.test.ts`).
+- **Add tests** for new behavior in `@beacon/analytics`. Scoring changes should
+  keep the demo fixtures' scores sensible
+  (`packages/analytics/src/scoring.test.ts`).
 - **Keep scoring explainable.** Every pillar must return the human-readable
   `reasons` that justify its score.
 - **Formatting** is handled by Prettier: `npm run format`.

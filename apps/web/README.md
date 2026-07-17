@@ -19,8 +19,9 @@ All data flows through a single typed client in `src/lib/api.ts`. It has two
 modes, chosen at runtime by the `NEXT_PUBLIC_API_URL` environment variable:
 
 - **Demo mode (default).** When `NEXT_PUBLIC_API_URL` is unset, the app renders
-  from the deterministic demo fixtures bundled in `@beacon/core`
-  (`demoSnapshots`). Scores are computed synchronously via `computeBeaconScore`,
+  from the deterministic demo fixtures bundled in `@beacon/shared`
+  (`demoSnapshots`). Scores are computed synchronously via `computeBeaconScore`
+  (`@beacon/analytics`),
   and a natural-language summary is generated locally (`src/lib/data.ts`). No
   network, no API keys — the UI is always fully populated.
 - **API mode.** When `NEXT_PUBLIC_API_URL` is set (e.g.
