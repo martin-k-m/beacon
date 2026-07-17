@@ -66,5 +66,5 @@ re-collecting the same repository repeatedly.
 - The API is stateless apart from PostgreSQL and Redis — run multiple replicas
   behind a load balancer.
 - Redis is shared cache; PostgreSQL holds the durable analysis history.
-- The analysis engine (`@beacon/core`) does the heavy lifting and is CPU-light;
+- The analysis engine (`@beacon/analytics`) does the heavy lifting and is CPU-light;
   the bound is GitHub API latency, which the cache mitigates.

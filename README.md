@@ -44,16 +44,19 @@ beacon/
 │   ├── web/        Next.js frontend — landing + dashboard
 │   └── cli/        beacon — the terminal client
 ├── packages/
-│   ├── shared/     Domain types + demo fixtures + the job-queue contract
-│   ├── github/     GitHub REST client (dependency-free, fetch-based)
-│   ├── ai/         AI summary providers (heuristic / OpenAI / Anthropic)
-│   ├── analytics/  The engine: scoring, trends, the analyze orchestrator
-│   ├── sdk/        Programmatic client (@beacon/sdk)
-│   ├── widgets/    Embeddable SVG widgets (health cards, badges, graphs)
-│   ├── ui/         Shared React UI primitives (frontend)
-│   ├── database/   Prisma schema + client (PostgreSQL)
-│   └── config/     Shared TypeScript + ESLint configuration
-└── docs/           Architecture, scoring, API, CLI, widgets, GitHub App, self-hosting
+│   ├── shared/             Domain types + demo fixtures + the job-queue contract
+│   ├── github/             GitHub REST client (dependency-free, fetch-based)
+│   ├── ai/                 AI summary providers (heuristic / OpenAI / Anthropic)
+│   ├── analytics/          The engine: scoring, trends, orchestrator, team health
+│   ├── ai-advisor/         Recommendations engine (why health changed + what to do)
+│   ├── dependency-engine/  Dependency classification (npm / PyPI / crates)
+│   ├── plugins/            Extensibility foundation (analyzers/metrics/widgets/recs)
+│   ├── sdk/                Programmatic client (@beacon/sdk)
+│   ├── widgets/            Embeddable SVG widgets (health cards, badges, graphs)
+│   ├── ui/                 Shared React UI primitives (frontend)
+│   ├── database/           Prisma schema + client (PostgreSQL)
+│   └── config/             Shared TypeScript + ESLint configuration
+└── docs/                   Architecture, scoring, API, CLI, widgets, advisor, monitoring, …
 ```
 
 The engine is split into focused packages: `@beacon/github` (collection),
