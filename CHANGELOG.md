@@ -4,6 +4,18 @@ All notable changes to Beacon are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-07-16
+
+### Changed
+
+- Documentation only — no code changes. Brought the written context in line with
+  the Phase 2 package layout: the README structure tree, the `docs/architecture.md`
+  package table and data-flow diagram, `docs/self-hosting.md`, and
+  `CONTRIBUTING.md` now describe the decomposed engine (`shared`, `github`, `ai`,
+  `analytics`, `ai-advisor`, `dependency-engine`, `plugins`, `worker`), and the
+  retired `@beacon/core` references are gone. The marketing site now advertises
+  the AI Advisor, dependency intelligence, team health, and continuous monitoring.
+
 ## [1.1.0] - 2026-07-16
 
 ### Added
@@ -99,6 +111,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **`apps/cli`**: `beacon analyze owner/repo` with a polished terminal report.
 - Docker + docker-compose, GitHub Actions CI, documentation, and the MIT license.
 
+[1.1.1]: https://github.com/martin-k-m/beacon/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/martin-k-m/beacon/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/martin-k-m/beacon/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/martin-k-m/beacon/releases/tag/v0.1.0
