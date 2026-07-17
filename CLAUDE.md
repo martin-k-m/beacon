@@ -36,7 +36,8 @@ packages/
   analytics/          The engine: scoring, trends, orchestrator, team health
   ai-advisor/         Recommendations engine (why health changed + what to do)
   dependency-engine/  Dependency classification (npm / PyPI / crates)
-  plugins/            Extensibility foundation (analyzers/metrics/widgets/recommendations)
+  plugins/            Extensibility (analyzers/metrics/widgets/recommendations)
+                      loaded by apps/api via BEACON_PLUGINS — see docs/plugins.md
   sdk/                Programmatic client (@beacon/sdk)
   widgets/            Embeddable SVG widgets (health card, badge, language, etc.)
   ui/                 Shared React UI primitives (frontend)

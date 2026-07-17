@@ -5,6 +5,7 @@
 - [AI Advisor](advisor.md) — actionable recommendations (`beacon insights`, `GET /insights`).
 - [Continuous monitoring](monitoring.md) — webhooks → re-score → the event timeline.
 - [Widgets](widgets.md) — embeddable SVG cards and badges.
+- [Plugins](plugins.md) — extend a self-hosted Beacon with your own metrics, recommendations, and widgets.
 - [GitHub App & webhooks](github-app.md) — automatic re-analysis on repo events.
 - [API reference](api.md) — REST endpoints.
 - [CLI](../apps/cli/README.md) — the `beacon` command-line tool.

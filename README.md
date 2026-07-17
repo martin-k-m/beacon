@@ -52,7 +52,7 @@ beacon/
 │   ├── analytics/          The engine: scoring, trends, orchestrator, team health
 │   ├── ai-advisor/         Recommendations engine (why health changed + what to do)
 │   ├── dependency-engine/  Dependency classification (npm / PyPI / crates)
-│   ├── plugins/            Extensibility foundation (analyzers/metrics/widgets/recs)
+│   ├── plugins/            Extensibility — loaded by the API via BEACON_PLUGINS
 │   ├── sdk/                Programmatic client (@beacon/sdk)
 │   ├── widgets/            Embeddable SVG widgets (health cards, badges, graphs)
 │   ├── ui/                 Shared React UI primitives (frontend)

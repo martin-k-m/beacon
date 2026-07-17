@@ -85,6 +85,18 @@ The stored repository timeline — `RepositoryEvent`s newest first (`type`,
 `title`, `detail`, `pillar`, `healthDelta`, `occurredAt`). Returns `[]` without a
 database (still `200`). Populated by monitoring — see [monitoring.md](monitoring.md).
 
+### `GET /api/plugins`
+
+Plugins loaded in this process (from `BEACON_PLUGINS`), each with the analyzers,
+recommenders, and widget types it contributes. Returns `{ "plugins": [] }` when
+none are configured. See [plugins.md](plugins.md).
+
+### `GET /api/repositories/:owner/:repo/plugins`
+
+Runs every registered analyzer and recommender against the repository, returning
+`{ metrics, recommendations }`. With no plugins registered it returns empty
+collections without contacting GitHub (still `200`). Errors: `404`, `429`, `400`.
+
 ### Widget & badge endpoints (SVG)
 
 ```
@@ -96,6 +108,10 @@ GET /badge/:owner/:repo             # maintenance badge
 Query: `theme=dark|light|transparent`, `size=small|medium|large`, `accent=<css color>`.
 Responds with `image/svg+xml`, cache headers, and a graceful "unavailable" SVG
 (still `200`) if the repository can't be analyzed. See [widgets.md](widgets.md).
+
+`:type` also resolves **plugin-contributed** widget types through this same
+route (same cache, same error card). Built-in types always take precedence; a
+type no plugin offers still `404`s. See [plugins.md](plugins.md).
 
 ### `POST /api/github/webhooks`
 

@@ -38,6 +38,11 @@ const envSchema = z.object({
   // Not required for the service to function today.
   GITHUB_APP_ID: z.string().min(1).optional(),
   GITHUB_APP_PRIVATE_KEY: z.string().min(1).optional(),
+  // Comma-separated module specifiers to load as Beacon plugins at boot, e.g.
+  // "./my-plugin.js,@acme/beacon-plugin". Each must default-export a
+  // BeaconPlugin or an array of them. Unset → no plugins, which is a fully
+  // supported configuration (see the zero-config guarantee).
+  BEACON_PLUGINS: z.string().min(1).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -93,6 +98,17 @@ export interface BeaconApiConfig {
   hasDatabase: boolean;
   /** True when Redis is configured (otherwise an in-memory cache is used). */
   hasRedis: boolean;
+  /** Module specifiers to load as plugins at boot. Empty when none configured. */
+  pluginModules: string[];
+}
+
+/** Split a comma-separated env value into trimmed, non-empty entries. */
+function parseList(value: string | undefined): string[] {
+  if (!value) return [];
+  return value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
 }
 
 /** Resolve the public base URL, stripping any trailing slash. */
@@ -124,4 +140,5 @@ export const config: BeaconApiConfig = {
   githubAppPrivateKey: env.GITHUB_APP_PRIVATE_KEY,
   hasDatabase: Boolean(env.DATABASE_URL),
   hasRedis: Boolean(env.REDIS_URL),
+  pluginModules: parseList(env.BEACON_PLUGINS),
 };

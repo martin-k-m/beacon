@@ -11,6 +11,7 @@ import type { FastifyPluginAsync, FastifyReply } from 'fastify';
 
 import { cache } from '../cache';
 import { config } from '../config';
+import { registry } from '../plugins';
 import { getAnalysis } from '../service';
 
 const THEMES: readonly WidgetTheme[] = ['dark', 'light', 'transparent'];
@@ -137,9 +138,28 @@ export const widgetRoutes: FastifyPluginAsync = async (app) => {
   }>('/widget/:type/:owner/:repo', async (request, reply) => {
     const { type, owner, repo } = request.params;
     if (!isWidgetType(type)) {
+      // Not a built-in type — a registered plugin may contribute it. Plugin
+      // widgets render through this same route (and the same cache and error
+      // card) so an embed can't tell the difference.
+      const pluginTypes = registry.listWidgetTypes();
+      if (pluginTypes.includes(type)) {
+        const pluginOptions = parseOptions(request.query);
+        return renderTo(reply, `plugin:${type}`, owner, repo, pluginOptions, async () => {
+          const analysis = await getAnalysis(`${owner}/${repo}`);
+          const svg = registry.widget(type, { snapshot: analysis.snapshot, analysis });
+          // A plugin that throws or declines is logged by the registry and
+          // lands here as null → the standard "unavailable" card.
+          if (svg === null) throw new Error(`plugin widget "${type}" produced nothing`);
+          return svg;
+        });
+      }
+      const builtIn = 'health, activity, language, contributor, release, badge';
       return reply.status(404).send({
         error: `Unknown widget type: ${type}`,
-        hint: 'Valid types: health, activity, language, contributor, release, badge.',
+        hint:
+          pluginTypes.length > 0
+            ? `Valid types: ${builtIn}. From plugins: ${pluginTypes.join(', ')}.`
+            : `Valid types: ${builtIn}.`,
       });
     }
     const options = parseOptions(request.query);

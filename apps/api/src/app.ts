@@ -2,6 +2,7 @@ import cors from '@fastify/cors';
 import Fastify, { type FastifyError, type FastifyInstance } from 'fastify';
 
 import { config } from './config';
+import { loadPlugins } from './plugins';
 import { routes } from './routes';
 
 /**
@@ -38,6 +39,17 @@ export async function buildApp(): Promise<FastifyInstance> {
       }
     },
   );
+
+  // Load configured plugins before the routes that expose them. A no-op when
+  // BEACON_PLUGINS is unset, and never fatal: a plugin that fails to import is
+  // logged and skipped so a bad extension can't stop the API from booting.
+  const pluginResult = await loadPlugins();
+  for (const failure of pluginResult.failed) {
+    app.log.warn(`Plugin "${failure.specifier}" failed to load: ${failure.reason}`);
+  }
+  if (pluginResult.loaded.length > 0) {
+    app.log.info(`Loaded ${pluginResult.loaded.length} plugin(s): ${pluginResult.loaded.join(', ')}`);
+  }
 
   await app.register(routes);
 

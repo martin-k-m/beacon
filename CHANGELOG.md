@@ -6,9 +6,37 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.2.0] - 2026-07-17
 
-A finalization pass: one correctness fix, the dependency backlog cleared, and
-the frontend moved onto a supported stack. Verified from a clean `npm ci`:
-**lint 25 · typecheck 25 · test 19 (126 tests) · build 15**, all green.
+A finalization pass: one correctness fix, the dependency backlog cleared, the
+frontend moved onto a supported stack, and the plugin system actually connected
+to the product.
+
+### Added
+
+- **Plugins are now reachable.** `@beacon/plugins` was fully built and tested but
+  imported by nothing — no plugin could ever run, and because the package is
+  private (the CLI is Beacon's only published artifact), its "third parties ship
+  plugins" premise was unreachable from both ends. Plugins are now a
+  **self-hosting** feature, wired end to end:
+  - **`BEACON_PLUGINS`** — comma-separated module specifiers loaded by the API at
+    boot. Relative paths resolve against the working directory (not the API's
+    build output, which is what a naive dynamic import would have done). A module
+    that fails to import, or exports something that isn't a plugin, is logged and
+    skipped — **a broken plugin never stops the API booting** (verified).
+  - **`GET /api/plugins`** — what's loaded, with each plugin's analyzers,
+    recommenders, and widget types.
+  - **`GET /api/repositories/:owner/:repo/plugins`** — runs every analyzer and
+    recommender against the repository. With no plugins registered it returns
+    empty collections *without* contacting GitHub.
+  - **Plugin widgets render through the existing `/widget/:type/:owner/:repo`**
+    route — same cache, same "unavailable" card. Built-in types always take
+    precedence; unknown types fall through to the registry.
+  - New [`docs/plugins.md`](docs/plugins.md), plus 12 tests covering the loader,
+    the routes, precedence, and failure isolation.
+
+  Unset `BEACON_PLUGINS` remains the default: no plugins, everything works.
+
+Verified from a clean `npm ci`: **lint 26 · typecheck 26 · test 20 (141 tests) ·
+build 15**, all green, plus a live API run with a real plugin loaded.
 
 ### Fixed
 

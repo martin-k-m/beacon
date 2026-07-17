@@ -22,6 +22,7 @@
     "@beacon/analytics": "*",
     "@beacon/database": "*",
     "@beacon/github": "*",
+    "@beacon/plugins": "*",
     "@beacon/shared": "*",
     "@beacon/widgets": "*",
     "@fastify/cors": "^10.0.1",

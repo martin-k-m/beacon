@@ -58,7 +58,7 @@ global `fetch`) means:
 | `@beacon/analytics` | The engine: scoring, trends, the analyze orchestrator, team health |
 | `@beacon/ai-advisor` | Recommendations engine — why health changed and what to do |
 | `@beacon/dependency-engine` | Dependency classification (npm / PyPI / crates.io) |
-| `@beacon/plugins` | Extensibility foundation (analyzers / metrics / widgets / recommendations) |
+| `@beacon/plugins` | Extensibility — analyzers / recommenders / widget contributors, loaded by `apps/api` via `BEACON_PLUGINS` ([plugins.md](plugins.md)) |
 | `@beacon/widgets` | Embeddable SVG widgets and badges |
 | `@beacon/sdk` | Programmatic client (`Beacon.analyze(...)`) |
 | `@beacon/ui` | Shared React UI primitives (frontend) |
