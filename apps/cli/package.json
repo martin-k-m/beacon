@@ -44,8 +44,10 @@
   },
   "devDependencies": {
     "@beacon/ai": "*",
+    "@beacon/ai-advisor": "*",
     "@beacon/analytics": "*",
     "@beacon/config": "*",
+    "@beacon/dependency-engine": "*",
     "@beacon/github": "*",
     "@beacon/sdk": "*",
     "@beacon/shared": "*",

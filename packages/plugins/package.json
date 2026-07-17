@@ -1,0 +1,46 @@
+{
+  "name": "@beacon/plugins",
+  "version": "0.1.0",
+  "description": "Extensibility foundation for Beacon — third-party analyzers, metrics, widgets, and recommendations.",
+  "license": "MIT",
+  "private": false,
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.ts\"",
+    "test": "vitest run",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@beacon/shared": "*"
+  },
+  "devDependencies": {
+    "@beacon/config": "*",
+    "@beacon/analytics": "*",
+    "@beacon/ai": "*",
+    "@types/node": "^20.17.10",
+    "eslint": "^8.57.1",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

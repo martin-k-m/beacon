@@ -2,6 +2,8 @@
 
 - [Architecture](architecture.md) — how the pieces fit together.
 - [The Beacon Score](scoring.md) — the full scoring algorithm.
+- [AI Advisor](advisor.md) — actionable recommendations (`beacon insights`, `GET /insights`).
+- [Continuous monitoring](monitoring.md) — webhooks → re-score → the event timeline.
 - [Widgets](widgets.md) — embeddable SVG cards and badges.
 - [GitHub App & webhooks](github-app.md) — automatic re-analysis on repo events.
 - [API reference](api.md) — REST endpoints.

@@ -26,7 +26,9 @@ model Repository {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  analyses      Analysis[]
+  analyses        Analysis[]
+  events          RepositoryEvent[]
+  recommendations AIRecommendation[]
 
   @@index([owner, name])
   @@map("repositories")
@@ -56,6 +58,47 @@ model Analysis {
 
   @@index([repositoryId, createdAt])
   @@map("analyses")
+}
+
+// A point on the repository timeline — a webhook delivery or a scheduled scan
+// that may have moved the health score. Powers the history/timeline view.
+model RepositoryEvent {
+  id           String   @id @default(cuid())
+  repositoryId String
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  // e.g. push | pull_request | issues | release | star | fork | scan
+  type         String
+  title        String
+  detail       String?
+  // The pillar most affected, when known (activity, community, …).
+  pillar       String?
+  // Signed health-score delta attributed to this event, when known.
+  healthDelta  Int?
+  payload      Json?
+  occurredAt   DateTime
+  createdAt    DateTime @default(now())
+
+  @@index([repositoryId, occurredAt])
+  @@map("repository_events")
+}
+
+// A stored AI Advisor run — prioritized issues + recommendations for a repo.
+model AIRecommendation {
+  id                 String   @id @default(cuid())
+  repositoryId       String
+  repository         Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  headline           String
+  summary            String
+  healthDeltaPercent Float?
+  // AdvisorIssue[] as JSON (severity, pillar, title, detail, recommendation).
+  issues             Json
+  provider           String
+  createdAt          DateTime @default(now())
+
+  @@index([repositoryId, createdAt])
+  @@map("ai_recommendations")
 }
 
 // GitHub OAuth users (for the authenticated dashboard experience).

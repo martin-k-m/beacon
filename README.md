@@ -150,6 +150,24 @@ into trends over **30 / 90 / 365 days** with a plain-language narrative — e.g.
 _"Repository health improved 12% over the last 30 days."_ — exposed at
 `GET /api/repositories/:owner/:repo/trend`.
 
+## Continuous intelligence
+
+Beyond scoring, Beacon adds a layer of **Phase 2 intelligence** packages:
+
+- **AI Advisor** (`@beacon/ai-advisor`) — actionable, grounded recommendations:
+  prioritized issues, each with an explanation and a concrete fix. Available as
+  `beacon insights` and `GET /api/repositories/:owner/:repo/insights`. See
+  [docs/advisor.md](docs/advisor.md).
+- **Team health** (`@beacon/analytics`) — bus factor, maintainer load, and
+  contributor distribution via `beacon contributors` and `.../contributors`.
+- **Dependency engine** (`@beacon/dependency-engine`) — classifies a project's
+  dependencies (current / outdated / unmaintained / unknown) against npm, PyPI,
+  and crates.io via `beacon dependencies`.
+- **Event timeline** — webhooks record `RepositoryEvent`s and re-score the
+  repository, building a timeline you can read with `beacon history` or
+  `GET /api/repositories/:owner/:repo/events`. See
+  [docs/monitoring.md](docs/monitoring.md).
+
 ## CLI
 
 A first-class terminal client — install it globally (it ships as a single
@@ -163,6 +181,10 @@ beacon analyze                     # analyze the repo in the current directory
 beacon analyze facebook/react      # …or any GitHub repository
 beacon analyze --local             # offline analysis (git + manifests, no account)
 beacon score vercel/next.js        # quick score:  96/100  ★★★★★ Excellent
+beacon insights facebook/react     # AI Advisor: prioritized issues + fixes
+beacon contributors --demo         # bus factor, maintainer load, distribution
+beacon dependencies                # classify the current project's dependencies
+beacon history --demo              # health / event timeline over a range
 beacon dashboard                   # interactive TUI across your repositories
 beacon widget facebook/react       # copy-paste embed snippets
 beacon report --markdown           # export a report (--json / --html too)

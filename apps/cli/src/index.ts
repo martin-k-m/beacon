@@ -12,8 +12,6 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline';
 import { join } from 'node:path';
 
-import { GitHubError } from '@beacon/github';
-
 import { CommanderError, Command } from 'commander';
 import pc from 'picocolors';
 
@@ -29,8 +27,13 @@ import {
   runWhoami,
 } from './auth';
 import { loadConfig, type ResolvedConfig } from './config';
+import { runContributors } from './contributors';
 import { runDashboard } from './dashboard';
+import { runDependencies } from './dependencies';
 import { gitRemoteRepo } from './git';
+import { runHistory } from './history';
+import { runInsights } from './insights';
+import { colorEnabled, describeError, printNotes, writeError } from './output';
 import { renderAnalysis, renderScoreLine } from './render';
 import { renderReport, type ReportFormat } from './report';
 import { createSpinner } from './spinner';
@@ -54,6 +57,10 @@ const DOCS_URL = 'https://github.com/martin-k-m/beacon/blob/main/docs/cli.md';
 const KNOWN_COMMANDS = [
   'analyze',
   'score',
+  'insights',
+  'contributors',
+  'dependencies',
+  'history',
   'widget',
   'badge',
   'watch',
@@ -77,26 +84,6 @@ function readVersion(): string {
   }
 }
 
-/** Translate any thrown value into a friendly, single-line message. */
-function describeError(error: unknown): string {
-  if (error instanceof GitHubError) {
-    if (error.status === 404) {
-      return 'Repository not found. Check the owner/repo spelling, or run `beacon login` for private repositories.';
-    }
-    if (error.status === 403 || error.status === 429) {
-      return 'Rate limited by GitHub. Run `beacon login` (or set GITHUB_TOKEN) to raise your limit.';
-    }
-    return `GitHub request failed (${error.status}): ${error.message}`;
-  }
-  if (error instanceof BeaconCliError) {
-    return error.message;
-  }
-  if (error instanceof Error) {
-    return error.message;
-  }
-  return String(error);
-}
-
 function normalizeProvider(value: string): AiProvider {
   const provider = value.toLowerCase();
   if (provider === 'openai' || provider === 'anthropic' || provider === 'heuristic') {
@@ -116,6 +103,25 @@ function buildAiConfig(provider: AiProvider): AiConfig {
   };
 }
 
+function normalizeRange(value: string | undefined): '7d' | '30d' | '90d' | '1y' | 'all' {
+  if (!value) {
+    return '90d';
+  }
+  const range = value.toLowerCase();
+  if (
+    range === '7d' ||
+    range === '30d' ||
+    range === '90d' ||
+    range === '1y' ||
+    range === 'all'
+  ) {
+    return range;
+  }
+  throw new BeaconCliError(
+    `Unknown --range "${value}". Expected one of: 7d, 30d, 90d, 1y, all.`,
+  );
+}
+
 function normalizeSource(value: string | undefined): 'auto' | 'api' | 'github' | undefined {
   if (!value) {
     return undefined;
@@ -127,22 +133,6 @@ function normalizeSource(value: string | undefined): 'auto' | 'api' | 'github' |
   throw new BeaconCliError(
     `Unknown --source "${value}". Expected one of: auto, api, github.`,
   );
-}
-
-/** Standard color gate: only colorize when enabled and stdout is a TTY. */
-function colorEnabled(color: boolean): boolean {
-  return color && Boolean(process.stdout.isTTY);
-}
-
-function writeError(message: string, color: boolean): void {
-  process.stderr.write(`${color ? pc.red('✖') : '✖'} ${message}\n`);
-}
-
-/** Print `--local` caveats, dimmed, to stderr so JSON stdout stays clean. */
-function printNotes(notes: string[], color: boolean): void {
-  for (const note of notes) {
-    process.stderr.write(`${color ? pc.dim(`note: ${note}`) : `note: ${note}`}\n`);
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -772,6 +762,92 @@ function buildProgram(): Command {
         json: opts['json'] as boolean | undefined,
         source: opts['source'] as string | undefined,
         refresh: opts['refresh'] as boolean | undefined,
+        color: globalColor(),
+        cwd,
+        config,
+      });
+    });
+
+  // ---- insights -----------------------------------------------------------
+  program
+    .command('insights')
+    .argument('[repository]', 'Repository as "owner/repo". Defaults to the current repo.')
+    .description('Show AI Advisor recommendations for a repository.')
+    .option('--local', 'Analyze the current directory offline (no account).')
+    .option('--demo', 'Use bundled demo data instead of calling GitHub.')
+    .option('-t, --token <token>', 'GitHub token (defaults to config / $GITHUB_TOKEN).')
+    .option('--ai <provider>', 'AI summary provider: heuristic | openai | anthropic.', 'heuristic')
+    .option('--max <n>', 'Maximum number of issues to show.')
+    .option('--json', 'Print the AdvisorReport as JSON.')
+    .action(async (repository: string | undefined, opts: Record<string, unknown>) => {
+      await runInsights(repository, {
+        local: opts['local'] as boolean | undefined,
+        demo: opts['demo'] as boolean | undefined,
+        token: opts['token'] as string | undefined,
+        max: opts['max'] as string | undefined,
+        json: opts['json'] as boolean | undefined,
+        ai: buildAiConfig(normalizeProvider((opts['ai'] as string | undefined) ?? 'heuristic')),
+        color: globalColor(),
+        cwd,
+        config,
+      });
+    });
+
+  // ---- contributors -------------------------------------------------------
+  program
+    .command('contributors')
+    .argument('[repository]', 'Repository as "owner/repo". Defaults to the current repo.')
+    .description('Show contributor / team-health signals (bus factor, load).')
+    .option('--local', 'Analyze the current directory offline (no account).')
+    .option('--demo', 'Use bundled demo data instead of calling GitHub.')
+    .option('-t, --token <token>', 'GitHub token (defaults to config / $GITHUB_TOKEN).')
+    .option('--json', 'Print the ContributorHealth as JSON.')
+    .action(async (repository: string | undefined, opts: Record<string, unknown>) => {
+      await runContributors(repository, {
+        local: opts['local'] as boolean | undefined,
+        demo: opts['demo'] as boolean | undefined,
+        token: opts['token'] as string | undefined,
+        json: opts['json'] as boolean | undefined,
+        ai: buildAiConfig('heuristic'),
+        color: globalColor(),
+        cwd,
+        config,
+      });
+    });
+
+  // ---- dependencies -------------------------------------------------------
+  program
+    .command('dependencies')
+    .description("Analyze the current project's dependency manifests.")
+    .option('--offline', 'Skip registry lookups (classify everything as unknown).')
+    .option('--json', 'Print the DependencyReport as JSON.')
+    .action(async (opts: Record<string, unknown>) => {
+      await runDependencies({
+        offline: opts['offline'] as boolean | undefined,
+        json: opts['json'] as boolean | undefined,
+        color: globalColor(),
+        cwd,
+      });
+    });
+
+  // ---- history ------------------------------------------------------------
+  program
+    .command('history')
+    .argument('[repository]', 'Repository as "owner/repo". Defaults to the current repo.')
+    .description('Show a health / event timeline for a repository.')
+    .option('--range <range>', 'Time range: 7d | 30d | 90d | 1y | all.', '90d')
+    .option('--local', 'Build the timeline from the current directory offline.')
+    .option('--demo', 'Use bundled demo data instead of calling GitHub.')
+    .option('-t, --token <token>', 'GitHub token (defaults to config / $GITHUB_TOKEN).')
+    .option('--json', 'Print the timeline as JSON.')
+    .action(async (repository: string | undefined, opts: Record<string, unknown>) => {
+      await runHistory(repository, {
+        range: normalizeRange(opts['range'] as string | undefined),
+        local: opts['local'] as boolean | undefined,
+        demo: opts['demo'] as boolean | undefined,
+        token: opts['token'] as string | undefined,
+        json: opts['json'] as boolean | undefined,
+        ai: buildAiConfig('heuristic'),
         color: globalColor(),
         cwd,
         config,

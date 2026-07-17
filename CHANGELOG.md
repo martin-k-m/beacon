@@ -4,6 +4,33 @@ All notable changes to Beacon are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`@beacon/ai-advisor` — the AI Advisor**: a pure, deterministic rule engine
+  (`adviseIssues`) that surfaces grounded, prioritized issues with concrete
+  recommendations, plus `generateAdvice` for a headline + narrative summary
+  (optionally written by a hosted provider, always falling back to a heuristic).
+- **`@beacon/dependency-engine`**: dependency-free classification of a project's
+  dependencies (current / outdated / unmaintained / vulnerable / unknown) against
+  npm, PyPI, and crates.io, with online (`MultiRegistryClient`) and offline
+  (`OfflineRegistryClient`) registry clients.
+- **Team-health analytics** (`@beacon/analytics.computeContributorHealth`): bus
+  factor, maintainer load, active contributors, and a contribution distribution.
+- **Plugins** (`@beacon/plugins`): an extensible surface for third-party analysis.
+- **New CLI commands**: `beacon insights` (AI Advisor), `beacon contributors`
+  (team health), `beacon dependencies` (local manifest analysis of package.json /
+  requirements.txt / pyproject.toml / Cargo.toml), and `beacon history` (health /
+  event timeline with `--range`). All support `--json` and `--no-color`.
+- **New API endpoints**: `GET /api/repositories/:owner/:repo/insights`,
+  `GET /api/repositories/:owner/:repo/contributors`, and
+  `GET /api/repositories/:owner/:repo/events`.
+- **Event model & timeline**: the `RepositoryEvent` and `AIRecommendation`
+  database models; `store.getEvents` / `recordEvent` / `saveRecommendation`; and
+  webhook-driven event recording so monitoring populates the timeline. New docs:
+  [advisor](docs/advisor.md) and [monitoring](docs/monitoring.md).
+
 ## [1.0.0] - 2026-07-16
 
 ### Added

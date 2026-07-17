@@ -7,6 +7,7 @@
  * human-readable narratives ("health improved 12% this month").
  */
 export * from './trends';
+export * from './team-health';
 export * from './scoring';
 export * from './analyzer';
 export * from './demo-history';

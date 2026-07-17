@@ -64,6 +64,27 @@ Health trend over a range. Query `range=30d|90d|1y|all` (default `30d`). Returns
 changes, and a narrative. Without stored history, returns a `points: 0` trend
 (still `200`).
 
+### `GET /api/repositories/:owner/:repo/insights`
+
+AI Advisor recommendations. Analyzes the repository, builds a health trend from
+stored history when available, and returns an `AdvisorReport` (`headline`,
+`score`, `grade`, `healthDeltaPercent?`, `issues[]`, `summary`, `generatedAt`).
+Errors: `404` (not found), `429` (GitHub rate limit). When a database is
+configured the run is persisted as an `AIRecommendation`. See
+[advisor.md](advisor.md).
+
+### `GET /api/repositories/:owner/:repo/contributors`
+
+Contributor / team-health signals — a `ContributorHealth`: `totalContributors`,
+`activeContributors`, `busFactor`, `maintainerLoad`, a `distribution[]`
+(login + share), and a `narrative`. Errors: `404`, `429`.
+
+### `GET /api/repositories/:owner/:repo/events`
+
+The stored repository timeline — `RepositoryEvent`s newest first (`type`,
+`title`, `detail`, `pillar`, `healthDelta`, `occurredAt`). Returns `[]` without a
+database (still `200`). Populated by monitoring — see [monitoring.md](monitoring.md).
+
 ### Widget & badge endpoints (SVG)
 
 ```

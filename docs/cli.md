@@ -25,6 +25,10 @@ npx @beacon/cli analyze facebook/react
 - [Commands](#commands)
   - [analyze](#beacon-analyze-repository)
   - [score](#beacon-score-repository)
+  - [insights](#beacon-insights-repository)
+  - [contributors](#beacon-contributors-repository)
+  - [dependencies](#beacon-dependencies)
+  - [history](#beacon-history-repository)
   - [report](#beacon-report-repository)
   - [widget](#beacon-widget-repository-type)
   - [badge](#beacon-badge-repository)
@@ -249,6 +253,97 @@ $ beacon score --demo --json
 ```
 
 Flags: `--local`, `--demo`, `-t/--token`, `--source`, `--refresh`, `--json`.
+
+### `beacon insights [repository]`
+
+Actionable **AI Advisor** output: a headline, a prioritized list of issues (each
+with a severity chip, an explanation, and a `→` recommendation), and a summary.
+Issues are grounded in the snapshot, score, and — where history is available — a
+health trend (synthesized in `--demo`).
+
+| Flag | Description |
+| --- | --- |
+| `--local` | Advise on the current directory offline. |
+| `--demo` | Use bundled demo data (also synthesizes a trend). |
+| `-t, --token <token>` | GitHub token (defaults to config / `$GITHUB_TOKEN`). |
+| `--ai <heuristic\|openai\|anthropic>` | Provider for the summary prose (default `heuristic`). |
+| `--max <n>` | Cap the number of issues shown. |
+| `--json` | Print the `AdvisorReport`. |
+
+```bash
+beacon insights --demo
+beacon insights facebook/react --max 3
+beacon insights --local --json | jq '.issues[].title'
+```
+
+### `beacon contributors [repository]`
+
+Contributor / team-health signals: active contributors, **bus factor**,
+maintainer load, a distribution bar list (top contributors by share), and a
+natural-language narrative.
+
+```
+$ beacon contributors --demo
+  beacon-labs/aurora
+
+  Active contributors  6 of 22
+  Bus factor           3
+  Maintainer load      38%
+
+  Distribution
+  alice          ████████░░░░░░░░  38%
+  bob            █████░░░░░░░░░░░░  22%
+  …
+
+  22 contributors, bus factor 3. Contribution load is moderately shared.
+```
+
+Flags: `--local`, `--demo`, `-t/--token`, `--json`.
+
+### `beacon dependencies`
+
+Analyze the **current project's** dependency manifests. `beacon` parses
+`package.json` (npm), `requirements.txt` / `pyproject.toml` (pip), and
+`Cargo.toml` (cargo) into a dependency list, then classifies each against its
+registry: `current` (green ✓), `outdated` (yellow ⚠), `unmaintained` /
+`vulnerable` (red ✗), or `unknown` (dim). A repository argument is not required.
+
+| Flag | Description |
+| --- | --- |
+| `--offline` | Skip registry lookups — classify everything as `unknown`. |
+| `--json` | Print the `DependencyReport`. |
+
+```bash
+beacon dependencies
+beacon dependencies --offline
+beacon dependencies --json | jq '.counts'
+```
+
+Registry lookups use each package's native registry (npm, PyPI, crates.io) over
+`fetch`; a lookup that fails or times out is reported as `unknown` rather than an
+error. With no manifests present the command says so and exits `1`.
+
+### `beacon history [repository]`
+
+A health / event **timeline**. Without a hosted API (or with `--demo` /
+`--local`), `beacon` synthesizes a health history from the snapshot and renders
+each point newest→oldest with its date, score, and the delta versus the previous
+point. With an `apiUrl` configured, it fetches the repository's stored events and
+trend and renders the real timeline.
+
+| Flag | Description |
+| --- | --- |
+| `--range <7d\|30d\|90d\|1y\|all>` | Time range (default `90d`). |
+| `--local` | Build the timeline from the current directory offline. |
+| `--demo` | Use bundled demo data. |
+| `-t, --token <token>` | GitHub token (defaults to config / `$GITHUB_TOKEN`). |
+| `--json` | Print the timeline. |
+
+```bash
+beacon history --demo
+beacon history facebook/react --range 30d
+beacon history --demo --json | jq '.points'
+```
 
 ### `beacon report [repository]`
 

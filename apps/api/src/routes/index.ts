@@ -3,6 +3,7 @@ import type { FastifyPluginAsync } from 'fastify';
 import { analyzeRoutes } from './analyze';
 import { demoRoutes } from './demo';
 import { healthRoutes } from './health';
+import { intelligenceRoutes } from './intelligence';
 import { repositoryRoutes } from './repositories';
 import { webhookRoutes } from './webhooks';
 import { widgetRoutes } from './widgets';
@@ -13,6 +14,7 @@ export const routes: FastifyPluginAsync = async (app) => {
   await app.register(demoRoutes);
   await app.register(analyzeRoutes);
   await app.register(repositoryRoutes);
+  await app.register(intelligenceRoutes);
   await app.register(widgetRoutes);
   await app.register(webhookRoutes);
 };

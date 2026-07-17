@@ -3,7 +3,26 @@ import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import { config } from '../config';
 import { enqueueAnalysis } from '../queue';
 import { getAnalysis } from '../service';
+import { recordEvent } from '../store';
 import { verifySignature } from '../webhooks-verify';
+
+/** A short, human-readable title for a webhook event, for the timeline. */
+const EVENT_TITLES: Record<string, string> = {
+  push: 'Commits pushed',
+  pull_request: 'Pull request activity',
+  issues: 'Issue activity',
+  release: 'Release published',
+  star: 'Repository starred',
+  watch: 'Repository starred',
+  fork: 'Repository forked',
+};
+
+/** Defensively read a string `action` from a webhook payload, if present. */
+function payloadAction(body: unknown): string | undefined {
+  if (!body || typeof body !== 'object') return undefined;
+  const action = (body as { action?: unknown }).action;
+  return typeof action === 'string' && action.length > 0 ? action : undefined;
+}
 
 /** Events that should trigger a fresh analysis of the affected repository. */
 const REFRESH_EVENTS = new Set([
@@ -73,6 +92,21 @@ export const webhookRoutes: FastifyPluginAsync = async (app) => {
     if (!fullName) {
       // Valid event but no repository to act on — acknowledge without failing.
       return reply.status(202).send({ accepted: false, event, reason: 'no repository in payload' });
+    }
+
+    // Record a timeline event so the history/timeline view populates from
+    // monitoring. Fire-and-forget and fully defensive — `recordEvent` swallows
+    // its own errors and no-ops without a database, so this never blocks or
+    // fails the webhook.
+    const [owner, repo] = fullName.split('/');
+    if (owner && repo) {
+      const action = payloadAction(request.body);
+      void recordEvent(owner, repo, {
+        type: event,
+        title: EVENT_TITLES[event] ?? `${event} event`,
+        occurredAt: new Date(),
+        ...(action ? { payload: { action } } : {}),
+      });
     }
 
     // Prefer the durable background queue: enqueue a job for @beacon/worker to

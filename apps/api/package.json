@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@beacon/ai": "*",
+    "@beacon/ai-advisor": "*",
     "@beacon/analytics": "*",
     "@beacon/database": "*",
     "@beacon/github": "*",

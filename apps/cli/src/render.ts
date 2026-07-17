@@ -134,6 +134,32 @@ function bar(score: number, width: number): string {
   return `[${BAR_FILLED.repeat(filled)}${BAR_EMPTY.repeat(empty)}]`;
 }
 
+/**
+ * A fixed-width `███░░░` proportion bar (no brackets) for a `0..1` share —
+ * used by the contributor distribution and other share-based views.
+ */
+export function shareBar(share: number, width: number): string {
+  const clamped = Math.max(0, Math.min(1, share));
+  const filled = Math.round(clamped * width);
+  const empty = Math.max(0, width - filled);
+  return `${BAR_FILLED.repeat(filled)}${BAR_EMPTY.repeat(empty)}`;
+}
+
+/**
+ * Format a signed integer delta with colour: `+N` green, `-N` red, `0` dim.
+ * Shared by `insights` and `history` for consistent trend/step deltas.
+ */
+export function formatDelta(delta: number, palette: Palette): string {
+  const rounded = Math.round(delta);
+  if (rounded > 0) {
+    return palette.green(`+${rounded}`);
+  }
+  if (rounded < 0) {
+    return palette.red(`${rounded}`);
+  }
+  return palette.dim('0');
+}
+
 /** Wrap prose to `width` columns without breaking mid-word. */
 function wrap(text: string, width: number): string[] {
   const words = text.split(/\s+/).filter((word) => word.length > 0);

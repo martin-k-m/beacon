@@ -46,6 +46,10 @@ beacon analyze --demo
 | --- | --- |
 | `beacon analyze [repository]` | Full health report. |
 | `beacon score [repository]` | Compact score + star rating. |
+| `beacon insights [repository]` | AI Advisor recommendations (issues + fixes). |
+| `beacon contributors [repository]` | Bus factor, maintainer load, distribution. |
+| `beacon dependencies` | Analyze the current project's dependency manifests. |
+| `beacon history [repository]` | Health / event timeline over a range. |
 | `beacon report [repository]` | Full report as Markdown / HTML / JSON. |
 | `beacon widget [repository] [type]` | Render an embeddable SVG widget + snippets. |
 | `beacon badge [repository]` | Render the maintenance badge + Markdown embed. |
@@ -178,6 +182,47 @@ Beacon Score: 96/100
 
 Supports `--local`, `--demo`, `--token`, `--source`, `--refresh`, `--json`.
 Stars are `round(total / 20)`.
+
+### `beacon insights [repository]`
+
+AI Advisor output: a headline, a prioritized list of issues (severity chip,
+explanation, and a `→` recommendation), and a summary. Builds a health trend
+when history is available (synthesized in `--demo`).
+
+| Flag | Description |
+| --- | --- |
+| `--local` / `--demo` / `-t, --token` | Standard resolution flags. |
+| `--ai <provider>` | Provider for summary prose: `heuristic` (default), `openai`, `anthropic`. |
+| `--max <n>` | Cap the number of issues shown. |
+| `--json` | Print the `AdvisorReport`. |
+
+### `beacon contributors [repository]`
+
+Bus factor, active contributors, maintainer load, a distribution bar list, and a
+narrative. Supports `--local`, `--demo`, `--token`, `--json`.
+
+### `beacon dependencies`
+
+Analyzes the current project's manifests (`package.json`, `requirements.txt`,
+`pyproject.toml`, `Cargo.toml`) and classifies each dependency against its
+registry. A repository argument is not required.
+
+| Flag | Description |
+| --- | --- |
+| `--offline` | Skip registry lookups (classify everything as `unknown`). |
+| `--json` | Print the `DependencyReport`. |
+
+### `beacon history [repository]`
+
+A health / event timeline. Synthesizes a timeline from the snapshot in `--demo` /
+`--local` / no-API mode; fetches real stored events + trend when an `apiUrl` is
+configured.
+
+| Flag | Description |
+| --- | --- |
+| `--range <7d\|30d\|90d\|1y\|all>` | Time range (default `90d`). |
+| `--local` / `--demo` / `-t, --token` | Standard resolution flags. |
+| `--json` | Print the timeline. |
 
 ### `beacon report [repository]`
 

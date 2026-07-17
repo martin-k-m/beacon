@@ -1,3 +1,4 @@
+import type { AdvisorReport } from '@beacon/ai-advisor';
 import type {
   BeaconAnalysis,
   BeaconScore,
@@ -309,5 +310,176 @@ export async function getHistory(
   } catch (err) {
     warn(`getHistory(${fullName}) failed`, err);
     return [];
+  }
+}
+
+/** A repository timeline event as returned to API clients. */
+export interface RepositoryEventRecord {
+  id: string;
+  type: string;
+  title: string;
+  detail: string | null;
+  pillar: string | null;
+  healthDelta: number | null;
+  occurredAt: string;
+  createdAt: string;
+}
+
+/** Input for {@link recordEvent}. */
+export interface RepositoryEventInput {
+  type: string;
+  title: string;
+  detail?: string;
+  pillar?: string;
+  healthDelta?: number;
+  payload?: unknown;
+  occurredAt: Date | string;
+}
+
+/** Default page size for the events timeline. */
+const DEFAULT_EVENTS_LIMIT = 50;
+
+/**
+ * A stable, positive 32-bit hash of a string. Used to synthesize a `githubId`
+ * for a repository first seen through a webhook (before it has been analyzed),
+ * so `recordEvent` can create the row without real GitHub metadata.
+ */
+function hashToInt(input: string): number {
+  let hash = 0;
+  for (let index = 0; index < input.length; index += 1) {
+    hash = (Math.imul(31, hash) + input.charCodeAt(index)) | 0;
+  }
+  return Math.abs(hash) || 1;
+}
+
+/**
+ * Return the most recent {@link RepositoryEventRecord}s (newest first) for a
+ * repository. Empty when the repository is unknown or the database is
+ * unavailable — the timeline endpoint stays a 200 either way.
+ */
+export async function getEvents(
+  owner: string,
+  repo: string,
+  limit: number = DEFAULT_EVENTS_LIMIT,
+): Promise<RepositoryEventRecord[]> {
+  if (!config.hasDatabase) return [];
+
+  const fullName = `${owner}/${repo}`;
+  try {
+    const events = await prisma.repositoryEvent.findMany({
+      where: { repository: { fullName } },
+      orderBy: { occurredAt: 'desc' },
+      take: Math.max(1, Math.min(200, Math.floor(limit))),
+    });
+
+    return events.map((event) => ({
+      id: event.id,
+      type: event.type,
+      title: event.title,
+      detail: event.detail,
+      pillar: event.pillar,
+      healthDelta: event.healthDelta,
+      occurredAt: event.occurredAt.toISOString(),
+      createdAt: event.createdAt.toISOString(),
+    }));
+  } catch (err) {
+    warn(`getEvents(${fullName}) failed`, err);
+    return [];
+  }
+}
+
+/**
+ * Record a repository timeline event: upsert the Repository by its unique
+ * fullName, then create a RepositoryEvent. Returns the event id, or null when
+ * the database is not configured or the write fails (best-effort — never
+ * throws, so callers can fire-and-forget it from a webhook).
+ */
+export async function recordEvent(
+  owner: string,
+  repo: string,
+  event: RepositoryEventInput,
+): Promise<string | null> {
+  if (!config.hasDatabase) return null;
+
+  const fullName = `${owner}/${repo}`;
+  try {
+    // The repository may not have been analyzed yet (webhook before scan), so
+    // create it with best-effort placeholders; a later saveAnalysis fills in
+    // the real metadata via the same fullName key.
+    const repository = await prisma.repository.upsert({
+      where: { fullName },
+      create: {
+        githubId: hashToInt(fullName),
+        owner,
+        name: repo,
+        fullName,
+        htmlUrl: `https://github.com/${fullName}`,
+      },
+      update: {},
+    });
+
+    const created = await prisma.repositoryEvent.create({
+      data: {
+        repositoryId: repository.id,
+        type: event.type,
+        title: event.title,
+        detail: event.detail ?? null,
+        pillar: event.pillar ?? null,
+        healthDelta: typeof event.healthDelta === 'number' ? event.healthDelta : null,
+        payload:
+          event.payload === undefined
+            ? undefined
+            : (event.payload as Prisma.InputJsonValue),
+        occurredAt: new Date(event.occurredAt),
+      },
+    });
+    return created.id;
+  } catch (err) {
+    warn(`recordEvent(${fullName}) failed`, err);
+    return null;
+  }
+}
+
+/**
+ * Persist an AI Advisor run for a repository. No-op returning null without a
+ * database, and never throws — persistence is best-effort.
+ */
+export async function saveRecommendation(
+  owner: string,
+  repo: string,
+  report: AdvisorReport,
+  provider: string = 'heuristic',
+): Promise<string | null> {
+  if (!config.hasDatabase) return null;
+
+  const fullName = `${owner}/${repo}`;
+  try {
+    const repository = await prisma.repository.upsert({
+      where: { fullName },
+      create: {
+        githubId: hashToInt(fullName),
+        owner,
+        name: repo,
+        fullName,
+        htmlUrl: `https://github.com/${fullName}`,
+      },
+      update: {},
+    });
+
+    const created = await prisma.aIRecommendation.create({
+      data: {
+        repositoryId: repository.id,
+        headline: report.headline,
+        summary: report.summary,
+        healthDeltaPercent:
+          typeof report.healthDeltaPercent === 'number' ? report.healthDeltaPercent : null,
+        issues: report.issues as unknown as Prisma.InputJsonValue,
+        provider,
+      },
+    });
+    return created.id;
+  } catch (err) {
+    warn(`saveRecommendation(${fullName}) failed`, err);
+    return null;
   }
 }
