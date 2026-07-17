@@ -1,6 +1,6 @@
 name: Release CLI
 
-# Build, test, and publish @beacon/cli to npm. The CLI is bundled (esbuild) into
+# Build, test, and publish @martin-k-m/beacon-cli to npm. The CLI is bundled (esbuild) into
 # a single self-contained file, so the published package has no runtime deps.
 #
 # Triggered by publishing a GitHub Release (or a `cli-v*` tag). Publishing
@@ -49,17 +49,17 @@ jobs:
         run: npm run db:generate
 
       - name: Build (bundles the CLI into a self-contained binary)
-        run: npx turbo run build --filter=@beacon/cli...
+        run: npx turbo run build --filter=@martin-k-m/beacon-cli...
 
       - name: Test
-        run: npx turbo run test --filter=@beacon/cli
+        run: npx turbo run test --filter=@martin-k-m/beacon-cli
 
       - name: Pack (verify package contents)
-        run: npm pack --workspace @beacon/cli
+        run: npm pack --workspace @martin-k-m/beacon-cli
 
       - name: Publish to npm
         # Only when a token is configured and this isn't an explicit dry run.
         if: ${{ env.NPM_TOKEN != '' && github.event.inputs.dry_run != 'true' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --workspace @beacon/cli --provenance --access public
+        run: npm publish --workspace @martin-k-m/beacon-cli --provenance --access public

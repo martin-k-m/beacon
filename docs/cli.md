@@ -5,14 +5,14 @@ analyzes the health of any GitHub repository — remotely through the Beacon SDK
 or the repository in your current directory completely offline — and renders
 reports, widgets, badges, and an interactive dashboard.
 
-- Package: [`@beacon/cli`](../apps/cli)
+- Package: [`@martin-k-m/beacon-cli`](../apps/cli)
 - Binary: `beacon`
 - Node.js: `>= 20`
 
 ```bash
-npm install -g @beacon/cli
+npm install -g @martin-k-m/beacon-cli
 # or
-npx @beacon/cli analyze facebook/react
+npx @martin-k-m/beacon-cli analyze facebook/react
 ```
 
 ## Contents

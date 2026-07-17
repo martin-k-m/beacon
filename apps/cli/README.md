@@ -1,4 +1,4 @@
-# @beacon/cli
+# @martin-k-m/beacon-cli
 
 A first-class terminal client for [Beacon](https://github.com/martin-k-m/beacon) —
 analyze the health of any GitHub repository, online or offline, right from your
@@ -13,13 +13,13 @@ your current directory completely **offline, with no account**.
 ## Install
 
 ```bash
-npm install -g @beacon/cli
+npm install -g @martin-k-m/beacon-cli
 ```
 
 Or run it once, without installing:
 
 ```bash
-npx @beacon/cli analyze facebook/react
+npx @martin-k-m/beacon-cli analyze facebook/react
 ```
 
 Requires Node.js >= 20.

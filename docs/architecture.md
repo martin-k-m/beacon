@@ -67,7 +67,7 @@ global `fetch`) means:
 | `@beacon/api` | REST API — analysis, caching, persistence, widgets, webhooks |
 | `@beacon/worker` | Background BullMQ consumer that re-scores on webhook events |
 | `@beacon/web` | Dashboard UI (landing + analytics) |
-| `@beacon/cli` | Terminal client |
+| `@martin-k-m/beacon-cli` | Terminal client (published to npm; the command is `beacon`) |
 
 Dependency direction: `shared` is the leaf; `github`, `ai`, `widgets`, `ui`,
 `database`, `dependency-engine`, `plugins` build on it; `analytics` depends on

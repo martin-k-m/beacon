@@ -177,7 +177,7 @@ A first-class terminal client — install it globally (it ships as a single
 self-contained bundle with no runtime dependencies):
 
 ```bash
-npm install -g @beacon/cli
+npm install -g @martin-k-m/beacon-cli
 
 beacon login                       # GitHub device flow (or --with-token <PAT>)
 beacon analyze                     # analyze the repo in the current directory

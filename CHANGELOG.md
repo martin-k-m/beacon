@@ -4,6 +4,25 @@ All notable changes to Beacon are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-07-16
+
+### Changed
+
+- **Renamed the published CLI package from `@beacon/cli` to
+  `@martin-k-m/beacon-cli`.** The `@beacon` scope is not available on npm (and
+  the unscoped `beacon` / `beacon-cli` names are taken), so the CLI now ships
+  under the maintainer's existing scope. **The command is unchanged — it is
+  still `beacon`** — and the package was never published under the old name, so
+  nothing to migrate:
+
+  ```bash
+  npm install -g @martin-k-m/beacon-cli
+  beacon analyze facebook/react
+  ```
+
+  The internal workspace packages (`@beacon/analytics`, `@beacon/shared`, …)
+  keep their names; they are not published.
+
 ## [1.1.1] - 2026-07-16
 
 ### Changed
@@ -47,8 +66,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- **`@beacon/cli` — a first-class terminal client** (bundled, self-contained,
-  `npm install -g @beacon/cli`): `login` (GitHub device flow + `--with-token`),
+- **`@martin-k-m/beacon-cli` — a first-class terminal client** (bundled,
+  self-contained, `npm install -g @martin-k-m/beacon-cli`; the command is
+  `beacon`): `login` (GitHub device flow + `--with-token`),
   `analyze` (current repo / `owner/repo` / `--local` offline), `score`, `report`
   (`--json`/`--markdown`/`--html`), `widget`, `badge`, `watch`, `init`, and an
   interactive `dashboard` TUI. Offline local analyzer for JS/TS, Python, Go,
@@ -111,6 +131,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **`apps/cli`**: `beacon analyze owner/repo` with a polished terminal report.
 - Docker + docker-compose, GitHub Actions CI, documentation, and the MIT license.
 
+[1.1.2]: https://github.com/martin-k-m/beacon/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/martin-k-m/beacon/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/martin-k-m/beacon/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/martin-k-m/beacon/compare/v0.1.0...v1.0.0
