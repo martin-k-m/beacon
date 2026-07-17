@@ -26,7 +26,7 @@ plus a CLI and shared packages.
 apps/
   api/        Fastify REST API — the BACKEND (analysis, widgets, webhooks, insights)
   worker/     Background queue consumer (BullMQ) — re-scores on webhook events
-  web/        Next.js 14 FRONTEND — landing + dashboard + health-trend charts (+ /components)
+  web/        Next.js 15 FRONTEND — landing + dashboard + health-trend charts (+ /components)
   cli/        beacon — terminal client (analyze / insights / contributors / dependencies / …)
               the ONLY published artifact → npm as @martin-k-m/beacon-cli
 packages/
@@ -186,6 +186,46 @@ and skips publishing instead of failing. Note that GitHub secrets are
 write-only and npm shows a token value only at creation — if the token is lost
 or expires, it must be regenerated, not recovered.
 
+## Frontend stack constraints (apps/web)
+
+`apps/web` runs **Next 15 + React 19 + Recharts 3**. Three non-obvious ties:
+
+- **ESLint 8 pins Next to 15.** `eslint-config-next@16` requires **ESLint ≥9**,
+  and this monorepo is on ESLint 8 everywhere (that's also why the
+  `require.resolve` rule above exists). Going to Next 16 means a repo-wide flat-
+  config migration first. Next 15.5.x already clears every current advisory.
+- **Only ever ONE copy of React may exist.** React 19 rejects React-18-shaped
+  elements (`Minified React error #31` while prerendering). The trap: nothing
+  needs to *declare* React 18 for a second copy to appear — `framer-motion` and
+  `@reduxjs/toolkit` (via Recharts) declare `peerOptional react`, which npm can
+  satisfy by parking an old React at the root. Those root-level libs then build
+  React 18 elements that React 19 refuses. If prerender dies, run:
+  `find . -path "*/node_modules/react/package.json" -not -path "*/react-dom/*"`
+  — more than one hit is the bug; `npm dedupe` collapses it, and the lockfile
+  keeps it collapsed through `npm ci`.
+- **Recharts 3 split the tooltip types.** `TooltipProps` is now the `<Tooltip>`
+  component's own props (`active`/`payload` omitted — they come from context); a
+  custom `content` renderer receives **`TooltipContentProps`**. Since Recharts
+  injects those fields when it clones the element, custom tooltips type their
+  props as `Partial<TooltipContentProps<…>>` and guard at runtime.
+
+## Known-accepted dependency warnings
+
+`npm audit` reports **2 moderate** findings for `postcss <8.5.10`
+(GHSA-qx2v-qp2m-jg93, XSS via unescaped `</style>` in stringify output). This is
+**accepted, not neglected**:
+
+- It is `postcss` pinned inside **Next's own** dependency tree, not ours (our
+  own postcss is 8.5.x). Every Next release through 16.x ships it, so upgrading
+  Next does **not** clear it — `npm audit` even "fixes" it by proposing
+  `next@9.3.3`, a four-year downgrade. Do not run `npm audit fix --force`.
+- An `overrides` entry was tried and **does not work** — npm declines to override
+  Next's pinned nested copy, so shipping one would imply a fix that isn't real.
+- Impact is nil in practice: postcss runs at **build time** over CSS the
+  maintainers author, never over untrusted input, and never ships to users.
+
+Revisit when Next ships a patched postcss.
+
 ## Gotchas checklist
 
 - Ran `npm run db:generate`? (Prisma client must exist.)
@@ -194,3 +234,9 @@ or expires, it must be regenerated, not recovered.
 - `commitActivity[i].weekStart` is **unix seconds** — ×1000 for `Date`.
 - Recharts/Framer/browser code in the web app must be in `'use client'` files.
 - Don't put Node-only APIs in `@beacon/github`/`@beacon/analytics` (keep them universal).
+- `DependencyManifest.dependencyCount` is `number | null`. **`null` means
+  "unknown", never "none"** — remote GitHub collection lists the repo tree but
+  doesn't read manifest contents, so only local analysis reports a real count.
+- Dynamic route params in `apps/web` are **async** (Next 15): `await params`.
+- npm may add an `allowScripts` field to `package.json` in sandboxed
+  environments. It's a local artifact — don't commit it.

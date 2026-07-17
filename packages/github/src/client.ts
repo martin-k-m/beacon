@@ -339,7 +339,12 @@ export class GitHubClient {
     for (const entry of res.data) {
       const ecosystem = known[entry.name];
       if (ecosystem && entry.type === 'file') {
-        manifests.push({ ecosystem, path: entry.path, dependencyCount: 0 });
+        // The tree listing proves the manifest exists but carries no contents.
+        // Counting would cost one extra request per manifest against a budget
+        // that matters most for anonymous callers (60/hr), so the count is left
+        // null — "unknown", not zero. Local analysis parses manifests off disk
+        // and reports real counts.
+        manifests.push({ ecosystem, path: entry.path, dependencyCount: null });
       }
     }
     return manifests;

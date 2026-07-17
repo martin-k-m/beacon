@@ -11,7 +11,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-  type TooltipProps,
+  type TooltipContentProps,
 } from 'recharts';
 import { computeTrend, filterRange, type HealthPoint, type TrendRange } from '@beacon/analytics';
 import { Card, cn, pillarLabel } from '@beacon/ui';
@@ -46,7 +46,11 @@ const DIRECTION_COLOR: Record<'up' | 'down' | 'flat', string> = {
   flat: 'hsl(42 96% 62%)',
 };
 
-function TrendTooltip({ active, payload }: TooltipProps<number, string>): React.JSX.Element | null {
+// Partial because Recharts injects `active`/`payload` into the cloned element.
+function TrendTooltip({
+  active,
+  payload,
+}: Partial<TooltipContentProps<number, string>>): React.JSX.Element | null {
   if (!active || !payload || payload.length === 0) return null;
   const point = payload[0]?.payload as ChartPoint | undefined;
   if (!point) return null;

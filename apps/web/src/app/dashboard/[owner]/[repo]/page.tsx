@@ -28,15 +28,18 @@ import { getAnalysis, getTrend } from '@/lib/api';
 import { formatCompact, relativeTime } from '@/lib/utils';
 
 interface PageProps {
-  params: { owner: string; repo: string };
+  // Next 15 made dynamic route params async — they arrive as a Promise and
+  // must be awaited before use.
+  params: Promise<{ owner: string; repo: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const analysis = await getAnalysis(params.owner, params.repo);
+  const { owner, repo } = await params;
+  const analysis = await getAnalysis(owner, repo);
   if (!analysis) {
-    return { title: `${params.owner}/${params.repo} · Not found` };
+    return { title: `${owner}/${repo} · Not found` };
   }
   const { metadata } = analysis.snapshot;
   return {
@@ -50,13 +53,14 @@ export async function generateMetadata({
 export default async function AnalysisPage({
   params,
 }: PageProps): Promise<React.JSX.Element> {
+  const { owner, repo } = await params;
   const [analysis, trend] = await Promise.all([
-    getAnalysis(params.owner, params.repo),
-    getTrend(params.owner, params.repo),
+    getAnalysis(owner, repo),
+    getTrend(owner, repo),
   ]);
 
   if (!analysis) {
-    return <NotFoundState owner={params.owner} repo={params.repo} />;
+    return <NotFoundState owner={owner} repo={repo} />;
   }
 
   const { snapshot, score, summary, highlights } = analysis;

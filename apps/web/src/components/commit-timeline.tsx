@@ -10,7 +10,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-  type TooltipProps,
+  type TooltipContentProps,
 } from 'recharts';
 import type { CommitActivityWeek } from '@beacon/shared';
 import { ChartCard } from '@/components/ui/chart-card';
@@ -25,10 +25,13 @@ interface Point {
   commits: number;
 }
 
+// Recharts injects `active`/`payload` when it clones the element passed to
+// `content`, so they are optional at the call site — hence Partial. The guards
+// below are what make that safe.
 function CommitTooltip({
   active,
   payload,
-}: TooltipProps<number, string>): React.JSX.Element | null {
+}: Partial<TooltipContentProps<number, string>>): React.JSX.Element | null {
   if (!active || !payload || payload.length === 0) return null;
   const point = payload[0]?.payload as Point | undefined;
   if (!point) return null;

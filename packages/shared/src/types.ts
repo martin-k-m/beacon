@@ -93,7 +93,14 @@ export interface ReadmeInfo {
 export interface DependencyManifest {
   ecosystem: string;
   path: string;
-  dependencyCount: number;
+  /**
+   * Declared dependencies in the manifest, or `null` when the collector could
+   * detect the manifest but did not read its contents. Local analysis parses
+   * manifests off disk and reports a real count; remote GitHub collection only
+   * lists the repository tree, so it reports `null` rather than a misleading
+   * zero. Treat `null` as "unknown", never as "none".
+   */
+  dependencyCount: number | null;
 }
 
 export interface SecuritySignals {

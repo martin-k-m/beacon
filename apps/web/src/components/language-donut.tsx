@@ -8,7 +8,7 @@ import {
   PieChart,
   ResponsiveContainer,
   Tooltip,
-  type TooltipProps,
+  type TooltipContentProps,
 } from 'recharts';
 import type { LanguageBreakdown } from '@beacon/shared';
 import { ChartCard } from '@/components/ui/chart-card';
@@ -26,10 +26,11 @@ interface Slice {
   color: string;
 }
 
+// Partial because Recharts injects `active`/`payload` into the cloned element.
 function LanguageTooltip({
   active,
   payload,
-}: TooltipProps<number, string>): React.JSX.Element | null {
+}: Partial<TooltipContentProps<number, string>>): React.JSX.Element | null {
   if (!active || !payload || payload.length === 0) return null;
   const slice = payload[0]?.payload as Slice | undefined;
   if (!slice) return null;

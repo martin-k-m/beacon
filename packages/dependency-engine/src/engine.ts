@@ -77,10 +77,11 @@ export async function analyzeDependencies(
  * A documented seam for feeding real dependencies into the engine.
  *
  * A {@link DependencyManifest} in a Beacon snapshot only records that a manifest
- * exists and how many dependencies it declared — not the dependency names or
- * versions themselves. There is nothing to expand here, so this honestly
- * returns an empty list. When a manifest parser is added upstream, this is the
- * function that would turn parsed manifests into {@link DependencyInput}s.
+ * exists and — when the collector read it — how many dependencies it declared,
+ * not the dependency names or versions themselves. There is nothing to expand
+ * here, so this honestly returns an empty list. When a manifest parser is added
+ * upstream, this is the function that would turn parsed manifests into
+ * {@link DependencyInput}s.
  */
 export function fromManifests(_manifests: DependencyManifest[]): DependencyInput[] {
   return [];

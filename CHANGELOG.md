@@ -4,6 +4,66 @@ All notable changes to Beacon are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-07-17
+
+A finalization pass: one correctness fix, the dependency backlog cleared, and
+the frontend moved onto a supported stack. Verified from a clean `npm ci`:
+**lint 25 · typecheck 25 · test 19 (126 tests) · build 15**, all green.
+
+### Fixed
+
+- **Remote analysis no longer reports every repository as having zero
+  dependencies.** `GitHubClient.getDependencies()` hardcoded `dependencyCount:
+  0` for each detected manifest, so a repository with 50 dependencies reported
+  `0` — a factual error, not a missing feature. Remote collection lists the
+  repository tree without reading manifest contents, so the count is genuinely
+  unknown there; it now reports `null`, matching the honest `null` already used
+  for `vulnerabilityAlertCount`. Local analysis (`--local`) parses manifests off
+  disk and still reports real counts. Covered by new tests that exercise
+  `getSnapshot` through an injected fetch.
+
+### Changed
+
+- **BREAKING (type):** `DependencyManifest.dependencyCount` is now
+  `number | null`. **`null` means "unknown", never "none".** Consumers reading
+  `dependencyCount` from `beacon analyze --json` or `@beacon/sdk` must handle
+  `null` — remote analyses now emit `null` where they previously emitted `0`.
+
+### Security
+
+- **vitest 2.1.8 → 3.2.7** across all nine packages that declare it, clearing
+  **10 critical** advisories. Development-only (a test runner is never shipped);
+  no test or config changes were needed.
+- **Next.js 14.2.35 → 15.5.20**, clearing 28 advisories including 10 high.
+  Deliberately Next **15**, not 16: `eslint-config-next@16` requires ESLint ≥9
+  and this repo is on ESLint 8 throughout, so Next 16 would force a repo-wide
+  flat-config migration. Next 15.5.x clears every current advisory.
+- **esbuild 0.24 → 0.25** (development; bundles the CLI).
+- The published CLI was never affected by any of the above — it has zero runtime
+  dependencies.
+- **Two moderate `postcss` findings remain and are accepted, with reasons** —
+  see "Known-accepted dependency warnings" in `CLAUDE.md`. They are Next's own
+  pinned copy (present in every Next release through 16.x, so unfixable by
+  upgrading), an `overrides` entry provably does not apply to it, and postcss
+  runs at build time over maintainer-authored CSS only. `npm audit fix --force`
+  "resolves" them by installing `next@9.3.3` — do not run it.
+
+### Upgraded (frontend)
+
+- **React 18.3.1 → 19.2.7** (`apps/web` + `@beacon/ui`, moved in lockstep since
+  `@beacon/ui` ships as source), aligning the dashboard with `beacon-web`.
+- **Recharts 2 → 3.9.2**, required because Recharts 2's types are incompatible
+  with React 19's JSX namespace. Custom tooltips now type against
+  `TooltipContentProps` instead of `TooltipProps`.
+- **Next 15 async params:** dynamic route params are now a `Promise` and are
+  awaited in `dashboard/[owner]/[repo]`.
+- Deduplicated React. `framer-motion` and `@reduxjs/toolkit` declare
+  `peerOptional react`, which let npm park a second React 18 at the root even
+  though no workspace declared it; those root-level libraries then produced
+  React-18-shaped elements that React 19 rejected at prerender
+  (`Minified React error #31`). The lockfile now resolves a single React 19
+  through `npm ci`.
+
 ## [1.1.2] - 2026-07-16
 
 **Beacon's first release published to npm.** The CLI is now installable by
