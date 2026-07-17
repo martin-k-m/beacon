@@ -240,3 +240,15 @@ Revisit when Next ships a patched postcss.
 - Dynamic route params in `apps/web` are **async** (Next 15): `await params`.
 - npm may add an `allowScripts` field to `package.json` in sandboxed
   environments. It's a local artifact — don't commit it.
+- **Never regenerate `package-lock.json` from scratch on Windows** (i.e. delete
+  it and `npm install`). The lock must carry the platform-specific optional
+  packages for **every** OS — `@rollup/rollup-linux-x64-gnu` (vitest→vite→rollup)
+  and `@esbuild/linux-x64` (the CLI bundler). A Windows-only regeneration keeps
+  just the win32 ones, everything still passes locally, and then **CI dies on
+  Linux** with "Cannot find module @rollup/rollup-linux-x64-gnu" (npm/cli#4828).
+  The published lock should list ~25 rollup and ~26 esbuild platform entries —
+  check with:
+  `grep -o '"node_modules/@rollup/rollup-[a-z0-9-]*"' package-lock.json | sort -u | wc -l`
+  Prefer targeted edits (`npm install --package-lock-only` over the existing
+  lock). If the lock must be rebuilt, use the same npm major CI uses — Node 20 →
+  `npx npm@10 install --package-lock-only` — and re-check the counts above.
