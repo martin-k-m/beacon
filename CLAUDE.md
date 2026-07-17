@@ -24,25 +24,35 @@ plus a CLI and shared packages.
 
 ```
 apps/
+  api/        Fastify REST API — the BACKEND (analysis, widgets, webhooks, insights)
+  worker/     Background queue consumer (BullMQ) — re-scores on webhook events
   web/        Next.js 14 FRONTEND — landing + dashboard + health-trend charts (+ /components)
-  api/        Fastify REST API — the BACKEND (analysis, persistence, caching, widgets, webhooks)
-  cli/        beacon-cli — analyze / widget / badge / watch
+  cli/        beacon — terminal client (analyze / insights / contributors / dependencies / …)
 packages/
-  core/       The engine: GitHub client, scoring, AI providers, analyzer, demo data
-  ui/         Shared React UI primitives (Button, Card, ScoreRing, …) + presentational utils
-  widgets/    Embeddable SVG widgets (health card, badge, language, etc.)
-  analytics/  Historical health series + trend computation
-  database/   Prisma schema + client (PostgreSQL)
-  config/     Shared tsconfig + ESLint presets
-docs/         Architecture, scoring, api, widgets, github-app, self-hosting
+  shared/             Domain types + demo fixtures + the job-queue contract
+  github/             GitHub REST client (fetch-based)
+  ai/                 AI summary providers (heuristic / OpenAI / Anthropic)
+  analytics/          The engine: scoring, trends, orchestrator, team health
+  ai-advisor/         Recommendations engine (why health changed + what to do)
+  dependency-engine/  Dependency classification (npm / PyPI / crates)
+  plugins/            Extensibility foundation (analyzers/metrics/widgets/recommendations)
+  sdk/                Programmatic client (@beacon/sdk)
+  widgets/            Embeddable SVG widgets (health card, badge, language, etc.)
+  ui/                 Shared React UI primitives (frontend)
+  database/           Prisma schema + client (PostgreSQL)
+  config/             Shared tsconfig + ESLint presets
+docs/         architecture, scoring, api, cli, widgets, github-app, advisor, monitoring, self-hosting
 ```
 
 (The public marketing site lives in a **separate repo**, `beacon-web` →
 beacon.blinkdev.me. It is not part of this monorepo.)
 
-Dependency direction: `core` depends on nothing internal. `ui`, `widgets`,
-`analytics`, `database` depend on `core`. `api` and `cli` depend on those. `web`
-depends on `core`, `ui`, and `analytics`. Never introduce a cycle.
+Dependency direction: `shared` depends on nothing internal. `github`, `ai`,
+`widgets`, `ui`, `database`, `dependency-engine`, `plugins` depend on `shared`;
+`analytics` depends on `shared`+`github`+`ai`; `ai-advisor` on
+`shared`+`analytics`+`ai`; `sdk` on `shared`+`analytics`+`github`. `api`,
+`worker`, and `cli` depend on those. `web` depends on `shared`, `analytics`, and
+`ui`. Never introduce a cycle.
 
 **`@beacon/ui` is shipped as source** (no build step): its `main` points at
 `src/index.ts` and the consuming Next apps must (1) list it in

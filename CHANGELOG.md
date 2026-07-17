@@ -4,7 +4,7 @@ All notable changes to Beacon are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2026-07-16
 
 ### Added
 
@@ -99,5 +99,6 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **`apps/cli`**: `beacon analyze owner/repo` with a polished terminal report.
 - Docker + docker-compose, GitHub Actions CI, documentation, and the MIT license.
 
+[1.1.0]: https://github.com/martin-k-m/beacon/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/martin-k-m/beacon/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/martin-k-m/beacon/releases/tag/v0.1.0
