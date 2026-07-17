@@ -64,4 +64,4 @@ npm run typecheck  # tsc --noEmit
 npm run clean      # remove .next
 ```
 
-Part of the [Blink Dev](https://blinkdev.me) ecosystem. MIT licensed.
+MIT licensed.

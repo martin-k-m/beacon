@@ -10,7 +10,7 @@ into a single, explainable **Beacon Score** and a natural-language health summar
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [The Beacon Score](#the-beacon-score) · [CLI](#cli) · [Contributing](CONTRIBUTING.md)
 
-`MIT licensed` · `TypeScript` · `Turborepo` · Part of the [Blink Dev](https://blinkdev.me) ecosystem
+`MIT licensed` · `TypeScript` · `Turborepo`
 
 </div>
 
@@ -233,5 +233,5 @@ MIT licensed (see [LICENSE](LICENSE)).
 ---
 
 <div align="center">
-<sub>Part of the <b>Blink Dev</b> ecosystem — Create with <a href="https://blinkdev.me">Blink</a> · Build with <a href="https://flux.blinkdev.me">Flux</a> · Protect with <a href="https://killer.blinkdev.me">Killer</a> · Understand with Beacon.</sub>
+<sub>Beacon — understand any GitHub repository. MIT licensed.</sub>
 </div>
