@@ -25,6 +25,10 @@
     "db:migrate": "npm run migrate --workspace @beacon/database",
     "db:seed": "npm run seed --workspace @beacon/database"
   },
+  "overrides": {
+    "postcss": "^8.5.12",
+    "sharp": "0.35.0"
+  },
   "devDependencies": {
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
