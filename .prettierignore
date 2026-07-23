@@ -6,3 +6,9 @@ out
 coverage
 package-lock.json
 *.md
+
+# Agent scratch checkouts. These live inside the repo but are not this
+# repo's source (they are excluded via .git/info/exclude), and Prettier's
+# `**/*` globs would otherwise walk into them and report their formatting
+# as if it were ours.
+.claude
