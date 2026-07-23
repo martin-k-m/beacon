@@ -34,13 +34,7 @@ export interface TrendResponse {
 }
 
 /** Widget/badge variants supported by the Beacon API embed endpoints. */
-export type WidgetType =
-  | 'health'
-  | 'activity'
-  | 'language'
-  | 'contributor'
-  | 'release'
-  | 'badge';
+export type WidgetType = 'health' | 'activity' | 'language' | 'contributor' | 'release' | 'badge';
 
 export type TrendRange = '30d' | '90d' | '1y' | 'all';
 
@@ -163,10 +157,7 @@ export class Beacon {
       throw new Error('widgetUrl() requires apiUrl: set apiUrl (or BEACON_API_URL).');
     }
     const { owner, repo: name } = parseRepoIdentifier(repo);
-    const path =
-      type === 'badge'
-        ? `/badge/${owner}/${name}`
-        : `/widget/${type}/${owner}/${name}`;
+    const path = type === 'badge' ? `/badge/${owner}/${name}` : `/widget/${type}/${owner}/${name}`;
     const params = new URLSearchParams();
     if (opts.theme) params.set('theme', opts.theme);
     if (opts.size) params.set('size', opts.size);
@@ -188,7 +179,7 @@ export class Beacon {
   private async analyzeViaApi(repo: string, refresh?: boolean): Promise<BeaconAnalysis> {
     if (!this.apiUrl) {
       throw new Error(
-        "API mode selected but no apiUrl is configured. Set apiUrl (or BEACON_API_URL), " +
+        'API mode selected but no apiUrl is configured. Set apiUrl (or BEACON_API_URL), ' +
           "or use source: 'github'.",
       );
     }
@@ -212,9 +203,7 @@ export class Beacon {
 
   private async analyzeViaGitHub(repo: string): Promise<BeaconAnalysis> {
     if (!this.options.githubToken) {
-      throw new Error(
-        'No GitHub token: set githubToken or GITHUB_TOKEN, or configure apiUrl.',
-      );
+      throw new Error('No GitHub token: set githubToken or GITHUB_TOKEN, or configure apiUrl.');
     }
     return analyzeRepository(repo, {
       githubToken: this.options.githubToken,

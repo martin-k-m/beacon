@@ -37,10 +37,7 @@ function LanguageTooltip({
   return (
     <div className="glass rounded-md px-3 py-2 text-xs shadow-card">
       <p className="flex items-center gap-1.5 font-medium text-foreground">
-        <span
-          className="inline-block size-2 rounded-full"
-          style={{ background: slice.color }}
-        />
+        <span className="inline-block size-2 rounded-full" style={{ background: slice.color }} />
         {slice.name}
       </p>
       <p className="mt-0.5 font-mono text-muted-foreground">
@@ -51,9 +48,7 @@ function LanguageTooltip({
 }
 
 /** A donut of language distribution (by bytes) with a color-dotted legend. */
-export function LanguageDonut({
-  languages,
-}: LanguageDonutProps): React.JSX.Element {
+export function LanguageDonut({ languages }: LanguageDonutProps): React.JSX.Element {
   const slices = React.useMemo<Slice[]>(() => {
     const entries = Object.entries(languages).sort((a, b) => b[1] - a[1]);
     const total = entries.reduce((sum, [, bytes]) => sum + bytes, 0) || 1;
@@ -95,9 +90,7 @@ export function LanguageDonut({
             </PieChart>
           </ResponsiveContainer>
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span className="font-mono text-xl font-semibold text-foreground">
-              {slices.length}
-            </span>
+            <span className="font-mono text-xl font-semibold text-foreground">{slices.length}</span>
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
               languages
             </span>
@@ -111,9 +104,7 @@ export function LanguageDonut({
                 className="inline-block size-2.5 shrink-0 rounded-full"
                 style={{ background: slice.color }}
               />
-              <span className="min-w-0 flex-1 truncate text-foreground/90">
-                {slice.name}
-              </span>
+              <span className="min-w-0 flex-1 truncate text-foreground/90">{slice.name}</span>
               <span className="font-mono text-xs text-muted-foreground">
                 {slice.percent.toFixed(1)}%
               </span>

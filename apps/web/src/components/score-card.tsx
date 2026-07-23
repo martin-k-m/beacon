@@ -18,11 +18,7 @@ export interface ScoreCardProps {
  * The hero analytics card: an animated Beacon Score ring beside the
  * heuristic/AI summary and highlight chips.
  */
-export function ScoreCard({
-  score,
-  summary,
-  highlights,
-}: ScoreCardProps): React.JSX.Element {
+export function ScoreCard({ score, summary, highlights }: ScoreCardProps): React.JSX.Element {
   const colors = gradeColor(score.grade);
 
   return (
@@ -48,9 +44,7 @@ export function ScoreCard({
             <Sparkles className="size-3.5" />
             AI health summary
           </div>
-          <p className="text-pretty text-base leading-relaxed text-foreground/90">
-            {summary}
-          </p>
+          <p className="text-pretty text-base leading-relaxed text-foreground/90">{summary}</p>
 
           {highlights.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2">

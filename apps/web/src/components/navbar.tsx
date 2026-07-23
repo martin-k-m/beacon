@@ -32,17 +32,14 @@ export function Navbar(): React.JSX.Element {
 
         <nav className="hidden items-center gap-1 md:flex">
           {NAV_LINKS.map((link) => {
-            const active =
-              pathname === link.href || pathname.startsWith(`${link.href}/`);
+            const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
                   'rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                  active
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground',
+                  active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
                 )}
               >
                 {link.label}
@@ -55,12 +52,7 @@ export function Navbar(): React.JSX.Element {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Beacon on GitHub"
-          >
+          <a href={GITHUB_URL} target="_blank" rel="noreferrer" aria-label="Beacon on GitHub">
             <Button variant="ghost" size="icon">
               <Github className="size-5" />
             </Button>

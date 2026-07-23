@@ -48,9 +48,7 @@ export function computeContributorHealth(
 ): ContributorHealth {
   // Re-sort defensively; the snapshot contract says desc by contributions,
   // but we never want the bus factor to depend on that holding.
-  const sorted = [...snapshot.contributors].sort(
-    (a, b) => b.contributions - a.contributions,
-  );
+  const sorted = [...snapshot.contributors].sort((a, b) => b.contributions - a.contributions);
 
   const totalContributors = sorted.length;
   const totalContributions = sorted.reduce((sum, c) => sum + c.contributions, 0);
@@ -77,26 +75,20 @@ export function computeContributorHealth(
 
   // Maintainer load: the top contributor's share of everything.
   const topContributor = sorted[0];
-  const maintainerLoad = topContributor
-    ? topContributor.contributions / totalContributions
-    : 0;
+  const maintainerLoad = topContributor ? topContributor.contributions / totalContributions : 0;
 
   // Active contributors: those carrying at least 1% of the load. Guarantee at
   // least one whenever there is any contribution at all.
-  const active = sorted.filter(
-    (c) => c.contributions / totalContributions >= 0.01,
-  ).length;
+  const active = sorted.filter((c) => c.contributions / totalContributions >= 0.01).length;
   const activeContributors = Math.max(1, active);
 
   // Distribution: the top N contributors with their fractional share.
   const cappedTopN = Math.max(0, Math.floor(topN));
-  const distribution: ContributorShare[] = sorted
-    .slice(0, cappedTopN)
-    .map((c) => ({
-      login: c.login,
-      contributions: c.contributions,
-      share: c.contributions / totalContributions,
-    }));
+  const distribution: ContributorShare[] = sorted.slice(0, cappedTopN).map((c) => ({
+    login: c.login,
+    contributions: c.contributions,
+    share: c.contributions / totalContributions,
+  }));
 
   const narrative = buildNarrative(totalContributors, busFactor, maintainerLoad);
 

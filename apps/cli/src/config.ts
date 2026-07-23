@@ -15,13 +15,7 @@
  * {@link resolveClient} turns that into a ready-to-use {@link Beacon} client.
  */
 
-import {
-  chmodSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  writeFileSync,
-} from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 
@@ -216,10 +210,7 @@ export interface ResolveClientOptions {
  * when a GitHub token is available); otherwise it analyzes directly from
  * GitHub in-process.
  */
-export function resolveClient(
-  config: ResolvedConfig,
-  options: ResolveClientOptions = {},
-): Beacon {
+export function resolveClient(config: ResolvedConfig, options: ResolveClientOptions = {}): Beacon {
   return new Beacon({
     apiUrl: config.apiUrl,
     token: config.apiToken,

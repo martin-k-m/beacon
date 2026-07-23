@@ -31,9 +31,7 @@ function starRating(total: number): string {
 }
 
 function topContributors(contributors: ContributorStat[], limit = 10): ContributorStat[] {
-  return [...contributors]
-    .sort((a, b) => b.contributions - a.contributions)
-    .slice(0, limit);
+  return [...contributors].sort((a, b) => b.contributions - a.contributions).slice(0, limit);
 }
 
 function recentReleases(releases: ReleaseInfo[], limit = 5): ReleaseInfo[] {
@@ -198,9 +196,7 @@ export function renderReportHtml(analysis: BeaconAnalysis): string {
     )
     .join('\n');
 
-  const highlights = summary.highlights
-    .map((h) => `<li>${escapeHtml(h)}</li>`)
-    .join('\n');
+  const highlights = summary.highlights.map((h) => `<li>${escapeHtml(h)}</li>`).join('\n');
 
   return `<!doctype html>
 <html lang="en">

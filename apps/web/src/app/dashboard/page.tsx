@@ -27,9 +27,7 @@ export default async function DashboardPage(): Promise<React.JSX.Element> {
           <div className="aurora" aria-hidden />
           <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2">
-              <Badge variant={live ? 'success' : 'beacon'}>
-                {live ? 'Live API' : 'Demo mode'}
-              </Badge>
+              <Badge variant={live ? 'success' : 'beacon'}>{live ? 'Live API' : 'Demo mode'}</Badge>
               <Badge variant="outline">{analyses.length} repositories</Badge>
             </div>
             <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">

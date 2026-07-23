@@ -4,12 +4,7 @@ import { z } from 'zod';
 
 import { cache } from '../cache';
 import { config } from '../config';
-import {
-  getHistory,
-  getLatestAnalysis,
-  getScoreHistory,
-  listRepositories,
-} from '../store';
+import { getHistory, getLatestAnalysis, getScoreHistory, listRepositories } from '../store';
 import type { BeaconAnalysis } from '@beacon/shared';
 
 const repoParamsSchema = z.object({

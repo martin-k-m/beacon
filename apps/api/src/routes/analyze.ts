@@ -45,9 +45,9 @@ export const analyzeRoutes: FastifyPluginAsync = async (app) => {
           return reply.status(404).send({ error: `Repository not found: ${repo}` });
         }
         if (err.status === 403 && isRateLimit(err)) {
-          return reply
-            .status(429)
-            .send({ error: 'GitHub rate limit exceeded. Try again later or configure GITHUB_TOKEN.' });
+          return reply.status(429).send({
+            error: 'GitHub rate limit exceeded. Try again later or configure GITHUB_TOKEN.',
+          });
         }
         if (err.status === 403) {
           return reply.status(403).send({ error: err.message });

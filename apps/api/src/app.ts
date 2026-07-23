@@ -12,7 +12,10 @@ import { routes } from './routes';
  */
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
-    logger: config.nodeEnv === 'test' ? false : { level: config.nodeEnv === 'production' ? 'info' : 'debug' },
+    logger:
+      config.nodeEnv === 'test'
+        ? false
+        : { level: config.nodeEnv === 'production' ? 'info' : 'debug' },
     // Trust proxy headers so client IPs / protocol are correct behind a load
     // balancer (common in container deployments).
     trustProxy: true,
@@ -26,19 +29,15 @@ export async function buildApp(): Promise<FastifyInstance> {
   // on `request.rawBody`. Webhook signature verification (GitHub's
   // X-Hub-Signature-256) must run against the exact bytes received, not a
   // re-serialized object. All other routes continue to receive parsed JSON.
-  app.addContentTypeParser(
-    'application/json',
-    { parseAs: 'buffer' },
-    (req, body, done) => {
-      (req as { rawBody?: Buffer }).rawBody = body as Buffer;
-      try {
-        const text = (body as Buffer).toString('utf8');
-        done(null, text.length ? JSON.parse(text) : {});
-      } catch (err) {
-        done(err as Error, undefined);
-      }
-    },
-  );
+  app.addContentTypeParser('application/json', { parseAs: 'buffer' }, (req, body, done) => {
+    (req as { rawBody?: Buffer }).rawBody = body as Buffer;
+    try {
+      const text = (body as Buffer).toString('utf8');
+      done(null, text.length ? JSON.parse(text) : {});
+    } catch (err) {
+      done(err as Error, undefined);
+    }
+  });
 
   // Load configured plugins before the routes that expose them. A no-op when
   // BEACON_PLUGINS is unset, and never fatal: a plugin that fails to import is
@@ -48,7 +47,9 @@ export async function buildApp(): Promise<FastifyInstance> {
     app.log.warn(`Plugin "${failure.specifier}" failed to load: ${failure.reason}`);
   }
   if (pluginResult.loaded.length > 0) {
-    app.log.info(`Loaded ${pluginResult.loaded.length} plugin(s): ${pluginResult.loaded.join(', ')}`);
+    app.log.info(
+      `Loaded ${pluginResult.loaded.length} plugin(s): ${pluginResult.loaded.join(', ')}`,
+    );
   }
 
   await app.register(routes);

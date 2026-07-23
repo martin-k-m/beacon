@@ -122,9 +122,7 @@ export const webhookRoutes: FastifyPluginAsync = async (app) => {
       });
     }
 
-    return reply
-      .status(202)
-      .send({ accepted: true, event, repository: fullName, queued });
+    return reply.status(202).send({ accepted: true, event, repository: fullName, queued });
   });
 };
 

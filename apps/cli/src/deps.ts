@@ -150,8 +150,7 @@ export function parsePyproject(raw: string): DependencyInput[] {
       if (name.toLowerCase() === 'python') {
         continue;
       }
-      const versionMatch =
-        /version\s*=\s*"([^"]+)"/.exec(trimmed) ?? /=\s*"([^"]+)"/.exec(trimmed);
+      const versionMatch = /version\s*=\s*"([^"]+)"/.exec(trimmed) ?? /=\s*"([^"]+)"/.exec(trimmed);
       out.push(
         withVersion(
           name,
@@ -182,8 +181,7 @@ export function parseCargo(raw: string): DependencyInput[] {
       continue;
     }
     // Either `name = "1.0"` or `name = { version = "1.0", … }`.
-    const versionMatch =
-      /version\s*=\s*"([^"]+)"/.exec(trimmed) ?? /=\s*"([^"]+)"/.exec(trimmed);
+    const versionMatch = /version\s*=\s*"([^"]+)"/.exec(trimmed) ?? /=\s*"([^"]+)"/.exec(trimmed);
     out.push(
       withVersion(
         nameMatch[1],

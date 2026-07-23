@@ -9,9 +9,7 @@ import { z } from 'zod';
  * strongly-typed `config` object.
  */
 const envSchema = z.object({
-  NODE_ENV: z
-    .enum(['development', 'test', 'production'])
-    .default('development'),
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   // `coerce` lets a string env var become a number; the default covers a
   // missing value entirely.
   PORT: z.coerce.number().int().positive().default(4000),
@@ -19,9 +17,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1).optional(),
   REDIS_URL: z.string().min(1).optional(),
   GITHUB_TOKEN: z.string().min(1).optional(),
-  BEACON_AI_PROVIDER: z
-    .enum(['heuristic', 'openai', 'anthropic'])
-    .default('heuristic'),
+  BEACON_AI_PROVIDER: z.enum(['heuristic', 'openai', 'anthropic']).default('heuristic'),
   OPENAI_API_KEY: z.string().min(1).optional(),
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   CORS_ORIGIN: z.string().min(1).default('*'),

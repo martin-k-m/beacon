@@ -7,11 +7,7 @@
  * optional `fetch` override so the engine can be tested fully offline.
  */
 
-import type {
-  DependencyEcosystem,
-  RegistryClient,
-  RegistryPackageInfo,
-} from './types';
+import type { DependencyEcosystem, RegistryClient, RegistryPackageInfo } from './types';
 
 /** Default per-request timeout in milliseconds. */
 const DEFAULT_TIMEOUT_MS = 8000;
@@ -89,9 +85,7 @@ export class NpmRegistryClient implements RegistryClient {
   ): Promise<RegistryPackageInfo | null> {
     // Scoped names (`@scope/pkg`) keep their `@` and use `%2f` for the slash;
     // unscoped names are percent-encoded normally.
-    const encoded = name.startsWith('@')
-      ? name.replace('/', '%2f')
-      : encodeURIComponent(name);
+    const encoded = name.startsWith('@') ? name.replace('/', '%2f') : encodeURIComponent(name);
     const url = `https://registry.npmjs.org/${encoded}`;
     const body = asRecord(await fetchJson(this.fetchImpl, url, this.timeoutMs));
     if (!body) {
@@ -165,7 +159,7 @@ export class PyPiRegistryClient implements RegistryClient {
         for (const file of files) {
           const record = asRecord(file);
           const uploaded = record
-            ? asString(record['upload_time_iso_8601']) ?? asString(record['upload_time'])
+            ? (asString(record['upload_time_iso_8601']) ?? asString(record['upload_time']))
             : undefined;
           if (uploaded && (!lastPublished || uploaded > lastPublished)) {
             lastPublished = uploaded;
@@ -194,13 +188,10 @@ export class CratesRegistryClient implements RegistryClient {
   private readonly timeoutMs: number;
   private readonly userAgent: string;
 
-  public constructor(
-    options: RegistryClientOptions & { userAgent?: string } = {},
-  ) {
+  public constructor(options: RegistryClientOptions & { userAgent?: string } = {}) {
     this.fetchImpl = options.fetch ?? globalThis.fetch;
     this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
-    this.userAgent =
-      options.userAgent ?? 'beacon-dependency-engine (https://github.com/beacon)';
+    this.userAgent = options.userAgent ?? 'beacon-dependency-engine (https://github.com/beacon)';
   }
 
   public async getPackage(
@@ -219,7 +210,7 @@ export class CratesRegistryClient implements RegistryClient {
 
     const crate = asRecord(body['crate']);
     const latestVersion = crate
-      ? asString(crate['max_stable_version']) ?? asString(crate['newest_version'])
+      ? (asString(crate['max_stable_version']) ?? asString(crate['newest_version']))
       : undefined;
     const lastPublished = crate ? asString(crate['updated_at']) : undefined;
 

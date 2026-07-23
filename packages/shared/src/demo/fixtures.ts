@@ -136,9 +136,7 @@ export const demoHealthySnapshot: RepositorySnapshot = {
     hasUsageSection: true,
     hasLicenseSection: true,
   },
-  dependencies: [
-    { ecosystem: 'npm', path: 'package.json', dependencyCount: 14 },
-  ],
+  dependencies: [{ ecosystem: 'npm', path: 'package.json', dependencyCount: 14 }],
   security: {
     hasSecurityPolicy: true,
     hasDependabot: true,

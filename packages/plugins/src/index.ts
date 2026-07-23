@@ -20,10 +20,6 @@
 export * from './types';
 export { PluginRegistry } from './registry';
 export type { PluginErrorLogger, PluginRegistryOptions } from './registry';
-export {
-  securityPolicyPlugin,
-  staleReleasePlugin,
-  examplePlugins,
-} from './examplePlugins';
+export { securityPolicyPlugin, staleReleasePlugin, examplePlugins } from './examplePlugins';
 
 export const BEACON_PLUGINS_VERSION = '0.1.0';

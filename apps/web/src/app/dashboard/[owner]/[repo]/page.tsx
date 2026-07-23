@@ -33,9 +33,7 @@ interface PageProps {
   params: Promise<{ owner: string; repo: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { owner, repo } = await params;
   const analysis = await getAnalysis(owner, repo);
   if (!analysis) {
@@ -44,20 +42,13 @@ export async function generateMetadata({
   const { metadata } = analysis.snapshot;
   return {
     title: `${metadata.fullName} — Beacon Score ${analysis.score.total}`,
-    description:
-      metadata.description ??
-      `Repository health analysis for ${metadata.fullName}.`,
+    description: metadata.description ?? `Repository health analysis for ${metadata.fullName}.`,
   };
 }
 
-export default async function AnalysisPage({
-  params,
-}: PageProps): Promise<React.JSX.Element> {
+export default async function AnalysisPage({ params }: PageProps): Promise<React.JSX.Element> {
   const { owner, repo } = await params;
-  const [analysis, trend] = await Promise.all([
-    getAnalysis(owner, repo),
-    getTrend(owner, repo),
-  ]);
+  const [analysis, trend] = await Promise.all([getAnalysis(owner, repo), getTrend(owner, repo)]);
 
   if (!analysis) {
     return <NotFoundState owner={owner} repo={repo} />;
@@ -115,8 +106,7 @@ export default async function AnalysisPage({
                   </div>
                 )}
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Updated {relativeTime(m.pushedAt)} · analyzed{' '}
-                  {relativeTime(snapshot.collectedAt)}
+                  Updated {relativeTime(m.pushedAt)} · analyzed {relativeTime(snapshot.collectedAt)}
                 </p>
               </div>
 
@@ -142,10 +132,7 @@ export default async function AnalysisPage({
               {quickStats.map((stat) => {
                 const Icon = stat.icon;
                 return (
-                  <div
-                    key={stat.label}
-                    className="glass rounded-lg px-4 py-3"
-                  >
+                  <div key={stat.label} className="glass rounded-lg px-4 py-3">
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Icon className="size-3.5" />
                       {stat.label}
@@ -192,10 +179,7 @@ export default async function AnalysisPage({
 
           <div className="grid gap-6 lg:grid-cols-3">
             <Reveal index={0} className="lg:col-span-2">
-              <IssueHealthCards
-                issues={snapshot.issues}
-                pullRequests={snapshot.pullRequests}
-              />
+              <IssueHealthCards issues={snapshot.issues} pullRequests={snapshot.pullRequests} />
             </Reveal>
             <Reveal index={1}>
               <ReleaseTimeline releases={snapshot.releases} />
@@ -209,13 +193,7 @@ export default async function AnalysisPage({
   );
 }
 
-function NotFoundState({
-  owner,
-  repo,
-}: {
-  owner: string;
-  repo: string;
-}): React.JSX.Element {
+function NotFoundState({ owner, repo }: { owner: string; repo: string }): React.JSX.Element {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -224,9 +202,7 @@ function NotFoundState({
           <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-border bg-surface-2 text-muted-foreground">
             <SearchX className="size-6" />
           </div>
-          <h1 className="mt-5 text-xl font-semibold text-foreground">
-            No analysis found
-          </h1>
+          <h1 className="mt-5 text-xl font-semibold text-foreground">No analysis found</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Beacon has no data for{' '}
             <span className="font-mono text-foreground/80">

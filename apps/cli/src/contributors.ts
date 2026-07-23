@@ -57,20 +57,21 @@ export function renderContributorHealth(
       `of ${health.totalContributors}`,
     )}`,
   );
-  lines.push(`  ${palette.gray('Bus factor')}           ${paintBus(palette.bold(`${health.busFactor}`))}`);
+  lines.push(
+    `  ${palette.gray('Bus factor')}           ${paintBus(palette.bold(`${health.busFactor}`))}`,
+  );
   lines.push(`  ${palette.gray('Maintainer load')}      ${palette.bold(`${loadPct}%`)}`);
   lines.push('');
 
   if (health.distribution.length > 0) {
     lines.push(palette.bold('Distribution'));
-    const nameWidth = Math.min(
-      24,
-      Math.max(8, ...health.distribution.map((d) => d.login.length)),
-    );
+    const nameWidth = Math.min(24, Math.max(8, ...health.distribution.map((d) => d.login.length)));
     for (const entry of health.distribution) {
       const login = entry.login.padEnd(nameWidth, ' ');
       const pct = `${Math.round(entry.share * 100)}%`.padStart(4, ' ');
-      lines.push(`  ${palette.gray(login)}  ${palette.cyan(shareBar(entry.share, 16))}  ${palette.bold(pct)}`);
+      lines.push(
+        `  ${palette.gray(login)}  ${palette.cyan(shareBar(entry.share, 16))}  ${palette.bold(pct)}`,
+      );
     }
     lines.push('');
   }
@@ -92,7 +93,7 @@ async function runContributors(
     repository = options.local
       ? 'local'
       : options.demo
-        ? repositoryArg ?? ''
+        ? (repositoryArg ?? '')
         : resolveRepository(repositoryArg, options.config, options.cwd);
   } catch (error) {
     writeError(describeError(error), color);

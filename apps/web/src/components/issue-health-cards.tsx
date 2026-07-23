@@ -17,7 +17,13 @@ interface Row {
   goodWhen?: 'up' | 'down';
 }
 
-function DeltaChip({ delta, goodWhen }: { delta: number; goodWhen: 'up' | 'down' }): React.JSX.Element {
+function DeltaChip({
+  delta,
+  goodWhen,
+}: {
+  delta: number;
+  goodWhen: 'up' | 'down';
+}): React.JSX.Element {
   const up = delta > 0;
   const good = goodWhen === 'up' ? up : !up;
   return (
@@ -109,7 +115,10 @@ export function IssueHealthCards({
         openLabel="open PRs"
         rows={[
           { label: 'Merged (all time)', value: formatNumber(pullRequests.merged) },
-          { label: 'Median time to merge', value: formatHours(pullRequests.medianTimeToMergeHours) },
+          {
+            label: 'Median time to merge',
+            value: formatHours(pullRequests.medianTimeToMergeHours),
+          },
           {
             label: 'Opened · merged (30d)',
             value: `${pullRequests.openedLast30Days} · ${pullRequests.mergedLast30Days}`,

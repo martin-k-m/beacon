@@ -53,8 +53,7 @@ function scoreActivity(snapshot: RepositorySnapshot, now: number): PillarScore {
   else recency = clamp(100 - ((pushedAgo - 7) / (365 - 7)) * 100);
   if (pushedAgo <= 7) reasons.push('Pushed to within the last week');
   else if (pushedAgo <= 30) reasons.push('Active in the last month');
-  else if (Number.isFinite(pushedAgo))
-    reasons.push(`Last push ${Math.round(pushedAgo)} days ago`);
+  else if (Number.isFinite(pushedAgo)) reasons.push(`Last push ${Math.round(pushedAgo)} days ago`);
 
   // Commit volume over last 12 weeks: 60+ commits => full marks.
   const recentCommits = commitsInLastWeeks(snapshot.commitActivity, 12);
@@ -138,8 +137,7 @@ function scoreMaintenance(snapshot: RepositorySnapshot): PillarScore {
 
   // Backlog pressure: closed vs open issues over the last 30 days.
   const flow = issues.closedLast30Days + issues.openedLast30Days;
-  const backlog =
-    flow > 0 ? clamp((issues.closedLast30Days / flow) * 100) : 55;
+  const backlog = flow > 0 ? clamp((issues.closedLast30Days / flow) * 100) : 55;
   if (issues.openedLast30Days > 0)
     reasons.push(
       `${issues.closedLast30Days} closed / ${issues.openedLast30Days} opened issues (30d)`,
@@ -233,9 +231,7 @@ function scoreSecurity(snapshot: RepositorySnapshot): PillarScore {
     }
   }
   if (snapshot.dependencies.length > 0) {
-    reasons.push(
-      `${snapshot.dependencies.length} dependency manifest(s) detected`,
-    );
+    reasons.push(`${snapshot.dependencies.length} dependency manifest(s) detected`);
   }
 
   return {
@@ -275,9 +271,7 @@ export function computeBeaconScore(
     scoreSecurity(snapshot),
   ];
 
-  const total = round(
-    pillars.reduce((sum, p) => sum + p.score * p.weight, 0),
-  );
+  const total = round(pillars.reduce((sum, p) => sum + p.score * p.weight, 0));
 
   const strengths = pillars
     .filter((p) => p.score >= 75)

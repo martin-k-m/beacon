@@ -94,7 +94,10 @@ describe('buildLocalSnapshot', () => {
     write('LICENSE', 'MIT License\n\nPermission is hereby granted, free of charge...');
     write('package.json', JSON.stringify({ dependencies: { left: '1' } }));
 
-    const { snapshot, notes } = buildLocalSnapshot({ cwd: dir, now: Date.parse('2026-07-16T00:00:00Z') });
+    const { snapshot, notes } = buildLocalSnapshot({
+      cwd: dir,
+      now: Date.parse('2026-07-16T00:00:00Z'),
+    });
 
     expect(snapshot.metadata.primaryLanguage).toBe('TypeScript');
     expect(snapshot.readme.present).toBe(true);

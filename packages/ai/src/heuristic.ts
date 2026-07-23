@@ -24,11 +24,15 @@ export class HeuristicProvider implements AIProvider {
     if (activity >= 75) {
       sentences.push(
         `${m.name} is actively maintained${
-          Number.isFinite(lastPushDays) ? `, with its most recent push ${describeDays(lastPushDays)}` : ''
+          Number.isFinite(lastPushDays)
+            ? `, with its most recent push ${describeDays(lastPushDays)}`
+            : ''
         }.`,
       );
     } else if (activity >= 45) {
-      sentences.push(`${m.name} sees moderate activity, last updated ${describeDays(lastPushDays)}.`);
+      sentences.push(
+        `${m.name} sees moderate activity, last updated ${describeDays(lastPushDays)}.`,
+      );
     } else {
       sentences.push(
         `${m.name} shows limited recent activity; the last push was ${describeDays(lastPushDays)}.`,
@@ -51,7 +55,9 @@ export class HeuristicProvider implements AIProvider {
         (Date.parse(snapshot.collectedAt) - Date.parse(lastRelease.publishedAt)) /
           (1000 * 60 * 60 * 24),
       );
-      sentences.push(`The latest release, ${lastRelease.tagName}, shipped ${describeDays(relDays)}.`);
+      sentences.push(
+        `The latest release, ${lastRelease.tagName}, shipped ${describeDays(relDays)}.`,
+      );
     }
 
     const maintenance = score.pillars.find((p) => p.pillar === 'maintenance')?.score ?? 0;

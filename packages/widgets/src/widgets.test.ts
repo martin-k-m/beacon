@@ -15,7 +15,10 @@ let analysis: BeaconAnalysis;
 
 beforeAll(async () => {
   const score = computeBeaconScore(demoHealthySnapshot);
-  const summary = await new HeuristicProvider().generateSummary({ snapshot: demoHealthySnapshot, score });
+  const summary = await new HeuristicProvider().generateSummary({
+    snapshot: demoHealthySnapshot,
+    score,
+  });
   analysis = { snapshot: demoHealthySnapshot, score, summary };
 });
 

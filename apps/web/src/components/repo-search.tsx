@@ -23,9 +23,7 @@ export function parseRepoInput(raw: string): { owner: string; repo: string } | n
   if (!value) return null;
 
   // Full URL (with or without protocol): github.com/owner/repo/...
-  const urlMatch = value.match(
-    /github\.com[/:]([^/\s]+)\/([^/\s#?]+)/i,
-  );
+  const urlMatch = value.match(/github\.com[/:]([^/\s]+)\/([^/\s#?]+)/i);
   if (urlMatch && urlMatch[1] && urlMatch[2]) {
     return { owner: urlMatch[1], repo: stripGitSuffix(urlMatch[2]) };
   }
@@ -105,11 +103,7 @@ export function RepoSearch({
             size === 'lg' ? 'text-base' : 'text-sm',
           )}
         />
-        <Button
-          type="submit"
-          size={size === 'lg' ? 'md' : 'sm'}
-          className="rounded-full"
-        >
+        <Button type="submit" size={size === 'lg' ? 'md' : 'sm'} className="rounded-full">
           Analyze
           <ArrowRight className="size-4" />
         </Button>

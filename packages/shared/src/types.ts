@@ -130,12 +130,7 @@ export interface RepositorySnapshot {
 }
 
 /** The five weighted pillars that make up the Beacon Score. */
-export type ScorePillar =
-  | 'activity'
-  | 'community'
-  | 'maintenance'
-  | 'documentation'
-  | 'security';
+export type ScorePillar = 'activity' | 'community' | 'maintenance' | 'documentation' | 'security';
 
 export interface PillarScore {
   pillar: ScorePillar;

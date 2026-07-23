@@ -94,9 +94,7 @@ describe('analyzeDependencies (offline, mocked registry)', () => {
       unmaintained: 1,
       unknown: 1,
     });
-    expect(report.summary).toBe(
-      '1 outdated, 1 unmaintained, 1 unknown across 4 dependencies.',
-    );
+    expect(report.summary).toBe('1 outdated, 1 unmaintained, 1 unknown across 4 dependencies.');
     expect(report.ecosystems).toEqual(['npm']);
     expect(report.generatedAt).toBe('2026-07-16T00:00:00.000Z');
   });
@@ -147,9 +145,7 @@ describe('OfflineRegistryClient', () => {
 
 describe('fromManifests', () => {
   it('returns an empty list (snapshots record presence, not the dep list)', () => {
-    const inputs = fromManifests([
-      { ecosystem: 'npm', path: 'package.json', dependencyCount: 12 },
-    ]);
+    const inputs = fromManifests([{ ecosystem: 'npm', path: 'package.json', dependencyCount: 12 }]);
     expect(inputs).toEqual([]);
   });
 });

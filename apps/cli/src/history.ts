@@ -117,7 +117,9 @@ export function renderHealthTimeline(
   const lines: string[] = [];
 
   lines.push('');
-  lines.push(`  ${palette.bold(palette.cyan(fullName))}  ${palette.dim(`· ${describeRange(range)}`)}`);
+  lines.push(
+    `  ${palette.bold(palette.cyan(fullName))}  ${palette.dim(`· ${describeRange(range)}`)}`,
+  );
   lines.push('');
 
   if (series.length === 0) {
@@ -215,7 +217,9 @@ export function renderEventTimeline(
   const lines: string[] = [];
 
   lines.push('');
-  lines.push(`  ${palette.bold(palette.cyan(fullName))}  ${palette.dim(`· ${describeRange(range)}`)}`);
+  lines.push(
+    `  ${palette.bold(palette.cyan(fullName))}  ${palette.dim(`· ${describeRange(range)}`)}`,
+  );
   if (trend && trend.points >= 2) {
     lines.push(`  ${palette.dim(trend.narrative)}`);
   }
@@ -262,7 +266,7 @@ async function runHistory(
     repository = options.local
       ? 'local'
       : options.demo
-        ? repositoryArg ?? ''
+        ? (repositoryArg ?? '')
         : resolveRepository(repositoryArg, options.config, options.cwd);
   } catch (error) {
     writeError(describeError(error), color);
@@ -353,7 +357,11 @@ async function runHistory(
   spinner.stop();
 
   if (options.json) {
-    const trend = computeTrend(series, toTrendRange(options.range), series.length > 0 ? series[series.length - 1]!.timestamp : now);
+    const trend = computeTrend(
+      series,
+      toTrendRange(options.range),
+      series.length > 0 ? series[series.length - 1]!.timestamp : now,
+    );
     const points = series
       .slice()
       .reverse()

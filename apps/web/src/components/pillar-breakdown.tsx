@@ -12,9 +12,7 @@ export interface PillarBreakdownProps {
 }
 
 /** The five weighted pillars as animated bars, each with its top reason. */
-export function PillarBreakdown({
-  pillars,
-}: PillarBreakdownProps): React.JSX.Element {
+export function PillarBreakdown({ pillars }: PillarBreakdownProps): React.JSX.Element {
   return (
     <ChartCard
       title="Pillar breakdown"
@@ -36,22 +34,12 @@ export function PillarBreakdown({
                     {Math.round(pillar.weight * 100)}% weight
                   </span>
                 </div>
-                <span
-                  className="font-mono text-sm font-semibold tabular-nums"
-                  style={{ color }}
-                >
+                <span className="font-mono text-sm font-semibold tabular-nums" style={{ color }}>
                   {pillar.score}
                 </span>
               </div>
-              <ProgressBar
-                value={pillar.score}
-                color={color}
-                delay={i * 0.08}
-                height={8}
-              />
-              {reason && (
-                <p className="mt-1.5 text-xs text-muted-foreground">{reason}</p>
-              )}
+              <ProgressBar value={pillar.score} color={color} delay={i * 0.08} height={8} />
+              {reason && <p className="mt-1.5 text-xs text-muted-foreground">{reason}</p>}
             </div>
           );
         })}

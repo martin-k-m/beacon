@@ -72,7 +72,13 @@ export const intelligenceRoutes: FastifyPluginAsync = async (app) => {
 
       const report: AdvisorReport = await generateAdvice(
         { analysis, ...(trend ? { trend } : {}) },
-        { ai: { provider: config.aiProvider, openaiApiKey: config.openaiApiKey, anthropicApiKey: config.anthropicApiKey } },
+        {
+          ai: {
+            provider: config.aiProvider,
+            openaiApiKey: config.openaiApiKey,
+            anthropicApiKey: config.anthropicApiKey,
+          },
+        },
       );
 
       // Persist the run (best-effort; no-op without a DB, never throws).

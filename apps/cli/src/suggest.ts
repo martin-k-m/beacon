@@ -61,8 +61,7 @@ export function suggestCommands(
 ): string[] {
   const needle = input.toLowerCase();
   const limit = options.limit ?? 3;
-  const threshold =
-    options.maxDistance ?? Math.max(2, Math.floor(needle.length / 2) + 1);
+  const threshold = options.maxDistance ?? Math.max(2, Math.floor(needle.length / 2) + 1);
 
   const scored = candidates
     .map((candidate) => {
@@ -86,10 +85,7 @@ export function suggestCommands(
  * Build the multi-line "Unknown command" message, or `null` when there are no
  * close matches (so the caller can fall back to generic help).
  */
-export function formatUnknownCommand(
-  input: string,
-  candidates: readonly string[],
-): string {
+export function formatUnknownCommand(input: string, candidates: readonly string[]): string {
   const suggestions = suggestCommands(input, candidates);
   const header = `Unknown command: ${input}`;
   if (suggestions.length === 0) {

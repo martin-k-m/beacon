@@ -59,11 +59,7 @@ export async function enqueueAnalysis(repo: string, reason?: string): Promise<bo
   if (!q) return false;
 
   try {
-    await q.add(
-      'analyze',
-      { repo, reason },
-      { jobId: `analyze:${repo.toLowerCase()}` },
-    );
+    await q.add('analyze', { repo, reason }, { jobId: `analyze:${repo.toLowerCase()}` });
     return true;
   } catch {
     return false;

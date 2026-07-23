@@ -86,7 +86,8 @@ export const staleReleasePlugin: BeaconPlugin = {
             {
               id: 'release-stale',
               title: 'Cut a fresh release',
-              recommendation: `The last release was ${days} days ago. A newer ` +
+              recommendation:
+                `The last release was ${days} days ago. A newer ` +
                 'release signals the project is actively maintained.',
               severity: 'medium' as const,
             },

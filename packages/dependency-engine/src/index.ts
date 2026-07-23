@@ -8,11 +8,7 @@
 
 export * from './types';
 export * from './registry-clients';
-export {
-  analyzeDependencies,
-  fromManifests,
-  type AnalyzeOptions,
-} from './engine';
+export { analyzeDependencies, fromManifests, type AnalyzeOptions } from './engine';
 
 /** Package version, surfaced for diagnostics and telemetry. */
 export const BEACON_DEPENDENCY_ENGINE_VERSION = '0.1.0';

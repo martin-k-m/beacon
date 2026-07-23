@@ -15,12 +15,9 @@ export default function NotFound(): React.JSX.Element {
             <Compass className="size-6" />
           </div>
           <p className="mt-5 font-mono text-sm text-beacon">404</p>
-          <h1 className="mt-1 text-xl font-semibold text-foreground">
-            Off the map
-          </h1>
+          <h1 className="mt-1 text-xl font-semibold text-foreground">Off the map</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            The page you are looking for does not exist. Let Beacon guide you
-            back.
+            The page you are looking for does not exist. Let Beacon guide you back.
           </p>
           <div className="mt-6 flex justify-center gap-2">
             <Link href="/">

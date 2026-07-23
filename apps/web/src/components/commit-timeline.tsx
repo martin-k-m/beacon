@@ -46,9 +46,7 @@ function CommitTooltip({
 }
 
 /** A gradient area chart of the 52-week commit histogram. */
-export function CommitTimeline({
-  activity,
-}: CommitTimelineProps): React.JSX.Element {
+export function CommitTimeline({ activity }: CommitTimelineProps): React.JSX.Element {
   const data = React.useMemo<Point[]>(
     () =>
       activity.map((week) => {
@@ -66,10 +64,7 @@ export function CommitTimeline({
     [activity],
   );
 
-  const total = React.useMemo(
-    () => data.reduce((sum, d) => sum + d.commits, 0),
-    [data],
-  );
+  const total = React.useMemo(() => data.reduce((sum, d) => sum + d.commits, 0), [data]);
 
   return (
     <ChartCard
@@ -86,11 +81,7 @@ export function CommitTimeline({
                 <stop offset="100%" stopColor="hsl(42 96% 62%)" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid
-              vertical={false}
-              stroke="hsl(240 5% 16%)"
-              strokeDasharray="3 3"
-            />
+            <CartesianGrid vertical={false} stroke="hsl(240 5% 16%)" strokeDasharray="3 3" />
             <XAxis
               dataKey="label"
               tick={{ fill: 'hsl(240 5% 55%)', fontSize: 11 }}

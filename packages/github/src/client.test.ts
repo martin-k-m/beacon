@@ -14,9 +14,9 @@ describe('parseRepoIdentifier', () => {
   });
 
   it('strips a trailing .git', () => {
-    expect(parseRepoIdentifier('git@github.com:org/tool.git'.replace('git@github.com:', ''))).toEqual(
-      { owner: 'org', repo: 'tool' },
-    );
+    expect(
+      parseRepoIdentifier('git@github.com:org/tool.git'.replace('git@github.com:', '')),
+    ).toEqual({ owner: 'org', repo: 'tool' });
   });
 
   it('throws on invalid input', () => {

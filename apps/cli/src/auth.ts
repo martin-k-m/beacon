@@ -142,10 +142,7 @@ async function requestDeviceCode(clientId: string): Promise<DeviceCodeResponse> 
   return data;
 }
 
-async function pollForToken(
-  clientId: string,
-  device: DeviceCodeResponse,
-): Promise<string> {
+async function pollForToken(clientId: string, device: DeviceCodeResponse): Promise<string> {
   let intervalMs = Math.max(1, device.interval || 5) * 1000;
   const deadline = Date.now() + Math.max(60, device.expires_in || 900) * 1000;
 

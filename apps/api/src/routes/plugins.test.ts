@@ -26,16 +26,19 @@ const widgetPlugin: BeaconPlugin = {
     {
       name: 'star-counter',
       // Reads real snapshot data, proving the context is wired through.
-      run: (ctx) => [
-        { key: 'stars', label: 'Stars', value: ctx.snapshot.metadata.stars },
-      ],
+      run: (ctx) => [{ key: 'stars', label: 'Stars', value: ctx.snapshot.metadata.stars }],
     },
   ],
   recommenders: [
     {
       name: 'always-advises',
       run: () => [
-        { id: 'route-test-rec', title: 'Test rec', recommendation: 'Do the thing', severity: 'low' },
+        {
+          id: 'route-test-rec',
+          title: 'Test rec',
+          recommendation: 'Do the thing',
+          severity: 'low',
+        },
       ],
     },
   ],

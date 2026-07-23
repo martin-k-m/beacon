@@ -23,8 +23,7 @@ export async function analyzeRepository(
   input: string | RepoIdentifier,
   options: AnalyzeOptions = {},
 ): Promise<BeaconAnalysis> {
-  const identifier: RepoIdentifier =
-    typeof input === 'string' ? parseRepoIdentifier(input) : input;
+  const identifier: RepoIdentifier = typeof input === 'string' ? parseRepoIdentifier(input) : input;
 
   const client =
     options.client ??

@@ -29,19 +29,11 @@ export function RepoCard({ analysis }: RepoCardProps): React.JSX.Element {
             {m.name}
           </h3>
         </div>
-        <ScoreRing
-          value={score.total}
-          size={56}
-          strokeWidth={5}
-          color={colors.hsl}
-          showValue
-        />
+        <ScoreRing value={score.total} size={56} strokeWidth={5} color={colors.hsl} showValue />
       </div>
 
       {m.description && (
-        <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-          {m.description}
-        </p>
+        <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{m.description}</p>
       )}
 
       <div className="mt-4 flex items-center justify-between">

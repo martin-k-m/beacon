@@ -200,10 +200,7 @@ export interface ScoreHistoryEntry {
  * for a repository, shaped for `toHealthSeries`. Empty when the repository is
  * unknown or the database is unavailable.
  */
-export async function getScoreHistory(
-  owner: string,
-  repo: string,
-): Promise<ScoreHistoryEntry[]> {
+export async function getScoreHistory(owner: string, repo: string): Promise<ScoreHistoryEntry[]> {
   if (!config.hasDatabase) return [];
 
   const fullName = `${owner}/${repo}`;
@@ -276,10 +273,7 @@ export async function listRepositories(): Promise<RepositorySummary[]> {
  * Return the analysis history (newest first) for a repository. Empty when the
  * repository is unknown or the database is unavailable.
  */
-export async function getHistory(
-  owner: string,
-  repo: string,
-): Promise<HistoryEntry[]> {
+export async function getHistory(owner: string, repo: string): Promise<HistoryEntry[]> {
   if (!config.hasDatabase) return [];
 
   const fullName = `${owner}/${repo}`;
@@ -426,10 +420,7 @@ export async function recordEvent(
         detail: event.detail ?? null,
         pillar: event.pillar ?? null,
         healthDelta: typeof event.healthDelta === 'number' ? event.healthDelta : null,
-        payload:
-          event.payload === undefined
-            ? undefined
-            : (event.payload as Prisma.InputJsonValue),
+        payload: event.payload === undefined ? undefined : (event.payload as Prisma.InputJsonValue),
         occurredAt: new Date(event.occurredAt),
       },
     });

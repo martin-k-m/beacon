@@ -68,9 +68,7 @@ const identityCollector: Collector = {
     draft.metadata.owner = owner;
     draft.metadata.name = repo;
     draft.metadata.fullName = fullName;
-    draft.metadata.htmlUrl = remote
-      ? `https://github.com/${fullName}`
-      : `file://${ctx.cwd}`;
+    draft.metadata.htmlUrl = remote ? `https://github.com/${fullName}` : `file://${ctx.cwd}`;
 
     const branch = currentBranch(ctx.cwd);
     if (branch) {
@@ -95,10 +93,12 @@ function earliestRootDate(cwd: string): string | null {
   if (dates.length === 0) {
     return null;
   }
-  return dates
-    .map((d) => ({ d, t: Date.parse(d) }))
-    .filter((x) => Number.isFinite(x.t))
-    .sort((a, b) => a.t - b.t)[0]?.d ?? null;
+  return (
+    dates
+      .map((d) => ({ d, t: Date.parse(d) }))
+      .filter((x) => Number.isFinite(x.t))
+      .sort((a, b) => a.t - b.t)[0]?.d ?? null
+  );
 }
 
 /** 52 weekly commit buckets from `git log --since=1.year`. */
@@ -107,10 +107,7 @@ const commitActivityCollector: Collector = {
   collect(ctx, draft) {
     const nowSec = Math.floor(ctx.now / 1000);
     const buckets = new Array<number>(WEEKS).fill(0);
-    const timestamps = runGitLines(
-      ['log', '--since=1.year', '--format=%ct'],
-      ctx.cwd,
-    );
+    const timestamps = runGitLines(['log', '--since=1.year', '--format=%ct'], ctx.cwd);
     for (const raw of timestamps) {
       const ts = Number.parseInt(raw, 10);
       if (!Number.isFinite(ts)) {
@@ -161,10 +158,7 @@ const contributorsCollector: Collector = {
 const releasesCollector: Collector = {
   name: 'releases',
   collect(ctx, draft) {
-    const tags = runGitLines(
-      ['tag', '--sort=-creatordate'],
-      ctx.cwd,
-    ).slice(0, 20);
+    const tags = runGitLines(['tag', '--sort=-creatordate'], ctx.cwd).slice(0, 20);
     if (tags.length === 0) {
       return;
     }
@@ -213,9 +207,7 @@ const README_CANDIDATES = ['README.md', 'README.MD', 'Readme.md', 'readme.md', '
 const readmeCollector: Collector = {
   name: 'readme',
   collect(ctx, draft) {
-    const path = README_CANDIDATES.map((name) => join(ctx.cwd, name)).find((p) =>
-      existsSync(p),
-    );
+    const path = README_CANDIDATES.map((name) => join(ctx.cwd, name)).find((p) => existsSync(p));
     if (!path) {
       return;
     }
@@ -245,8 +237,8 @@ const readmeCollector: Collector = {
 const securityCollector: Collector = {
   name: 'security',
   collect(ctx, draft) {
-    const hasSecurityPolicy = ['SECURITY.md', '.github/SECURITY.md', 'docs/SECURITY.md'].some(
-      (p) => existsSync(join(ctx.cwd, p)),
+    const hasSecurityPolicy = ['SECURITY.md', '.github/SECURITY.md', 'docs/SECURITY.md'].some((p) =>
+      existsSync(join(ctx.cwd, p)),
     );
     const hasDependabot = ['.github/dependabot.yml', '.github/dependabot.yaml'].some((p) =>
       existsSync(join(ctx.cwd, p)),
@@ -265,9 +257,7 @@ const LICENSE_CANDIDATES = ['LICENSE', 'LICENSE.md', 'LICENSE.txt', 'COPYING', '
 const licenseCollector: Collector = {
   name: 'license',
   collect(ctx, draft) {
-    const path = LICENSE_CANDIDATES.map((name) => join(ctx.cwd, name)).find((p) =>
-      existsSync(p),
-    );
+    const path = LICENSE_CANDIDATES.map((name) => join(ctx.cwd, name)).find((p) => existsSync(p));
     if (!path) {
       return;
     }

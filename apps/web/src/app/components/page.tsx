@@ -6,13 +6,7 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatCard } from '@/components/ui/stat-card';
 import { ScoreRing } from '@/components/ui/score-ring';
 import { ProgressBar } from '@/components/ui/progress-bar';
@@ -34,12 +28,10 @@ export default function ComponentsPage(): React.JSX.Element {
             <Badge variant="beacon" className="mb-3">
               Style guide
             </Badge>
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              UI kit
-            </h1>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">UI kit</h1>
             <p className="mt-2 max-w-2xl text-muted-foreground">
-              The reusable primitives that compose the Beacon dashboard — real
-              and interactive, exactly as they ship.
+              The reusable primitives that compose the Beacon dashboard — real and interactive,
+              exactly as they ship.
             </p>
           </div>
         </section>
@@ -101,8 +93,8 @@ export default function ComponentsPage(): React.JSX.Element {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Pass <code className="font-mono text-beacon">hover</code> to
-                    enable the interactive lift.
+                    Pass <code className="font-mono text-beacon">hover</code> to enable the
+                    interactive lift.
                   </p>
                 </CardContent>
               </Card>
@@ -135,18 +127,8 @@ export default function ComponentsPage(): React.JSX.Element {
           <Section title="ProgressBar" description="Animated horizontal bars.">
             <div className="max-w-md space-y-4">
               <ProgressBar value={88} label="Activity" valueLabel="88" />
-              <ProgressBar
-                value={64}
-                label="Community"
-                valueLabel="64"
-                color="hsl(190 95% 55%)"
-              />
-              <ProgressBar
-                value={42}
-                label="Maintenance"
-                valueLabel="42"
-                color="hsl(38 92% 55%)"
-              />
+              <ProgressBar value={64} label="Community" valueLabel="64" color="hsl(190 95% 55%)" />
+              <ProgressBar value={42} label="Maintenance" valueLabel="42" color="hsl(38 92% 55%)" />
             </div>
           </Section>
 

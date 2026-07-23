@@ -47,9 +47,7 @@ async function main(): Promise<void> {
 
     for (const point of history) {
       const isLatest = point === latest;
-      const summaryText = isLatest
-        ? latestSummary.text
-        : shortSummary(m.fullName, point.score);
+      const summaryText = isLatest ? latestSummary.text : shortSummary(m.fullName, point.score);
 
       await prisma.analysis.create({
         data: {

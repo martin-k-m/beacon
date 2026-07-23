@@ -50,13 +50,11 @@ export default function LandingPage(): React.JSX.Element {
                 <ArrowRight className="size-3" />
               </a>
               <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-6xl">
-                Understand any GitHub{' '}
-                <span className="gradient-text">repository instantly.</span>
+                Understand any GitHub <span className="gradient-text">repository instantly.</span>
               </h1>
               <p className="mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
-                Beacon turns raw GitHub signals into a clear read on repository
-                health — activity, contributors, maintenance, and AI summaries,
-                all in one dashboard.
+                Beacon turns raw GitHub signals into a clear read on repository health — activity,
+                contributors, maintenance, and AI summaries, all in one dashboard.
               </p>
             </Reveal>
 
@@ -64,10 +62,7 @@ export default function LandingPage(): React.JSX.Element {
               <RepoSearch />
             </Reveal>
 
-            <Reveal
-              delay={0.2}
-              className="mt-5 flex flex-wrap items-center justify-center gap-3"
-            >
+            <Reveal delay={0.2} className="mt-5 flex flex-wrap items-center justify-center gap-3">
               <Link href="/dashboard">
                 <Button variant="secondary" size="md">
                   View demo dashboard
@@ -101,8 +96,8 @@ export default function LandingPage(): React.JSX.Element {
               Every signal that matters, in one place.
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Six lenses on repository health, computed deterministically from a
-              single snapshot of the repository.
+              Six lenses on repository health, computed deterministically from a single snapshot of
+              the repository.
             </p>
           </Reveal>
           <FeatureGrid />
@@ -118,8 +113,8 @@ export default function LandingPage(): React.JSX.Element {
                   Point Beacon at your next dependency.
                 </h2>
                 <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-                  Before you adopt a library, know how healthy it really is.
-                  Analyze any public repository in seconds.
+                  Before you adopt a library, know how healthy it really is. Analyze any public
+                  repository in seconds.
                 </p>
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                   <Link href="/dashboard">
@@ -162,9 +157,7 @@ function HeroPreview({
         <span className="size-2.5 rounded-full bg-danger/60" />
         <span className="size-2.5 rounded-full bg-warning/60" />
         <span className="size-2.5 rounded-full bg-success/60" />
-        <span className="ml-3 font-mono text-xs text-muted-foreground">
-          beacon · {m.fullName}
-        </span>
+        <span className="ml-3 font-mono text-xs text-muted-foreground">beacon · {m.fullName}</span>
       </div>
       <div className="grid gap-6 p-6 md:grid-cols-[auto_1fr] md:items-center md:p-8">
         <div className="flex flex-col items-center gap-3">

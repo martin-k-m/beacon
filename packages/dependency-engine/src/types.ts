@@ -8,15 +8,7 @@
 
 /** A package ecosystem the engine can reason about. */
 export type DependencyEcosystem =
-  | 'npm'
-  | 'pip'
-  | 'cargo'
-  | 'go'
-  | 'maven'
-  | 'gradle'
-  | 'rubygems'
-  | 'composer'
-  | 'unknown';
+  'npm' | 'pip' | 'cargo' | 'go' | 'maven' | 'gradle' | 'rubygems' | 'composer' | 'unknown';
 
 /**
  * The health classification for a single dependency.
@@ -25,12 +17,7 @@ export type DependencyEcosystem =
  * bundled registry clients can source vulnerability data today — a caller that
  * has its own advisory feed can pass it through and the engine will map it.
  */
-export type DependencyStatus =
-  | 'current'
-  | 'outdated'
-  | 'vulnerable'
-  | 'unmaintained'
-  | 'unknown';
+export type DependencyStatus = 'current' | 'outdated' | 'vulnerable' | 'unmaintained' | 'unknown';
 
 /** A dependency to analyze. */
 export interface DependencyInput {
@@ -78,8 +65,5 @@ export interface RegistryPackageInfo {
  */
 export interface RegistryClient {
   /** Latest metadata for a package, or null if unknown/unreachable. */
-  getPackage(
-    ecosystem: DependencyEcosystem,
-    name: string,
-  ): Promise<RegistryPackageInfo | null>;
+  getPackage(ecosystem: DependencyEcosystem, name: string): Promise<RegistryPackageInfo | null>;
 }

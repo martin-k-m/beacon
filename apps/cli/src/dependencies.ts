@@ -69,10 +69,7 @@ export function renderDependencyReport(report: DependencyReport, color: boolean)
   lines.push('');
   lines.push(palette.bold('Dependencies'));
 
-  const nameWidth = Math.min(
-    32,
-    Math.max(10, ...report.dependencies.map((d) => d.name.length)),
-  );
+  const nameWidth = Math.min(32, Math.max(10, ...report.dependencies.map((d) => d.name.length)));
 
   for (const dep of report.dependencies) {
     lines.push(`  ${renderDependencyLine(dep, palette, nameWidth)}`);
@@ -124,7 +121,9 @@ async function runDependencies(options: DependenciesCommandOptions): Promise<voi
       color,
     );
     if (options.json) {
-      process.stdout.write(`${JSON.stringify({ dependencies: [], counts: {}, ecosystems: [], summary: 'No manifests found.' }, null, 2)}\n`);
+      process.stdout.write(
+        `${JSON.stringify({ dependencies: [], counts: {}, ecosystems: [], summary: 'No manifests found.' }, null, 2)}\n`,
+      );
     }
     process.exitCode = 1;
     return;

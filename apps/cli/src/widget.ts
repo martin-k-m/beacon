@@ -44,9 +44,7 @@ export function normalizeTheme(value: string): WidgetTheme {
   if ((THEMES as readonly string[]).includes(theme)) {
     return theme as WidgetTheme;
   }
-  throw new BeaconCliError(
-    `Unknown --theme "${value}". Expected one of: ${THEMES.join(', ')}.`,
-  );
+  throw new BeaconCliError(`Unknown --theme "${value}". Expected one of: ${THEMES.join(', ')}.`);
 }
 
 /** Validate a `--size` value, throwing a friendly error otherwise. */
@@ -55,9 +53,7 @@ export function normalizeSize(value: string): WidgetSize {
   if ((SIZES as readonly string[]).includes(size)) {
     return size as WidgetSize;
   }
-  throw new BeaconCliError(
-    `Unknown --size "${value}". Expected one of: ${SIZES.join(', ')}.`,
-  );
+  throw new BeaconCliError(`Unknown --size "${value}". Expected one of: ${SIZES.join(', ')}.`);
 }
 
 /** Derive `owner`/`repo` from an analysis (works for demo + live alike). */
@@ -115,10 +111,7 @@ export interface FormatEmbedOptions {
 }
 
 /** Format embed snippets as an indented, optionally-coloured block. */
-export function formatEmbedSnippets(
-  snippets: EmbedSnippets,
-  options: FormatEmbedOptions,
-): string {
+export function formatEmbedSnippets(snippets: EmbedSnippets, options: FormatEmbedOptions): string {
   const palette = createPalette(options.color);
   const lines: string[] = [];
   lines.push(palette.bold('Embed'));

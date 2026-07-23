@@ -22,14 +22,8 @@ describe('computeContributorHealth', () => {
 
   it('produces shares that sum to the covered fraction of contributions', () => {
     const health = computeContributorHealth(demoHealthySnapshot, 8);
-    const total = demoHealthySnapshot.contributors.reduce(
-      (sum, c) => sum + c.contributions,
-      0,
-    );
-    const coveredContributions = health.distribution.reduce(
-      (sum, d) => sum + d.contributions,
-      0,
-    );
+    const total = demoHealthySnapshot.contributors.reduce((sum, c) => sum + c.contributions, 0);
+    const coveredContributions = health.distribution.reduce((sum, d) => sum + d.contributions, 0);
     const shareSum = health.distribution.reduce((sum, d) => sum + d.share, 0);
     expect(shareSum).toBeCloseTo(coveredContributions / total, 6);
     // Each individual share is a fraction.

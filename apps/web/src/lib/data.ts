@@ -7,11 +7,7 @@ import {
   type TrendRange,
   type TrendResult,
 } from '@beacon/analytics';
-import {
-  demoSnapshots,
-  type BeaconScore,
-  type RepositorySnapshot,
-} from '@beacon/shared';
+import { demoSnapshots, type BeaconScore, type RepositorySnapshot } from '@beacon/shared';
 
 /**
  * A fully-computed analysis for the UI: the raw snapshot, the deterministic
@@ -52,8 +48,7 @@ export function buildDemoAnalysis(snapshot: RepositorySnapshot): DemoAnalysis {
   const m = snapshot.metadata;
   const sentences: string[] = [];
 
-  const pillar = (name: string): number =>
-    score.pillars.find((p) => p.pillar === name)?.score ?? 0;
+  const pillar = (name: string): number => score.pillars.find((p) => p.pillar === name)?.score ?? 0;
 
   const activity = pillar('activity');
   const lastPushDays = daysBetween(snapshot.collectedAt, m.pushedAt);
@@ -82,7 +77,9 @@ export function buildDemoAnalysis(snapshot: RepositorySnapshot): DemoAnalysis {
   const latestRelease = snapshot.releases.find((r) => r.publishedAt);
   if (latestRelease?.publishedAt) {
     const relDays = daysBetween(snapshot.collectedAt, latestRelease.publishedAt);
-    sentences.push(`The latest release, ${latestRelease.tagName}, shipped ${describeDays(relDays)}.`);
+    sentences.push(
+      `The latest release, ${latestRelease.tagName}, shipped ${describeDays(relDays)}.`,
+    );
   }
 
   if (pillar('maintenance') < 55) {
@@ -90,7 +87,9 @@ export function buildDemoAnalysis(snapshot: RepositorySnapshot): DemoAnalysis {
       `Issue and pull-request throughput is a weak point, with ${snapshot.issues.open} open issues.`,
     );
   } else if (pillar('security') >= 80) {
-    sentences.push('Supply-chain hygiene is strong, with automated dependency and policy checks in place.');
+    sentences.push(
+      'Supply-chain hygiene is strong, with automated dependency and policy checks in place.',
+    );
   }
 
   const summary = `${m.fullName} holds a Beacon Score of ${score.total}/100 (${score.grade}). ${sentences.join(' ')}`;

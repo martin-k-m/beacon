@@ -60,8 +60,17 @@ export function ScoreRing({
   }, [inView, clamped]);
 
   return (
-    <div ref={ref} className={className} style={{ width: size, height: size, position: 'relative' }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-90deg)' }}>
+    <div
+      ref={ref}
+      className={className}
+      style={{ width: size, height: size, position: 'relative' }}
+    >
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        style={{ transform: 'rotate(-90deg)' }}
+      >
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -86,7 +95,10 @@ export function ScoreRing({
         />
       </svg>
       {showValue && (
-        <div style={{ position: 'absolute', inset: 0 }} className="flex flex-col items-center justify-center">
+        <div
+          style={{ position: 'absolute', inset: 0 }}
+          className="flex flex-col items-center justify-center"
+        >
           <span
             className="font-mono font-bold leading-none tabular-nums"
             style={{ fontSize: size * 0.28, color: ringColor }}

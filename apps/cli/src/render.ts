@@ -6,12 +6,7 @@
  * produces clean, ANSI-free text (useful for pipes, CI logs, and snapshots).
  */
 
-import type {
-  BeaconAnalysis,
-  HealthGrade,
-  PillarScore,
-  ScorePillar,
-} from '@beacon/shared';
+import type { BeaconAnalysis, HealthGrade, PillarScore, ScorePillar } from '@beacon/shared';
 import pc from 'picocolors';
 
 export interface RenderOptions {
@@ -76,11 +71,7 @@ export function starRating(total: number): string {
  * The compact two-line `score` output: `Beacon Score: 96/100` followed by a
  * `★★★★★ <grade>` line, coloured by grade when `color` is true.
  */
-export function renderScoreLine(
-  total: number,
-  grade: HealthGrade,
-  options: RenderOptions,
-): string {
+export function renderScoreLine(total: number, grade: HealthGrade, options: RenderOptions): string {
   const palette = createPalette(options.color);
   const paint = gradeColor(palette, grade);
   const headline = `${palette.bold('Beacon Score:')} ${paint(palette.bold(`${total}/100`))}`;
@@ -201,10 +192,7 @@ function deriveStrengths(pillars: PillarScore[]): string[] {
 /**
  * Render a full analysis report as a printable string.
  */
-export function renderAnalysis(
-  analysis: BeaconAnalysis,
-  options: RenderOptions,
-): string {
+export function renderAnalysis(analysis: BeaconAnalysis, options: RenderOptions): string {
   const palette = createPalette(options.color);
   const width = options.width ?? 80;
   const { snapshot, score, summary } = analysis;
@@ -223,9 +211,7 @@ export function renderAnalysis(
   // ---- Headline score -----------------------------------------------------
   const paint = gradeColor(palette, score.grade);
   const headline = `${palette.bold(`${score.total}`)}/100`;
-  lines.push(
-    `  ${paint(palette.bold(headline))}  ${paint(palette.bold(score.grade))}`,
-  );
+  lines.push(`  ${paint(palette.bold(headline))}  ${paint(palette.bold(score.grade))}`);
   lines.push(`  ${paint(bar(score.total, 24))}`);
   lines.push('');
 
@@ -245,10 +231,7 @@ export function renderAnalysis(
   lines.push('');
 
   // ---- Strengths ----------------------------------------------------------
-  const strengths =
-    score.strengths.length > 0
-      ? score.strengths
-      : deriveStrengths(score.pillars);
+  const strengths = score.strengths.length > 0 ? score.strengths : deriveStrengths(score.pillars);
   if (strengths.length > 0) {
     lines.push(palette.bold('Strengths'));
     for (const strength of strengths) {

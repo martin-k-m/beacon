@@ -136,10 +136,7 @@ const MAX_FILES = 50_000;
  * Recursively scan `root`, accumulating bytes per language. `ignore` is a list
  * of directory/file names (not globs) to skip in addition to {@link ALWAYS_SKIP}.
  */
-export function scanLanguages(
-  root: string,
-  ignore: readonly string[] = [],
-): LanguageScanResult {
+export function scanLanguages(root: string, ignore: readonly string[] = []): LanguageScanResult {
   const ignoreSet = new Set(ignore.map((entry) => entry.replace(/[\\/]+$/, '')));
   const languages: LanguageBreakdown = {};
   let fileCount = 0;

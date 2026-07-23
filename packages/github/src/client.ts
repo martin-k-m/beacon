@@ -60,9 +60,7 @@ function median(values: number[]): number | null {
   if (values.length === 0) return null;
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0
-    ? ((sorted[mid - 1]! + sorted[mid]!) / 2)
-    : sorted[mid]!;
+  return sorted.length % 2 === 0 ? (sorted[mid - 1]! + sorted[mid]!) / 2 : sorted[mid]!;
 }
 
 function hoursBetween(a: string, b: string): number {
@@ -272,7 +270,11 @@ export class GitHubClient {
       open: openRes?.data.total_count ?? fallbackOpen,
       closed: closedRes?.data.total_count ?? 0,
       medianTimeToCloseHours: median(durations),
-      openedLast30Days: countRecent((recentOpenRes?.data as GitHubSearch<GitHubIssueItem>)?.items, 'created_at', now),
+      openedLast30Days: countRecent(
+        (recentOpenRes?.data as GitHubSearch<GitHubIssueItem>)?.items,
+        'created_at',
+        now,
+      ),
       closedLast30Days: countRecent(closedItems, 'closed_at', now),
     };
   }

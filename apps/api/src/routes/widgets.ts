@@ -82,12 +82,7 @@ function sendSvg(reply: FastifyReply, svg: string, maxAge: number): FastifyReply
     .send(svg);
 }
 
-function svgCacheKey(
-  kind: string,
-  owner: string,
-  repo: string,
-  options: WidgetOptions,
-): string {
+function svgCacheKey(kind: string, owner: string, repo: string, options: WidgetOptions): string {
   const theme = options.theme ?? 'dark';
   const size = options.size ?? 'default';
   const accent = options.accent ?? 'default';

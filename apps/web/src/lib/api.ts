@@ -45,13 +45,9 @@ function normalizeAnalysis(payload: ApiAnalysis): DemoAnalysis {
   // uniform regardless of whether the API returned an AI summary.
   const base = buildDemoAnalysis(payload.snapshot);
   const summaryText =
-    typeof payload.summary === 'string'
-      ? payload.summary
-      : payload.summary?.text ?? base.summary;
+    typeof payload.summary === 'string' ? payload.summary : (payload.summary?.text ?? base.summary);
   const summaryHighlights =
-    typeof payload.summary === 'object' && payload.summary
-      ? payload.summary.highlights
-      : undefined;
+    typeof payload.summary === 'object' && payload.summary ? payload.summary.highlights : undefined;
   const highlights = payload.highlights ?? summaryHighlights ?? base.highlights;
 
   return {
@@ -75,10 +71,7 @@ async function fetchJson<T>(path: string): Promise<T> {
 }
 
 /** Fetch a single analysis for `owner/repo`, falling back to demo data. */
-export async function getAnalysis(
-  owner: string,
-  repo: string,
-): Promise<DemoAnalysis | null> {
+export async function getAnalysis(owner: string, repo: string): Promise<DemoAnalysis | null> {
   if (API_BASE) {
     try {
       const data = await fetchJson<ApiAnalysis>(
@@ -98,9 +91,7 @@ export async function listAnalyses(): Promise<DemoAnalysis[]> {
     try {
       const data = await fetchJson<ApiAnalysis[]>(`/api/demo`);
       if (Array.isArray(data) && data.length > 0) {
-        return data
-          .map(normalizeAnalysis)
-          .sort((a, b) => b.score.total - a.score.total);
+        return data.map(normalizeAnalysis).sort((a, b) => b.score.total - a.score.total);
       }
     } catch {
       // Fall through to demo data.

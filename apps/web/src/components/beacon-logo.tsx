@@ -28,7 +28,14 @@ export function BeaconLogo({
       className="shrink-0"
     >
       <defs>
-        <linearGradient id="beacon-body" x1="16" y1="8" x2="16" y2="30" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="beacon-body"
+          x1="16"
+          y1="8"
+          x2="16"
+          y2="30"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop stopColor="hsl(42 96% 68%)" />
           <stop offset="1" stopColor="hsl(38 90% 52%)" />
         </linearGradient>

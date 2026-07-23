@@ -16,8 +16,8 @@ export function Footer(): React.JSX.Element {
           <div className="max-w-sm">
             <BeaconLogo size={24} withWordmark />
             <p className="mt-3 text-sm text-muted-foreground">
-              Open-source GitHub repository intelligence. Health scores,
-              contributor analytics, and AI summaries for any repository.
+              Open-source GitHub repository intelligence. Health scores, contributor analytics, and
+              AI summaries for any repository.
             </p>
           </div>
 
@@ -30,9 +30,7 @@ export function Footer(): React.JSX.Element {
             <FooterColumn title="Resources">
               <FooterExternal href={GITHUB_URL}>GitHub</FooterExternal>
               <FooterExternal href={`${GITHUB_URL}#readme`}>Docs</FooterExternal>
-              <FooterExternal href={`${GITHUB_URL}/blob/main/LICENSE`}>
-                MIT License
-              </FooterExternal>
+              <FooterExternal href={`${GITHUB_URL}/blob/main/LICENSE`}>MIT License</FooterExternal>
             </FooterColumn>
             <FooterColumn title="Ecosystem">
               <FooterExternal href={BLINK_URL}>Blink Dev</FooterExternal>
@@ -81,9 +79,7 @@ function FooterColumn({
 }): React.JSX.Element {
   return (
     <div>
-      <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground/70">
-        {title}
-      </h4>
+      <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground/70">{title}</h4>
       <ul className="mt-3 space-y-2 text-sm">{children}</ul>
     </div>
   );
@@ -98,10 +94,7 @@ function FooterLink({
 }): React.JSX.Element {
   return (
     <li>
-      <Link
-        href={href}
-        className="text-muted-foreground transition-colors hover:text-foreground"
-      >
+      <Link href={href} className="text-muted-foreground transition-colors hover:text-foreground">
         {children}
       </Link>
     </li>

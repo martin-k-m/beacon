@@ -7,10 +7,6 @@
  */
 export * from './types';
 export * from './queue';
-export {
-  demoHealthySnapshot,
-  demoAtRiskSnapshot,
-  demoSnapshots,
-} from './demo/fixtures';
+export { demoHealthySnapshot, demoAtRiskSnapshot, demoSnapshots } from './demo/fixtures';
 
 export const BEACON_SHARED_VERSION = '0.1.0';

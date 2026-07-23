@@ -15,17 +15,8 @@ import { join } from 'node:path';
 import { CommanderError, Command } from 'commander';
 import pc from 'picocolors';
 
-import {
-  BeaconCliError,
-  resolveAnalysis,
-  resolveRepository,
-  type AiConfig,
-} from './analysis';
-import {
-  runLogin,
-  runLogout,
-  runWhoami,
-} from './auth';
+import { BeaconCliError, resolveAnalysis, resolveRepository, type AiConfig } from './analysis';
+import { runLogin, runLogout, runWhoami } from './auth';
 import { loadConfig, type ResolvedConfig } from './config';
 import { runContributors } from './contributors';
 import { runDashboard } from './dashboard';
@@ -108,18 +99,10 @@ function normalizeRange(value: string | undefined): '7d' | '30d' | '90d' | '1y' 
     return '90d';
   }
   const range = value.toLowerCase();
-  if (
-    range === '7d' ||
-    range === '30d' ||
-    range === '90d' ||
-    range === '1y' ||
-    range === 'all'
-  ) {
+  if (range === '7d' || range === '30d' || range === '90d' || range === '1y' || range === 'all') {
     return range;
   }
-  throw new BeaconCliError(
-    `Unknown --range "${value}". Expected one of: 7d, 30d, 90d, 1y, all.`,
-  );
+  throw new BeaconCliError(`Unknown --range "${value}". Expected one of: 7d, 30d, 90d, 1y, all.`);
 }
 
 function normalizeSource(value: string | undefined): 'auto' | 'api' | 'github' | undefined {
@@ -130,9 +113,7 @@ function normalizeSource(value: string | undefined): 'auto' | 'api' | 'github' |
   if (source === 'auto' || source === 'api' || source === 'github') {
     return source;
   }
-  throw new BeaconCliError(
-    `Unknown --source "${value}". Expected one of: auto, api, github.`,
-  );
+  throw new BeaconCliError(`Unknown --source "${value}". Expected one of: auto, api, github.`);
 }
 
 // ---------------------------------------------------------------------------
@@ -165,7 +146,7 @@ async function runAnalyze(
     repository = options.local
       ? 'local'
       : options.demo
-        ? repositoryArg ?? ''
+        ? (repositoryArg ?? '')
         : resolveRepository(repositoryArg, options.config, options.cwd);
   } catch (error) {
     writeError(describeError(error), color);
@@ -241,7 +222,7 @@ async function runScore(
     repository = options.local
       ? 'local'
       : options.demo
-        ? repositoryArg ?? ''
+        ? (repositoryArg ?? '')
         : resolveRepository(repositoryArg, options.config, options.cwd);
   } catch (error) {
     writeError(describeError(error), color);
@@ -327,7 +308,7 @@ async function runWidget(
     repository = options.local
       ? 'local'
       : options.demo
-        ? repositoryArg ?? ''
+        ? (repositoryArg ?? '')
         : resolveRepository(repositoryArg, options.config, options.cwd);
   } catch (error) {
     writeError(describeError(error), color);
@@ -403,7 +384,7 @@ async function runBadge(
     repository = options.local
       ? 'local'
       : options.demo
-        ? repositoryArg ?? ''
+        ? (repositoryArg ?? '')
         : resolveRepository(repositoryArg, options.config, options.cwd);
   } catch (error) {
     writeError(describeError(error), color);
@@ -477,7 +458,7 @@ async function runReport(
     repository = options.local
       ? 'local'
       : options.demo
-        ? repositoryArg ?? ''
+        ? (repositoryArg ?? '')
         : resolveRepository(repositoryArg, options.config, options.cwd);
   } catch (error) {
     writeError(describeError(error), color);
@@ -547,9 +528,7 @@ async function runInit(options: InitCommandOptions): Promise<void> {
   const historyPath = join(dir, 'history.json');
 
   if (existsSync(configPath) && !options.yes) {
-    const overwrite = await confirm(
-      `${configPath} already exists. Overwrite? [y/N] `,
-    );
+    const overwrite = await confirm(`${configPath} already exists. Overwrite? [y/N] `);
     if (!overwrite) {
       process.stdout.write(`${color ? pc.dim('Aborted.') : 'Aborted.'}\n`);
       return;
@@ -626,7 +605,7 @@ async function runWatch(
     repository = options.local
       ? 'local'
       : options.demo
-        ? repositoryArg ?? ''
+        ? (repositoryArg ?? '')
         : resolveRepository(repositoryArg, options.config, options.cwd);
   } catch (error) {
     writeError(describeError(error), color);
@@ -638,9 +617,7 @@ async function runWatch(
   const requested = options.interval
     ? Number.parseInt(options.interval, 10)
     : (configuredInterval ?? 300);
-  const seconds = Number.isFinite(requested)
-    ? Math.max(MIN_WATCH_INTERVAL, requested)
-    : 300;
+  const seconds = Number.isFinite(requested) ? Math.max(MIN_WATCH_INTERVAL, requested) : 300;
 
   let previous: number | null = null;
 

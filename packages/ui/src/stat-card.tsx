@@ -35,7 +35,9 @@ export function StatCard({
         {Icon && <Icon className="size-4 text-muted-foreground/70" />}
       </div>
       <div className="mt-2 flex items-end justify-between gap-2">
-        <span className="font-mono text-2xl font-semibold tabular-nums text-foreground">{value}</span>
+        <span className="font-mono text-2xl font-semibold tabular-nums text-foreground">
+          {value}
+        </span>
         {hasDelta && (
           <span
             className={cn(

@@ -34,7 +34,9 @@ export function ProgressBar({
       {(label || valueLabel) && (
         <div className="mb-1.5 flex items-center justify-between text-xs">
           {label && <span className="text-muted-foreground">{label}</span>}
-          {valueLabel && <span className="font-mono font-medium text-foreground">{valueLabel}</span>}
+          {valueLabel && (
+            <span className="font-mono font-medium text-foreground">{valueLabel}</span>
+          )}
         </div>
       )}
       <div

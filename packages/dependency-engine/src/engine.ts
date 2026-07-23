@@ -197,12 +197,7 @@ function parseSemver(version: string): Semver | null {
   return { major, minor, patch };
 }
 
-type MajorComparison =
-  | 'equal'
-  | 'behind-major'
-  | 'behind-minor'
-  | 'ahead'
-  | 'unparseable';
+type MajorComparison = 'equal' | 'behind-major' | 'behind-minor' | 'ahead' | 'unparseable';
 
 /** Compare a current version against latest at major granularity. */
 function compareMajor(current: string, latest: string): MajorComparison {
@@ -268,10 +263,7 @@ function uniqueEcosystems(deps: DependencyInput[]): DependencyEcosystem[] {
   return ordered;
 }
 
-function buildSummary(
-  counts: Record<DependencyStatus, number>,
-  total: number,
-): string {
+function buildSummary(counts: Record<DependencyStatus, number>, total: number): string {
   const noun = total === 1 ? 'dependency' : 'dependencies';
   if (total === 0) {
     return 'No dependencies analyzed.';

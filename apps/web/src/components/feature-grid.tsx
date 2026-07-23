@@ -67,9 +67,7 @@ export function FeatureGrid(): React.JSX.Element {
               <div className="flex size-11 items-center justify-center rounded-lg border border-border bg-surface-2 text-beacon transition-colors group-hover:border-beacon/40 group-hover:bg-beacon/10">
                 <Icon className="size-5" />
               </div>
-              <h3 className="mt-4 text-base font-semibold text-foreground">
-                {feature.title}
-              </h3>
+              <h3 className="mt-4 text-base font-semibold text-foreground">{feature.title}</h3>
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 {feature.description}
               </p>

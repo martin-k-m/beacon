@@ -8,7 +8,12 @@ const DEFAULT_MAX_ISSUES = 5;
 /** Build the lead line from the trend when present, else from the grade. */
 function buildHeadline(input: AdviseInput, topIssues: AdvisorIssue[]): string {
   const trend = input.trend;
-  if (trend && trend.points >= 2 && trend.direction !== 'flat' && Math.round(Math.abs(trend.deltaPercent)) > 0) {
+  if (
+    trend &&
+    trend.points >= 2 &&
+    trend.direction !== 'flat' &&
+    Math.round(Math.abs(trend.deltaPercent)) > 0
+  ) {
     const magnitude = Math.abs(Math.round(trend.deltaPercent));
     const verb = trend.direction === 'up' ? 'increased' : 'decreased';
     return `Health ${verb} ${magnitude}% this month.`;
@@ -45,7 +50,9 @@ function buildHeuristicSummary(input: AdviseInput, issues: AdvisorIssue[]): stri
   const high = issues.filter((i) => i.severity === 'high');
   if (high.length > 0) {
     const titles = high.map((i) => i.title.toLowerCase());
-    sentences.push(`The most urgent concern${high.length === 1 ? ' is' : 's are'} ${joinList(titles)}.`);
+    sentences.push(
+      `The most urgent concern${high.length === 1 ? ' is' : 's are'} ${joinList(titles)}.`,
+    );
   }
 
   const top = issues[0];
@@ -55,7 +62,9 @@ function buildHeuristicSummary(input: AdviseInput, issues: AdvisorIssue[]): stri
 
   const remaining = issues.length - (top ? 1 : 0);
   if (remaining > 0) {
-    sentences.push(`${remaining} further recommendation${remaining === 1 ? '' : 's'} follow${remaining === 1 ? 's' : ''} below.`);
+    sentences.push(
+      `${remaining} further recommendation${remaining === 1 ? '' : 's'} follow${remaining === 1 ? 's' : ''} below.`,
+    );
   }
 
   return sentences.join(' ');

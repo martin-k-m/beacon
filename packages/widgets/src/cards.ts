@@ -98,7 +98,17 @@ export function renderHealthCard(analysis: BeaconAnalysis, options: WidgetOption
 
   // Score ring + grade pill.
   parts.push(
-    ring(ringCx, ringCy, ringR, score.total / 100, color, t.track, String(score.total), t.text, ringR * 0.62),
+    ring(
+      ringCx,
+      ringCy,
+      ringR,
+      score.total / 100,
+      color,
+      t.track,
+      String(score.total),
+      t.text,
+      ringR * 0.62,
+    ),
   );
   const gradeW = 8 + score.grade.length * 7.2;
   parts.push(
@@ -160,7 +170,9 @@ export function renderActivityGraph(analysis: BeaconAnalysis, options: WidgetOpt
   const width = CARD_WIDTH[size];
   const height = 150;
   const { snapshot } = analysis;
-  const weeks = snapshot.commitActivity.length ? snapshot.commitActivity : [{ weekStart: 0, total: 0 }];
+  const weeks = snapshot.commitActivity.length
+    ? snapshot.commitActivity
+    : [{ weekStart: 0, total: 0 }];
   const max = Math.max(1, ...weeks.map((w) => w.total));
 
   const gx = 20;
@@ -183,12 +195,22 @@ export function renderActivityGraph(analysis: BeaconAnalysis, options: WidgetOpt
       <stop offset="1" stop-color="${t.accent}" stop-opacity="0"/></linearGradient></defs>`,
     `<polygon points="${area}" fill="url(#beaconArea)"/>`,
     `<polyline points="${points}" fill="none" stroke="${t.accent}" stroke-width="2" stroke-linejoin="round"/>`,
-    text(20, height - 12, `${total12} commits in the last 12 weeks · ${snapshot.contributors.length} contributors`, {
-      size: 11,
-      fill: t.subtext,
-    }),
+    text(
+      20,
+      height - 12,
+      `${total12} commits in the last 12 weeks · ${snapshot.contributors.length} contributors`,
+      {
+        size: 11,
+        fill: t.subtext,
+      },
+    ),
   ];
-  return svg(width, height, parts.join(''), `Beacon activity graph for ${snapshot.metadata.fullName}`);
+  return svg(
+    width,
+    height,
+    parts.join(''),
+    `Beacon activity graph for ${snapshot.metadata.fullName}`,
+  );
 }
 
 /** 3. Language Card. */
@@ -218,10 +240,15 @@ export function renderLanguageCard(analysis: BeaconAnalysis, options: WidgetOpti
   const legend = top
     .map(([name, value]) => {
       const pct = ((value / total) * 100).toFixed(1);
-      const row = `<circle cx="26" cy="${y - 4}" r="5" fill="${languageColor(name)}"/>${text(38, y, name, {
-        size: 12,
-        fill: t.text,
-      })}${text(width - 20, y, `${pct}%`, { size: 12, fill: t.subtext, anchor: 'end', family: fonts.mono })}`;
+      const row = `<circle cx="26" cy="${y - 4}" r="5" fill="${languageColor(name)}"/>${text(
+        38,
+        y,
+        name,
+        {
+          size: 12,
+          fill: t.text,
+        },
+      )}${text(width - 20, y, `${pct}%`, { size: 12, fill: t.subtext, anchor: 'end', family: fonts.mono })}`;
       y += 22;
       return row;
     })
@@ -235,11 +262,19 @@ export function renderLanguageCard(analysis: BeaconAnalysis, options: WidgetOpti
     `<g clip-path="url(#langClip)">${segments}</g>`,
     legend,
   ];
-  return svg(width, height, parts.join(''), `Beacon language breakdown for ${snapshot.metadata.fullName}`);
+  return svg(
+    width,
+    height,
+    parts.join(''),
+    `Beacon language breakdown for ${snapshot.metadata.fullName}`,
+  );
 }
 
 /** 4. Contributor Card. */
-export function renderContributorCard(analysis: BeaconAnalysis, options: WidgetOptions = {}): string {
+export function renderContributorCard(
+  analysis: BeaconAnalysis,
+  options: WidgetOptions = {},
+): string {
   const t = resolveTheme(options);
   const size = options.size ?? 'medium';
   const width = CARD_WIDTH[size];
@@ -272,10 +307,18 @@ export function renderContributorCard(analysis: BeaconAnalysis, options: WidgetO
   const parts = [
     panel(width, height, t.bg, t.border),
     header(snapshot, t, width),
-    text(20, 54, `Top contributors · ${snapshot.contributors.length} total`, { size: 12, fill: t.subtext }),
+    text(20, 54, `Top contributors · ${snapshot.contributors.length} total`, {
+      size: 12,
+      fill: t.subtext,
+    }),
     rows,
   ];
-  return svg(width, height, parts.join(''), `Beacon contributors for ${snapshot.metadata.fullName}`);
+  return svg(
+    width,
+    height,
+    parts.join(''),
+    `Beacon contributors for ${snapshot.metadata.fullName}`,
+  );
 }
 
 /** 5. Release Card. */
@@ -300,7 +343,12 @@ export function renderReleaseCard(analysis: BeaconAnalysis, options: WidgetOptio
     const latest = releases[0]!;
     parts.push(
       `<rect x="20" y="66" width="${width - 40}" height="34" rx="6" fill="${t.panel}" stroke="${t.border}"/>`,
-      text(32, 88, truncate(latest.tagName, 22), { size: 15, weight: 700, fill: t.accent, family: fonts.mono }),
+      text(32, 88, truncate(latest.tagName, 22), {
+        size: 15,
+        weight: 700,
+        fill: t.accent,
+        family: fonts.mono,
+      }),
       text(width - 32, 88, latest.publishedAt ? relativeTime(latest.publishedAt, now) : '', {
         size: 12,
         fill: t.subtext,

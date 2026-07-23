@@ -19,10 +19,7 @@ export function ContributorList({
   limit = 8,
 }: ContributorListProps): React.JSX.Element {
   const top = React.useMemo(
-    () =>
-      [...contributors]
-        .sort((a, b) => b.contributions - a.contributions)
-        .slice(0, limit),
+    () => [...contributors].sort((a, b) => b.contributions - a.contributions).slice(0, limit),
     [contributors, limit],
   );
   const max = top[0]?.contributions ?? 1;

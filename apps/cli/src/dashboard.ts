@@ -146,7 +146,9 @@ export async function gatherDashboard(
   if (wantLive && isGitRepo(cwd)) {
     try {
       const { analysis } = await analyzeLocal({ cwd });
-      entries.push(entryFromAnalysis(analysis.snapshot.metadata.fullName, 'local', analysis, threshold));
+      entries.push(
+        entryFromAnalysis(analysis.snapshot.metadata.fullName, 'local', analysis, threshold),
+      );
     } catch {
       // Not fatal — just skip the local entry.
     }
@@ -253,10 +255,7 @@ export interface RenderDashboardOptions {
 }
 
 /** Render the dashboard to a string (used for both static and interactive). */
-export function renderDashboard(
-  data: DashboardData,
-  options: RenderDashboardOptions,
-): string {
+export function renderDashboard(data: DashboardData, options: RenderDashboardOptions): string {
   const palette = createPalette(options.color);
   const lines: string[] = [];
 
@@ -269,10 +268,7 @@ export function renderDashboard(
   lines.push(`  ${palette.dim(subtitle)}  ${palette.dim(`· threshold ${data.threshold}`)}`);
   lines.push('');
 
-  const nameWidth = Math.min(
-    40,
-    Math.max(12, ...data.entries.map((e) => e.repo.length)),
-  );
+  const nameWidth = Math.min(40, Math.max(12, ...data.entries.map((e) => e.repo.length)));
 
   lines.push(`  ${palette.bold('Repositories')}`);
   data.entries.forEach((entry, index) => {
@@ -310,9 +306,7 @@ export function renderDashboard(
   lines.push('');
 
   if (options.interactive) {
-    lines.push(
-      `  ${palette.dim('↑/↓ move · enter expand · r refresh · q quit')}`,
-    );
+    lines.push(`  ${palette.dim('↑/↓ move · enter expand · r refresh · q quit')}`);
     lines.push('');
   }
 
@@ -328,7 +322,11 @@ function expandEntry(analysis: BeaconAnalysis, palette: Palette): string[] {
     const label = pillar.pillar.padEnd(13, ' ');
     details.push(`${palette.gray(label)} ${`${pillar.score}`.padStart(3, ' ')}/100`);
   }
-  details.push(palette.dim(`${snapshot.contributors.length} contributors · ${snapshot.metadata.primaryLanguage ?? 'n/a'}`));
+  details.push(
+    palette.dim(
+      `${snapshot.contributors.length} contributors · ${snapshot.metadata.primaryLanguage ?? 'n/a'}`,
+    ),
+  );
   return details;
 }
 

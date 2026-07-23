@@ -62,7 +62,10 @@ function maintenanceIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
   const issues: AdvisorIssue[] = [];
   const { issues: iss, pullRequests: pr } = snapshot;
 
-  if (iss.medianTimeToCloseHours !== null && iss.medianTimeToCloseHours > THRESHOLDS.slowIssueCloseHours) {
+  if (
+    iss.medianTimeToCloseHours !== null &&
+    iss.medianTimeToCloseHours > THRESHOLDS.slowIssueCloseHours
+  ) {
     const days = Math.round(iss.medianTimeToCloseHours / HOURS_PER_DAY);
     issues.push({
       id: 'slow-issue-response',
@@ -75,7 +78,10 @@ function maintenanceIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
     });
   }
 
-  if (pr.medianTimeToMergeHours !== null && pr.medianTimeToMergeHours > THRESHOLDS.slowPrMergeHours) {
+  if (
+    pr.medianTimeToMergeHours !== null &&
+    pr.medianTimeToMergeHours > THRESHOLDS.slowPrMergeHours
+  ) {
     const days = Math.round(pr.medianTimeToMergeHours / HOURS_PER_DAY);
     issues.push({
       id: 'slow-pr-velocity',
@@ -131,7 +137,8 @@ function securityIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
       title: 'No security policy',
       detail:
         'The repository has no security policy, so there is no documented way for researchers to report vulnerabilities responsibly.',
-      recommendation: 'Add a SECURITY.md describing how to report vulnerabilities and your disclosure process.',
+      recommendation:
+        'Add a SECURITY.md describing how to report vulnerabilities and your disclosure process.',
     });
   }
 
@@ -142,7 +149,8 @@ function securityIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
       pillar: 'security',
       title: 'Automated dependency updates are off',
       detail: `The project declares ${dependencies.length} dependency manifest${dependencies.length === 1 ? '' : 's'} but has no Dependabot configuration, so out-of-date and vulnerable dependencies can go unnoticed.`,
-      recommendation: 'Enable Dependabot (or an equivalent) to open update PRs and surface security advisories automatically.',
+      recommendation:
+        'Enable Dependabot (or an equivalent) to open update PRs and surface security advisories automatically.',
     });
   }
 
@@ -160,8 +168,10 @@ function documentationIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
       severity: 'medium',
       pillar: 'documentation',
       title: 'No README',
-      detail: 'The repository has no README, leaving newcomers without a starting point for what the project does or how to use it.',
-      recommendation: 'Add a README with a project overview, installation steps, and a basic usage example.',
+      detail:
+        'The repository has no README, leaving newcomers without a starting point for what the project does or how to use it.',
+      recommendation:
+        'Add a README with a project overview, installation steps, and a basic usage example.',
     });
     return issues;
   }
@@ -173,16 +183,15 @@ function documentationIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
 
   if (missing.length > 0 || isThin) {
     const gaps =
-      missing.length > 0
-        ? `it is missing ${missing.join(' and ')} guidance`
-        : 'it is quite short';
+      missing.length > 0 ? `it is missing ${missing.join(' and ')} guidance` : 'it is quite short';
     issues.push({
       id: 'thin-documentation',
       severity: 'low',
       pillar: 'documentation',
       title: 'Documentation is thin',
       detail: `The README is present but ${gaps}, which makes the project harder to adopt.`,
-      recommendation: 'Expand the README with usage and API examples covering the most common tasks.',
+      recommendation:
+        'Expand the README with usage and API examples covering the most common tasks.',
     });
   }
 
@@ -199,8 +208,10 @@ function communityIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
         severity: 'medium',
         pillar: 'community',
         title: 'High maintainer concentration (low bus factor)',
-        detail: 'The project is effectively maintained by a single person, so it is vulnerable to stalling if that maintainer becomes unavailable.',
-        recommendation: 'Recruit and onboard additional maintainers, and distribute review and merge rights.',
+        detail:
+          'The project is effectively maintained by a single person, so it is vulnerable to stalling if that maintainer becomes unavailable.',
+        recommendation:
+          'Recruit and onboard additional maintainers, and distribute review and merge rights.',
       },
     ];
   }
@@ -218,7 +229,8 @@ function communityIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
         pillar: 'community',
         title: 'High maintainer concentration (low bus factor)',
         detail: `A single contributor accounts for about ${pct}% of all contributions, so the project's continuity depends heavily on one person.`,
-        recommendation: 'Distribute review and ownership across more contributors and document key areas to reduce the bus factor.',
+        recommendation:
+          'Distribute review and ownership across more contributors and document key areas to reduce the bus factor.',
       },
     ];
   }
@@ -238,7 +250,8 @@ function activityIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
       pillar: 'activity',
       title: 'Little recent activity',
       detail: `The most recent push was ${describeDays(pushDays)}, suggesting development has slowed or stalled.`,
-      recommendation: 'Re-establish a regular commit and review cadence, or clearly mark the project as maintenance-only if that is intended.',
+      recommendation:
+        'Re-establish a regular commit and review cadence, or clearly mark the project as maintenance-only if that is intended.',
     });
   }
 
@@ -248,7 +261,8 @@ function activityIssues(snapshot: RepositorySnapshot): AdvisorIssue[] {
       severity: 'low',
       pillar: 'activity',
       title: 'No published releases',
-      detail: 'The repository has no published releases, making it hard for users to depend on stable, versioned builds.',
+      detail:
+        'The repository has no published releases, making it hard for users to depend on stable, versioned builds.',
       recommendation: 'Adopt a release cadence with tagged, versioned releases and changelogs.',
     });
   }

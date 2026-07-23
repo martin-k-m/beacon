@@ -10,15 +10,11 @@ import { z } from 'zod';
  * `config` object.
  */
 const envSchema = z.object({
-  NODE_ENV: z
-    .enum(['development', 'test', 'production'])
-    .default('development'),
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   REDIS_URL: z.string().min(1).optional(),
   DATABASE_URL: z.string().min(1).optional(),
   GITHUB_TOKEN: z.string().min(1).optional(),
-  BEACON_AI_PROVIDER: z
-    .enum(['heuristic', 'openai', 'anthropic'])
-    .default('heuristic'),
+  BEACON_AI_PROVIDER: z.enum(['heuristic', 'openai', 'anthropic']).default('heuristic'),
   OPENAI_API_KEY: z.string().min(1).optional(),
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   // Number of jobs processed concurrently by a single worker instance.

@@ -15,11 +15,7 @@ import {
   type TrendResult,
 } from '@beacon/analytics';
 
-import {
-  resolveAnalysis,
-  resolveRepository,
-  type AiConfig,
-} from './analysis';
+import { resolveAnalysis, resolveRepository, type AiConfig } from './analysis';
 import type { ResolvedConfig } from './config';
 import { colorEnabled, describeError, printNotes, writeError } from './output';
 import { createPalette, type Palette } from './render';
@@ -79,9 +75,7 @@ export function renderAdvice(report: AdvisorReport, color: boolean): string {
 
   lines.push('');
   lines.push(`  ${palette.bold(report.headline)}`);
-  lines.push(
-    `  ${palette.dim(`Beacon Score ${report.score}/100 · ${report.grade}`)}`,
-  );
+  lines.push(`  ${palette.dim(`Beacon Score ${report.score}/100 · ${report.grade}`)}`);
   lines.push('');
 
   if (report.issues.length === 0) {
@@ -123,7 +117,7 @@ async function runInsights(
     repository = options.local
       ? 'local'
       : options.demo
-        ? repositoryArg ?? ''
+        ? (repositoryArg ?? '')
         : resolveRepository(repositoryArg, options.config, options.cwd);
   } catch (error) {
     writeError(describeError(error), color);

@@ -1,7 +1,6 @@
 /** Small SVG-building helpers shared by the widget renderers. */
 
-const FONT_STACK =
-  "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif";
+const FONT_STACK = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif";
 const MONO_STACK = "ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace";
 
 export const fonts = { sans: FONT_STACK, mono: MONO_STACK };
@@ -103,7 +102,9 @@ export function bar(
   const w = Math.max(0, Math.min(1, fraction)) * width;
   const r = height / 2;
   return `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="${r}" fill="${track}"/>${
-    w > 0 ? `<rect x="${x}" y="${y}" width="${w.toFixed(1)}" height="${height}" rx="${r}" fill="${fill}"/>` : ''
+    w > 0
+      ? `<rect x="${x}" y="${y}" width="${w.toFixed(1)}" height="${height}" rx="${r}" fill="${fill}"/>`
+      : ''
   }`;
 }
 

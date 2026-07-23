@@ -12,13 +12,17 @@ async function main(): Promise<void> {
 
   // Surface the runtime posture up front.
   if (!config.hasDatabase) {
-    app.log.warn('No DATABASE_URL configured — persistence is disabled (analyses will not be stored).');
+    app.log.warn(
+      'No DATABASE_URL configured — persistence is disabled (analyses will not be stored).',
+    );
   }
   if (!config.hasRedis) {
     app.log.warn('No REDIS_URL configured — using in-memory cache (not shared across instances).');
   }
   if (!config.githubToken) {
-    app.log.warn('No GITHUB_TOKEN configured — live analysis will hit low unauthenticated rate limits.');
+    app.log.warn(
+      'No GITHUB_TOKEN configured — live analysis will hit low unauthenticated rate limits.',
+    );
   }
   app.log.info(`AI provider: ${config.aiProvider}`);
 

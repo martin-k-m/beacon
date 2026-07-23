@@ -1,9 +1,4 @@
-import type {
-  BeaconPlugin,
-  PluginContext,
-  PluginMetric,
-  PluginRecommendation,
-} from './types';
+import type { BeaconPlugin, PluginContext, PluginMetric, PluginRecommendation } from './types';
 
 /** Sink for plugin failures. Defaults to `console.warn`. */
 export type PluginErrorLogger = (message: string, error: unknown) => void;
@@ -101,10 +96,7 @@ export class PluginRegistry {
           try {
             return contributor.render(ctx);
           } catch (error) {
-            this.onError(
-              `widget "${type}" in plugin "${plugin.name}" failed to render`,
-              error,
-            );
+            this.onError(`widget "${type}" in plugin "${plugin.name}" failed to render`, error);
             return null;
           }
         }

@@ -197,7 +197,12 @@ export function HealthTrend({
                 axisLine={false}
                 width={40}
               />
-              <ReferenceLine y={75} stroke="hsl(190 95% 55%)" strokeDasharray="2 4" strokeOpacity={0.35} />
+              <ReferenceLine
+                y={75}
+                stroke="hsl(190 95% 55%)"
+                strokeDasharray="2 4"
+                strokeOpacity={0.35}
+              />
               <Tooltip content={<TrendTooltip />} cursor={{ stroke: color, strokeOpacity: 0.35 }} />
               <Area
                 type="monotone"
