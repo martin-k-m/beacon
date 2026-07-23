@@ -18,9 +18,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `analyze`, `score`, `report`, `widget`, `badge`, and `watch`, omitting
   `insights`, `contributors`, and `history`, which have supported it since the
   Phase 2 commands landed.
-- **`README.md` claimed "every command supports `--json`".** `badge`, `init`,
-  `login`, and `logout` don't; the wording now matches `docs/cli.md` ("every
-  command that produces data").
+- **`README.md` claimed "every command supports `--json`".** `badge`, `watch`,
+  `init`, `login`, and `logout` don't; the wording now matches `docs/cli.md`
+  ("every command that produces data").
 - **`CLAUDE.md` listed a package that no longer exists.** The CommonJS
   convention still named `core`, retired in the engine decomposition. The note
   now lists the real set and both frontend exceptions (`apps/web`, `@beacon/ui`).

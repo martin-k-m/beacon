@@ -86,9 +86,10 @@ Per-package: `npm run <script> --workspace @beacon/<name>`.
 - **Modules:** every Node package/app is **CommonJS** (`"type": "commonjs"`,
   `module: CommonJS`, `moduleResolution: Node`) — `shared`, `github`, `ai`,
   `analytics`, `ai-advisor`, `dependency-engine`, `plugins`, `sdk`, `widgets`,
-  `database`, `api`, `worker`, `cli`. The two exceptions are the frontend ones:
+  `database`, `api`, `worker`, `cli`. Two exceptions are the frontend ones:
   `apps/web` (ESM/bundler, no `type` field) and `@beacon/ui` (`"type":
-  "module"`, shipped as source). Keep `@beacon/github`
+  "module"`, shipped as source); `@beacon/config` also omits the field, but it
+  ships only `tsconfig`/ESLint presets (CommonJS by default). Keep `@beacon/github`
   and `@beacon/analytics` free of Node-only APIs so they stay universal (they use
   only global `fetch`).
 - **tsconfig:** each package extends `@beacon/config/tsconfig/base.json` (Node) or
