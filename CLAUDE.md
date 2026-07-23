@@ -83,9 +83,12 @@ Per-package: `npm run <script> --workspace @beacon/<name>`.
 
 - **Language:** TypeScript, strict, with `noUncheckedIndexedAccess`. Guard array
   indexing (`arr[0]` is `T | undefined`).
-- **Modules:** the Node packages (`core`, `widgets`, `analytics`, `database`,
-  `api`, `cli`) are **CommonJS** (`"type": "commonjs"`, `module: CommonJS`,
-  `moduleResolution: Node`). The web app is ESM/bundler. Keep `@beacon/github`
+- **Modules:** every Node package/app is **CommonJS** (`"type": "commonjs"`,
+  `module: CommonJS`, `moduleResolution: Node`) — `shared`, `github`, `ai`,
+  `analytics`, `ai-advisor`, `dependency-engine`, `plugins`, `sdk`, `widgets`,
+  `database`, `api`, `worker`, `cli`. The two exceptions are the frontend ones:
+  `apps/web` (ESM/bundler, no `type` field) and `@beacon/ui` (`"type":
+  "module"`, shipped as source). Keep `@beacon/github`
   and `@beacon/analytics` free of Node-only APIs so they stay universal (they use
   only global `fetch`).
 - **tsconfig:** each package extends `@beacon/config/tsconfig/base.json` (Node) or

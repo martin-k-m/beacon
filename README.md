@@ -195,8 +195,8 @@ beacon widget facebook/react       # copy-paste embed snippets
 beacon report --markdown           # export a report (--json / --html too)
 ```
 
-Every command supports `--json` for scripting. See [docs/cli.md](docs/cli.md)
-for the full reference.
+Every command that produces data supports `--json` for scripting. See
+[docs/cli.md](docs/cli.md) for the full reference.
 
 ## SDK
 
@@ -205,8 +205,18 @@ Use Beacon programmatically with [`@beacon/sdk`](packages/sdk):
 ```ts
 import { Beacon } from '@beacon/sdk';
 
-const analysis = await Beacon.analyze('facebook/react');
-console.log(analysis.score.total); // 96
+const beacon = new Beacon({ githubToken: process.env.GITHUB_TOKEN });
+const analysis = await beacon.analyze('facebook/react');
+console.log(analysis.score.total, analysis.score.grade);
+```
+
+There is also a one-shot helper that builds the client for you from the
+environment (`BEACON_API_URL`, `BEACON_TOKEN`, `GITHUB_TOKEN`):
+
+```ts
+import { analyze } from '@beacon/sdk';
+
+const analysis = await analyze('facebook/react');
 ```
 
 ## Architecture

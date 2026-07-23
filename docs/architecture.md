@@ -60,7 +60,7 @@ global `fetch`) means:
 | `@beacon/dependency-engine` | Dependency classification (npm / PyPI / crates.io) |
 | `@beacon/plugins` | Extensibility — analyzers / recommenders / widget contributors, loaded by `apps/api` via `BEACON_PLUGINS` ([plugins.md](plugins.md)) |
 | `@beacon/widgets` | Embeddable SVG widgets and badges |
-| `@beacon/sdk` | Programmatic client (`Beacon.analyze(...)`) |
+| `@beacon/sdk` | Programmatic client (`new Beacon().analyze(...)`) |
 | `@beacon/ui` | Shared React UI primitives (frontend) |
 | `@beacon/database` | Prisma schema + client singleton (PostgreSQL) |
 | `@beacon/config` | Shared `tsconfig` bases and ESLint presets |

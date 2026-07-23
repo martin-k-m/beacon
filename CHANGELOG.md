@@ -4,6 +4,27 @@ All notable changes to Beacon are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **The README's SDK example did not work.** It showed
+  `Beacon.analyze('facebook/react')`, but `Beacon` is a class and `analyze` is an
+  instance method — there is no static `Beacon.analyze` (verified: it is
+  `undefined`). The example now constructs a client, and the one-shot `analyze()`
+  helper the SDK also exports is documented alongside it. `docs/architecture.md`
+  carried the same wrong call shape in the package table.
+- **`docs/cli.md` under-reported `--local`.** It listed the flag as available on
+  `analyze`, `score`, `report`, `widget`, `badge`, and `watch`, omitting
+  `insights`, `contributors`, and `history`, which have supported it since the
+  Phase 2 commands landed.
+- **`README.md` claimed "every command supports `--json`".** `badge`, `init`,
+  `login`, and `logout` don't; the wording now matches `docs/cli.md` ("every
+  command that produces data").
+- **`CLAUDE.md` listed a package that no longer exists.** The CommonJS
+  convention still named `core`, retired in the engine decomposition. The note
+  now lists the real set and both frontend exceptions (`apps/web`, `@beacon/ui`).
+
 ## [1.2.0] - 2026-07-17
 
 A finalization pass: one correctness fix, the dependency backlog cleared, the

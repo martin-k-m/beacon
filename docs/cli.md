@@ -177,7 +177,9 @@ Per-repository config, discovered by walking up from the current directory:
 
 `--local` analyzes the repository in the current directory using only local git
 history and the filesystem — no network, no account. It is available on
-`analyze`, `score`, `report`, `widget`, `badge`, and `watch`.
+`analyze`, `score`, `insights`, `contributors`, `history`, `report`, `widget`,
+`badge`, and `watch`. (`dependencies` is always local and takes no `--local`
+flag; `dashboard`, `init`, and the auth commands don't analyze a repository.)
 
 The snapshot is assembled by an extensible **collector registry**, each
 collector contributing one slice:
