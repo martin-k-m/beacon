@@ -1,0 +1,14 @@
+# Keep line endings consistent everywhere.
+#
+# Git for Windows' installer defaults to core.autocrlf=true, which rewrites
+# every tracked text file to CRLF on checkout. Every blob in this repository
+# is LF, and Prettier is configured with its default `endOfLine: "lf"`, so a
+# CRLF working tree made `npm run format:check` fail on ~110 files that had
+# nothing wrong with them. `eol=lf` pins the working tree to LF on every
+# platform so the checkout, the committed content, and Prettier all agree.
+
+* text=auto eol=lf
+
+# Windows batch files are the one thing that genuinely needs CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
